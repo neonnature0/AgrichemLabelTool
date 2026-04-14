@@ -324,6 +324,43 @@ def verify_field(product_id: str, req: VerifyRequest):
     return {"ok": True}
 
 
+class BulkVerifyRequest(BaseModel):
+    fields: list[str]
+    status: str  # "correct", "wrong", "absent"
+
+
+@app.post("/api/products/{product_id}/verify/bulk")
+def verify_bulk(product_id: str, req: BulkVerifyRequest):
+    """Mark multiple fields with the same status. Used for Shift+V bulk-verify."""
+    if product_id not in verified:
+        verified[product_id] = {}
+    applied: list[str] = []
+    for field in req.fields:
+        # Skip fields already verified so Undo only reverses *this* action.
+        if field in verified[product_id]:
+            continue
+        verified[product_id][field] = {"status": req.status, "at": _now_iso()}
+        applied.append(field)
+    _save_json(VERIFIED_PATH, verified)
+    return {"ok": True, "applied": applied}
+
+
+class UnverifyRequest(BaseModel):
+    fields: list[str]
+
+
+@app.post("/api/products/{product_id}/verify/unverify")
+def unverify_fields(product_id: str, req: UnverifyRequest):
+    """Remove verification entries. Used for Undo after bulk-verify."""
+    if product_id in verified:
+        for field in req.fields:
+            verified[product_id].pop(field, None)
+        if not verified[product_id]:
+            del verified[product_id]
+    _save_json(VERIFIED_PATH, verified)
+    return {"ok": True}
+
+
 class CorrectRequest(BaseModel):
     field: str
     correct_value: str | int | float | list | dict | None
@@ -516,10 +553,12 @@ def get_coverage():
         count = sum(1 for ext in extractions.values() if _field_has_value(ext, field))
         fields[field] = {"count": count, "total": total, "pct": round(100 * count / total)}
     verified_count = len(verified)
+    reviewed_count = sum(1 for pid_fields in verified.values() if pid_fields)
     return {
         "total": total,
         "fields": fields,
         "verified": verified_count,
+        "reviewed": reviewed_count,
         "learned_patterns": sum(len(v) for v in learned_patterns.values()),
     }
 

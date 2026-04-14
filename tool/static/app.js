@@ -32,6 +32,16 @@ let currentProducts = [];
 let currentFilter = 'has-label';
 let currentSearch = '';
 
+// ─── Labels-review state ────────────────────────────────────────────────
+// Order of product ids matching the current filter+search — used for →/←
+// product navigation. Rebuilt whenever the list view renders.
+let productOrder = [];
+// Current product's detail state (set in renderProductDetail, used by keyboard).
+let currentDetail = null; // { id, fields: [{key,label,hasValue}], verifiedMap }
+let currentFieldIndex = 0;
+let keyboardMode = 'FIELD_NAV'; // 'FIELD_NAV' | 'CORRECTION_INPUT'
+let undoState = null; // { productId, fields, timerId }
+
 // ─── Utility: safe text escaping ────────────────────────────────────────
 
 function esc(str) {
@@ -68,7 +78,12 @@ function setContent(container, ...nodes) {
 function route() {
   const hash = location.hash || '#/';
   const app = document.getElementById('app');
-  if (hash.startsWith('#/product/')) {
+  const goingToDetail = hash.startsWith('#/product/');
+  if (!goingToDetail) {
+    uninstallKeyboardHandler();
+    currentDetail = null;
+  }
+  if (goingToDetail) {
     renderProductDetail(app, hash.replace('#/product/', ''));
   } else if (hash === '#/coverage') {
     renderCoverage(app);
@@ -102,9 +117,10 @@ async function loadCoverage() {
     const cov = await api('/coverage');
     const bar = document.querySelector('.progress-fill');
     const text = document.querySelector('.progress-text');
-    const pct = cov.total > 0 ? Math.round(100 * cov.verified / cov.total) : 0;
+    const reviewed = cov.reviewed ?? cov.verified ?? 0;
+    const pct = cov.total > 0 ? Math.round(100 * reviewed / cov.total) : 0;
     bar.style.width = pct + '%';
-    text.textContent = `${cov.verified}/${cov.total} verified`;
+    text.textContent = `${reviewed}/${cov.total} reviewed`;
   } catch (e) { /* startup timing */ }
 }
 
@@ -162,6 +178,7 @@ function renderProductRows() {
     const q = currentSearch.toLowerCase();
     filtered = filtered.filter(p => p.name.toLowerCase().includes(q));
   }
+  productOrder = filtered.map(p => p.id);
   tbody.replaceChildren();
   for (const p of filtered) {
     const row = el('tr', {});
@@ -179,6 +196,7 @@ function renderProductRows() {
 // ─── Product Detail ─────────────────────────────────────────────────────
 
 async function renderProductDetail(container, productId) {
+  uninstallKeyboardHandler(); // re-installed after render
   setContent(container, el('p', {}, 'Loading...'));
   let data;
   try { data = await api(`/products/${productId}`); }
@@ -223,7 +241,20 @@ async function renderProductDetail(container, productId) {
   wrapper.appendChild(detailContainer);
   setContent(container, wrapper);
 
+  // Seed current-detail state for keyboard handler.
+  const isSameProduct = currentDetail?.id === productId;
+  currentDetail = {
+    id: productId,
+    extraction,
+    verified: ver || {},
+  };
+  if (!isSameProduct) {
+    currentFieldIndex = 0;
+  }
+  keyboardMode = 'FIELD_NAV';
+
   renderExtractionFields(productId, extraction, ver || {});
+  installKeyboardHandler();
 }
 
 function renderExtractionFields(productId, ext, ver) {
@@ -231,19 +262,30 @@ function renderExtractionFields(productId, ext, ver) {
   if (!panel) return;
   panel.replaceChildren();
 
-  for (const field of FIELDS) {
+  FIELDS.forEach((field, idx) => {
     const val = ext[field.key];
     const rawKey = field.key + '_raw';
     const raw = ext[rawKey];
     const verified = ver[field.key];
     const hasValue = val !== null && val !== undefined && (!Array.isArray(val) || val.length > 0);
-    const card = el('div', { className: 'field-card' + (verified?.status === 'correct' ? ' field-verified' : verified?.status === 'wrong' ? ' field-corrected' : '') });
+    const cardClasses = ['field-card'];
+    if (verified?.status === 'correct') cardClasses.push('field-verified');
+    else if (verified?.status === 'wrong') cardClasses.push('field-corrected');
+    else if (verified?.status === 'absent') cardClasses.push('field-absent');
+    if (idx === currentFieldIndex) cardClasses.push('field-focused');
+    const card = el('div', {
+      className: cardClasses.join(' '),
+      'data-field-index': String(idx),
+      'data-field-key': field.key,
+    });
+    card.onclick = () => { setCurrentField(idx); };
 
     // Header
     const header = el('div', { className: 'field-card-header' });
     header.appendChild(el('span', { className: 'field-name' }, field.label));
     if (verified) {
-      header.appendChild(el('span', { className: `badge badge-${verified.status === 'correct' ? 'high' : 'medium'}` }, verified.status));
+      const badgeType = verified.status === 'correct' ? 'high' : verified.status === 'wrong' ? 'medium' : 'low';
+      header.appendChild(el('span', { className: `badge badge-${badgeType}` }, verified.status));
     }
     card.appendChild(header);
 
@@ -269,25 +311,23 @@ function renderExtractionFields(productId, ext, ver) {
       card.appendChild(el('div', { className: 'field-not-found' }, 'Not found'));
     }
 
+    // Correction input container (hidden until mode === CORRECTION_INPUT for this field)
+    const correctionWrap = el('div', { className: 'correction-wrap hidden', 'data-correction-for': field.key });
+    card.appendChild(correctionWrap);
+
     // Actions
     const actions = el('div', { className: 'field-actions' });
-    const btnCorrect = el('button', { className: 'btn btn-correct' }, 'Correct');
-    btnCorrect.onclick = () => verifyField(productId, field.key, 'correct');
-    const btnWrong = el('button', { className: 'btn btn-wrong' }, 'Wrong');
-    btnWrong.onclick = () => {
-      const v = prompt(`Enter the correct value for "${field.label}":`);
-      if (v !== null) {
-        api(`/products/${productId}/correct`, { method: 'POST', body: { field: field.key, correct_value: v } })
-          .then(() => verifyField(productId, field.key, 'wrong'));
-      }
-    };
-    const btnAbsent = el('button', { className: 'btn btn-absent' }, 'Not on label');
-    btnAbsent.onclick = () => verifyField(productId, field.key, 'absent');
+    const btnCorrect = el('button', { className: 'btn btn-correct', title: 'Mark correct (1)' }, 'Correct');
+    btnCorrect.onclick = (e) => { e.stopPropagation(); verifyField(productId, field.key, 'correct', idx); };
+    const btnWrong = el('button', { className: 'btn btn-wrong', title: 'Enter correction (2)' }, 'Wrong');
+    btnWrong.onclick = (e) => { e.stopPropagation(); openCorrectionInput(idx); };
+    const btnAbsent = el('button', { className: 'btn btn-absent', title: 'Not on label (3)' }, 'Not on label');
+    btnAbsent.onclick = (e) => { e.stopPropagation(); verifyField(productId, field.key, 'absent', idx); };
     actions.append(btnCorrect, btnWrong, btnAbsent);
     card.appendChild(actions);
 
     panel.appendChild(card);
-  }
+  });
 
   // Manual annotation section
   const annoCard = el('div', { className: 'field-card', style: { background: 'var(--grey-100)' } });
@@ -309,10 +349,298 @@ function renderExtractionFields(productId, ext, ver) {
   panel.appendChild(annoCard);
 }
 
-async function verifyField(productId, field, status) {
+async function verifyField(productId, field, status, fieldIdx, { advance = true } = {}) {
   await api(`/products/${productId}/verify`, { method: 'POST', body: { field, status } });
+  if (advance && typeof fieldIdx === 'number') {
+    currentFieldIndex = Math.min(fieldIdx + 1, FIELDS.length - 1);
+  }
   route();
   loadCoverage();
+}
+
+// ─── Keyboard state machine (Labels review mode) ────────────────────────
+//
+//   ┌──────────────────────── FIELD_NAV (default) ──────────────────────┐
+//   │  1         → mark current field Correct, advance                  │
+//   │  2         → enter CORRECTION_INPUT for current field             │
+//   │  3         → mark current field Not-on-label, advance             │
+//   │  Tab/↓     → next field                                           │
+//   │  Shift+Tab/↑ → previous field                                     │
+//   │  →         → save + open next product (in filtered list order)    │
+//   │  ←         → previous product                                     │
+//   │  Shift+V   → bulk-verify all unreviewed fields Correct            │
+//   │              (toast + 3s Undo)                                    │
+//   │  T         → toggle Review/Train mode (placeholder; future)       │
+//   │  /         → focus product search (navigate to list if needed)    │
+//   │  ?         → show shortcut cheatsheet                             │
+//   │  Escape    → close modals / clear toast                           │
+//   └─────────────────────────────────────┬─────────────────────────────┘
+//                                         │
+//                                         │ press 2 / click Wrong
+//                                         ▼
+//   ┌──────────────────── CORRECTION_INPUT (input focused) ─────────────┐
+//   │  Escape    → cancel, field stays unverified, → FIELD_NAV          │
+//   │  Enter     → save correction, mark 'wrong', advance, → FIELD_NAV  │
+//   │  Tab       → save-and-advance (same as Enter). Chosen so the      │
+//   │              reviewer has one "I'm done" key inside inputs.       │
+//   │  1/2/3     → swallowed (treated as typed characters)              │
+//   └────────────────────────────────────────────────────────────────────┘
+
+function installKeyboardHandler() {
+  document.addEventListener('keydown', handleKeyDown);
+}
+
+function uninstallKeyboardHandler() {
+  document.removeEventListener('keydown', handleKeyDown);
+}
+
+function handleKeyDown(e) {
+  // Never intercept typing in non-correction inputs (product search, pattern
+  // editor, annotation textarea). The correction input handles its own keys
+  // via inline listeners, so we exit early if any input is focused.
+  const active = document.activeElement;
+  const inInput = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA');
+  if (inInput) return;
+  if (keyboardMode === 'CORRECTION_INPUT') return; // handled by input listeners
+
+  // Global shortcuts first (work even outside detail view)
+  if (e.key === '?') { e.preventDefault(); showCheatsheet(); return; }
+  if (e.key === '/') {
+    e.preventDefault();
+    // If not on list view, navigate there; then focus search.
+    if (!location.hash.startsWith('#/product/')) {
+      const input = document.querySelector('.search-input');
+      if (input) { input.focus(); input.select(); return; }
+    }
+    location.hash = '#/';
+    setTimeout(() => document.querySelector('.search-input')?.focus(), 0);
+    return;
+  }
+  if (e.key === 'Escape') {
+    if (undoState) { clearUndoState(); hideToast(); }
+    const modal = document.getElementById('pattern-modal');
+    if (modal && !modal.classList.contains('hidden')) { closePatternModal(); return; }
+    const sheet = document.getElementById('cheatsheet');
+    if (sheet && !sheet.classList.contains('hidden')) { sheet.classList.add('hidden'); return; }
+    return;
+  }
+
+  // Product-detail-only shortcuts
+  if (!currentDetail) return;
+
+  if (e.key === '1') { e.preventDefault(); verifyCurrentField('correct'); return; }
+  if (e.key === '2') { e.preventDefault(); openCorrectionInput(currentFieldIndex); return; }
+  if (e.key === '3') { e.preventDefault(); verifyCurrentField('absent'); return; }
+
+  if (e.key === 'Tab' || e.key === 'ArrowDown') {
+    e.preventDefault();
+    const dir = e.shiftKey && e.key === 'Tab' ? -1 : 1;
+    setCurrentField(currentFieldIndex + dir);
+    return;
+  }
+  if (e.key === 'ArrowUp') { e.preventDefault(); setCurrentField(currentFieldIndex - 1); return; }
+
+  if (e.key === 'ArrowRight') { e.preventDefault(); gotoProduct(1); return; }
+  if (e.key === 'ArrowLeft')  { e.preventDefault(); gotoProduct(-1); return; }
+
+  if (e.key === 'V' && e.shiftKey) { e.preventDefault(); bulkVerifyUnreviewed(); return; }
+  // 'T' (Train mode toggle) — placeholder until Train mode lands.
+  if (e.key === 't' || e.key === 'T') {
+    if (e.shiftKey) return; // reserve Shift+T for future
+    // no-op for now; keep keybinding reserved
+    return;
+  }
+}
+
+function verifyCurrentField(status) {
+  if (!currentDetail) return;
+  const field = FIELDS[currentFieldIndex];
+  if (!field) return;
+  verifyField(currentDetail.id, field.key, status, currentFieldIndex);
+}
+
+function setCurrentField(idx) {
+  if (idx < 0) idx = 0;
+  if (idx >= FIELDS.length) idx = FIELDS.length - 1;
+  currentFieldIndex = idx;
+  // Update highlight without re-rendering everything.
+  document.querySelectorAll('.field-card').forEach(card => {
+    const cardIdx = Number(card.getAttribute('data-field-index'));
+    card.classList.toggle('field-focused', cardIdx === idx);
+    if (cardIdx === idx) card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  });
+}
+
+function gotoProduct(direction) {
+  if (!currentDetail || productOrder.length === 0) return;
+  const currentIdx = productOrder.indexOf(currentDetail.id);
+  if (currentIdx === -1) return;
+  const newIdx = currentIdx + direction;
+  if (newIdx < 0 || newIdx >= productOrder.length) return;
+  location.hash = `#/product/${productOrder[newIdx]}`;
+}
+
+// ─── Inline correction input ────────────────────────────────────────────
+
+function openCorrectionInput(fieldIdx) {
+  if (!currentDetail) return;
+  setCurrentField(fieldIdx);
+  const field = FIELDS[fieldIdx];
+  const card = document.querySelector(`.field-card[data-field-index="${fieldIdx}"]`);
+  if (!card) return;
+  const wrap = card.querySelector('.correction-wrap');
+  if (!wrap) return;
+
+  wrap.classList.remove('hidden');
+  wrap.replaceChildren();
+  const input = el('input', {
+    type: 'text',
+    className: 'correction-input',
+    placeholder: `Correct value for "${field.label}" — Enter to save, Esc to cancel`,
+  });
+  wrap.appendChild(input);
+
+  keyboardMode = 'CORRECTION_INPUT';
+
+  const commit = async () => {
+    const value = input.value.trim();
+    if (!value) return cancel();
+    // Flip mode first so the impending blur (from re-render) doesn't re-cancel.
+    keyboardMode = 'FIELD_NAV';
+    await api(`/products/${currentDetail.id}/correct`, {
+      method: 'POST',
+      body: { field: field.key, correct_value: value },
+    });
+    await verifyField(currentDetail.id, field.key, 'wrong', fieldIdx);
+  };
+
+  const cancel = () => {
+    wrap.classList.add('hidden');
+    wrap.replaceChildren();
+    keyboardMode = 'FIELD_NAV';
+  };
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); cancel(); }
+    else if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); commit(); }
+  });
+  input.addEventListener('blur', () => {
+    // If user clicks elsewhere without Enter/Escape, treat as cancel.
+    if (keyboardMode === 'CORRECTION_INPUT') cancel();
+  });
+
+  setTimeout(() => input.focus(), 0);
+}
+
+// ─── Bulk-verify with Undo ──────────────────────────────────────────────
+
+async function bulkVerifyUnreviewed() {
+  if (!currentDetail) return;
+  const unreviewed = FIELDS
+    .map(f => f.key)
+    .filter(k => !currentDetail.verified[k]);
+  if (unreviewed.length === 0) {
+    showToast('All fields already reviewed', null);
+    return;
+  }
+  const res = await api(`/products/${currentDetail.id}/verify/bulk`, {
+    method: 'POST',
+    body: { fields: unreviewed, status: 'correct' },
+  });
+  const applied = res.applied || unreviewed;
+  undoState = {
+    productId: currentDetail.id,
+    fields: applied,
+    timerId: setTimeout(clearUndoState, 3000),
+  };
+  showToast(`Marked ${applied.length} fields Correct`, () => undoBulkVerify());
+  route();
+  loadCoverage();
+}
+
+async function undoBulkVerify() {
+  if (!undoState) return;
+  const { productId, fields } = undoState;
+  clearUndoState();
+  await api(`/products/${productId}/verify/unverify`, {
+    method: 'POST',
+    body: { fields },
+  });
+  hideToast();
+  route();
+  loadCoverage();
+}
+
+function clearUndoState() {
+  if (undoState?.timerId) clearTimeout(undoState.timerId);
+  undoState = null;
+}
+
+// ─── Toast ──────────────────────────────────────────────────────────────
+
+function showToast(msg, undoCallback) {
+  let toast = document.getElementById('toast');
+  if (!toast) {
+    toast = el('div', { id: 'toast', className: 'toast hidden' });
+    document.body.appendChild(toast);
+  }
+  toast.replaceChildren();
+  toast.appendChild(el('span', {}, msg));
+  if (undoCallback) {
+    const btn = el('button', { className: 'toast-undo' }, 'Undo');
+    btn.onclick = undoCallback;
+    toast.appendChild(btn);
+  }
+  toast.classList.remove('hidden');
+  clearTimeout(toast._hideTimer);
+  toast._hideTimer = setTimeout(() => toast.classList.add('hidden'), 3000);
+}
+
+function hideToast() {
+  const toast = document.getElementById('toast');
+  if (toast) toast.classList.add('hidden');
+}
+
+// ─── Cheatsheet ─────────────────────────────────────────────────────────
+
+function showCheatsheet() {
+  let sheet = document.getElementById('cheatsheet');
+  if (!sheet) {
+    sheet = el('div', { id: 'cheatsheet', className: 'modal' });
+    const content = el('div', { className: 'modal-content' });
+    const header = el('div', { className: 'modal-header' });
+    header.appendChild(el('h3', {}, 'Keyboard shortcuts'));
+    const close = el('button', { className: 'modal-close' }, '\u00d7');
+    close.onclick = () => sheet.classList.add('hidden');
+    header.appendChild(close);
+    content.appendChild(header);
+    const body = el('div', {});
+    const rows = [
+      ['1', 'Mark current field Correct'],
+      ['2', 'Enter correction for current field'],
+      ['3', 'Mark current field Not on label'],
+      ['Tab / \u2193', 'Next field'],
+      ['Shift+Tab / \u2191', 'Previous field'],
+      ['\u2192', 'Next product'],
+      ['\u2190', 'Previous product'],
+      ['Shift+V', 'Mark all unreviewed fields Correct (3s Undo)'],
+      ['/', 'Focus product search'],
+      ['?', 'Show this cheatsheet'],
+      ['Esc', 'Close modal / cancel correction'],
+    ];
+    const table = el('table', { className: 'cheatsheet-table' });
+    for (const [k, desc] of rows) {
+      const tr = el('tr', {});
+      tr.appendChild(el('td', {}, el('kbd', {}, k)));
+      tr.appendChild(el('td', {}, desc));
+      table.appendChild(tr);
+    }
+    body.appendChild(table);
+    content.appendChild(body);
+    sheet.appendChild(content);
+    document.body.appendChild(sheet);
+  }
+  sheet.classList.remove('hidden');
 }
 
 async function annotateManual(productId, field) {
