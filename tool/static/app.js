@@ -89,11 +89,16 @@ function route() {
     renderCoverage(app);
   } else if (hash === '#/patterns') {
     renderPatterns(app);
+  } else if (hash === '#/acvm') {
+    renderAcvmReview(app);
   } else {
     renderProductList(app);
   }
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-  const r = hash === '#/coverage' ? 'coverage' : hash === '#/patterns' ? 'patterns' : 'list';
+  const r = hash === '#/coverage' ? 'coverage'
+    : hash === '#/patterns' ? 'patterns'
+    : hash === '#/acvm' ? 'acvm'
+    : 'list';
   document.querySelector(`[data-route="${r}"]`)?.classList.add('active');
 }
 
@@ -893,5 +898,162 @@ async function renderPatterns(container) {
     setContent(container, wrapper);
   } catch (e) {
     setContent(container, el('p', { style: { color: 'var(--red)' } }, 'Error: ' + e.message));
+  }
+}
+
+// ─── ACVM Match Review ──────────────────────────────────────────────────
+// Lists catalogue products without a matched P-number (plus any currently
+// under an override) and lets the user force a specific P-number or block
+// the product from fuzzy matching. Writes to acvm_overrides.json — takes
+// effect on the next run of the `acvm` pipeline stage.
+
+let acvmData = null;
+
+async function renderAcvmReview(container) {
+  setContent(container, el('p', {}, 'Loading ACVM data...'));
+  let data;
+  try { data = await api('/acvm/unmatched'); }
+  catch (e) { setContent(container, el('p', { style: { color: 'var(--red)' } }, 'Error: ' + e.message)); return; }
+  acvmData = data;
+
+  if (!data.available) {
+    setContent(container, el('div', {},
+      el('h2', {}, 'ACVM Match Review'),
+      el('p', { style: { marginTop: '12px' } },
+        'ACVM register not loaded. Run the ACVM pipeline stage to fetch it:'),
+      el('pre', { style: { background: 'var(--grey-100)', padding: '12px', marginTop: '8px' } },
+        'python scripts/run_pipeline.py --stages acvm')));
+    return;
+  }
+
+  const wrapper = el('div', {});
+  const header = el('div', { className: 'product-list-header' });
+  header.appendChild(el('h2', {}, 'ACVM Match Review'));
+  header.appendChild(el('div', { className: 'acvm-sub' },
+    `${data.total_unmatched} unmatched of ${data.total_products} products. ` +
+    `Changes take effect next time you run the ACVM pipeline stage.`));
+  wrapper.appendChild(header);
+
+  // Split into three groups for clarity.
+  const groups = { unmatched: [], forced: [], blocked: [] };
+  for (const u of data.unmatched) {
+    if (u.override?.type === 'force') groups.forced.push(u);
+    else if (u.override?.type === 'block') groups.blocked.push(u);
+    else groups.unmatched.push(u);
+  }
+
+  if (groups.unmatched.length) {
+    wrapper.appendChild(el('h3', { className: 'acvm-group-title' },
+      `Needs review (${groups.unmatched.length})`));
+    for (const u of groups.unmatched) wrapper.appendChild(renderAcvmRow(u));
+  }
+  if (groups.forced.length) {
+    wrapper.appendChild(el('h3', { className: 'acvm-group-title' },
+      `Forced matches (${groups.forced.length})`));
+    for (const u of groups.forced) wrapper.appendChild(renderAcvmRow(u));
+  }
+  if (groups.blocked.length) {
+    wrapper.appendChild(el('h3', { className: 'acvm-group-title' },
+      `Blocked (${groups.blocked.length})`));
+    for (const u of groups.blocked) wrapper.appendChild(renderAcvmRow(u));
+  }
+  if (data.unmatched.length === 0) {
+    wrapper.appendChild(el('p', { style: { marginTop: '24px', color: 'var(--grey-500)' } },
+      'All products matched. Nothing to review.'));
+  }
+
+  setContent(container, wrapper);
+}
+
+function renderAcvmRow(u) {
+  const row = el('div', { className: 'acvm-row', 'data-slug': u.slug });
+
+  // Header
+  const head = el('div', { className: 'acvm-row-head' });
+  head.appendChild(el('div', { className: 'acvm-name' }, u.name));
+  head.appendChild(el('div', { className: 'acvm-section' }, u.section));
+  if (u.override) {
+    const badge = u.override.type === 'force'
+      ? el('span', { className: 'badge badge-high' }, `Forced: ${u.override.p_number}`)
+      : el('span', { className: 'badge badge-medium' }, 'Blocked');
+    head.appendChild(badge);
+  }
+  row.appendChild(head);
+
+  // Current override detail + clear button
+  if (u.override) {
+    const ovDiv = el('div', { className: 'acvm-override-info' });
+    if (u.override.type === 'force') {
+      ovDiv.appendChild(el('span', {}, `Forced to match: ${u.override.trade_name || '(unknown)'} (${u.override.p_number})`));
+    } else {
+      ovDiv.appendChild(el('span', {}, `Reason: ${u.override.reason}`));
+    }
+    const clearBtn = el('button', { className: 'btn' }, 'Clear override');
+    clearBtn.onclick = () => applyOverride(u.slug, { action: 'clear' });
+    ovDiv.appendChild(clearBtn);
+    row.appendChild(ovDiv);
+  }
+
+  // Suggestions table
+  if (u.suggestions.length) {
+    const sug = el('div', { className: 'acvm-suggestions' });
+    sug.appendChild(el('div', { className: 'acvm-suggestions-title' }, 'Fuzzy-match suggestions:'));
+    for (const s of u.suggestions) {
+      const srow = el('div', { className: 'acvm-suggestion' });
+      const info = el('div', { className: 'acvm-suggestion-info' });
+      info.appendChild(el('span', { className: 'acvm-score' }, `${s.score}%`));
+      info.appendChild(el('span', { className: 'acvm-suggestion-name' }, s.trade_name));
+      info.appendChild(el('span', { className: 'acvm-meta' },
+        `${s.p_number} · ${s.product_type} · ${s.registrant}`));
+      srow.appendChild(info);
+      const forceBtn = el('button', { className: 'btn btn-primary' }, 'Force match');
+      forceBtn.onclick = () => applyOverride(u.slug, { action: 'force', p_number: s.p_number });
+      srow.appendChild(forceBtn);
+      sug.appendChild(srow);
+    }
+    row.appendChild(sug);
+  }
+
+  // Manual P-number entry
+  const manual = el('div', { className: 'acvm-manual' });
+  manual.appendChild(el('span', { className: 'acvm-manual-label' }, 'Or enter a P-number manually:'));
+  const pInput = el('input', { type: 'text', className: 'acvm-pnum-input', placeholder: 'P0xxxxx', maxlength: '8' });
+  const applyBtn = el('button', { className: 'btn' }, 'Apply');
+  applyBtn.onclick = async () => {
+    const p = pInput.value.trim().toUpperCase();
+    if (!p) return;
+    try {
+      await api(`/acvm/product/${p}`);
+      await applyOverride(u.slug, { action: 'force', p_number: p });
+    } catch (e) {
+      alert(`${p} is not in the ACVM register`);
+    }
+  };
+  manual.append(pInput, applyBtn);
+  row.appendChild(manual);
+
+  // Block action (only shown when not already blocked)
+  if (u.override?.type !== 'block') {
+    const blockWrap = el('div', { className: 'acvm-block' });
+    const blockBtn = el('button', { className: 'btn btn-wrong' }, 'Block this product');
+    blockBtn.onclick = async () => {
+      const reason = prompt(`Why block "${u.name}" from ACVM matching?\n(e.g. "Withdrawn from register" — saved to acvm_overrides.json)`);
+      if (reason === null || reason.trim() === '') return;
+      await applyOverride(u.slug, { action: 'block', reason: reason.trim() });
+    };
+    blockWrap.appendChild(blockBtn);
+    row.appendChild(blockWrap);
+  }
+
+  return row;
+}
+
+async function applyOverride(slug, body) {
+  try {
+    await api('/acvm/override', { method: 'POST', body: { slug, ...body } });
+    showToast(`Override saved for ${slug}`, null);
+    renderAcvmReview(document.getElementById('app'));
+  } catch (e) {
+    alert('Failed: ' + e.message);
   }
 }

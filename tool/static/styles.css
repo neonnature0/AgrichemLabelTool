@@ -475,3 +475,114 @@ kbd {
   background: var(--gold);
   transition: width 300ms ease;
 }
+
+/* ─── ACVM Review ───────────────────────────────────────────────────── */
+
+.acvm-sub {
+  color: var(--charcoal-light);
+  font-size: 13px;
+  margin-top: 4px;
+}
+.acvm-group-title {
+  margin-top: 24px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--forest);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.acvm-row {
+  background: var(--white);
+  border: 1px solid var(--grey-300);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.acvm-row-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.acvm-name {
+  font-weight: 600;
+  font-size: 15px;
+  flex: 0 0 auto;
+}
+.acvm-section {
+  color: var(--grey-500);
+  font-size: 12px;
+  flex: 1;
+}
+.acvm-override-info {
+  background: var(--grey-100);
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+.acvm-suggestions {
+  margin-top: 8px;
+}
+.acvm-suggestions-title {
+  font-size: 12px;
+  color: var(--grey-500);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.acvm-suggestion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 8px;
+  border-top: 1px solid var(--grey-200);
+}
+.acvm-suggestion-info {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+.acvm-score {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gold);
+  min-width: 42px;
+  text-align: right;
+}
+.acvm-suggestion-name {
+  font-weight: 500;
+}
+.acvm-meta {
+  color: var(--grey-500);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.acvm-manual {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--grey-200);
+  font-size: 13px;
+}
+.acvm-manual-label { color: var(--grey-500); }
+.acvm-pnum-input {
+  font-family: var(--mono);
+  padding: 4px 8px;
+  border: 1px solid var(--grey-300);
+  font-size: 13px;
+  width: 110px;
+}
+.acvm-block {
+  margin-top: 10px;
+}

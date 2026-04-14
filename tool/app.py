@@ -44,6 +44,7 @@ VERIFIED_PATH = CORRECTIONS_DIR / "verified.json"
 CORRECTIONS_PATH = CORRECTIONS_DIR / "corrections.json"
 ANNOTATIONS_PATH = CORRECTIONS_DIR / "annotations.json"
 LEARNED_PATTERNS_PATH = CORRECTIONS_DIR / "learned_patterns.json"
+ACVM_OVERRIDES_PATH = CORRECTIONS_DIR / "acvm_overrides.json"
 TEXT_CACHE = CORRECTIONS_DIR / "label_texts_cache.json"
 EXTRACTION_CACHE = CORRECTIONS_DIR / "extraction_cache.json"
 
@@ -68,6 +69,12 @@ product_reg_map: dict[str, str] = {}
 # thread + the status endpoint. The module-level dict is mutated in-place;
 # the GIL keeps individual field reads/writes atomic, which is enough for
 # this single-user tool.
+# ACVM register (loaded on startup from cached CSV, used for match suggestions).
+# Keyed by trade name and by P-number for O(1) lookups.
+acvm_by_name: dict = {}
+acvm_by_reg: dict = {}
+acvm_overrides: dict = {"block": {}, "force": {}}
+
 bootstrap_state: dict = {
     "phase": "idle",           # "idle" | "extracting_text" | "extracting_fields" | "saving" | "done" | "error"
     "running": False,
@@ -142,8 +149,44 @@ def startup():
     corrections.update(_load_json(CORRECTIONS_PATH))
     annotations.update(_load_json(ANNOTATIONS_PATH))
     learned_patterns.update(_load_json(LEARNED_PATTERNS_PATH))
+
+    # Load ACVM register (from 30-day CSV cache) + overrides.
+    _load_acvm_register()
+    _load_acvm_overrides()
+
     logger.info("Startup complete. Pending extractions: %d/%d",
                 len(label_paths) - len(extractions), len(label_paths))
+
+
+def _load_acvm_register():
+    """Parse the cached ACVM CSV into in-memory dicts for match suggestions.
+    No network call — relies on the existing 30-day cache populated by the
+    pipeline's `acvm` stage. If the cache is missing, ACVM review is disabled
+    and the endpoints return empty results."""
+    from src.parsers.acvm_csv import load_acvm_csv
+    try:
+        products_by_name = load_acvm_csv()
+        acvm_by_name.update(products_by_name)
+        for p in products_by_name.values():
+            acvm_by_reg[p.registration_no] = p
+        logger.info("Loaded %d ACVM products into memory", len(acvm_by_name))
+    except Exception as e:
+        logger.warning("Could not load ACVM register: %s", e)
+
+
+def _load_acvm_overrides():
+    data = _load_json(ACVM_OVERRIDES_PATH)
+    acvm_overrides["block"] = data.get("block", {}) if isinstance(data, dict) else {}
+    acvm_overrides["force"] = data.get("force", {}) if isinstance(data, dict) else {}
+
+
+def _save_acvm_overrides():
+    payload = {
+        "_comment": "Manual overrides for ACVM matching. 'block' prevents false fuzzy matches. 'force' assigns a specific P-number.",
+        "block": acvm_overrides["block"],
+        "force": acvm_overrides["force"],
+    }
+    _save_json(ACVM_OVERRIDES_PATH, payload)
 
 
 def _build_label_paths():
@@ -618,6 +661,158 @@ def approve_pattern(req: PatternApproveRequest):
 @app.get("/api/patterns")
 def list_patterns():
     return learned_patterns
+
+
+# ---------------------------------------------------------------------------
+# ACVM match review
+# ---------------------------------------------------------------------------
+def _acvm_product_summary(p) -> dict:
+    """Shape an AcvmProduct for the GUI."""
+    return {
+        "p_number": p.registration_no,
+        "trade_name": p.trade_name,
+        "product_type": p.product_type,
+        "registrant": p.registrant,
+        "registration_date": p.registration_date,
+        "ingredients": [
+            {"name": ing.name, "content": ing.content, "unit": ing.unit}
+            for ing in p.ingredients
+        ],
+    }
+
+
+def _current_override_for(slug: str) -> dict | None:
+    if slug in acvm_overrides["force"]:
+        p_num = acvm_overrides["force"][slug]
+        p = acvm_by_reg.get(p_num)
+        return {
+            "type": "force",
+            "p_number": p_num,
+            "trade_name": p.trade_name if p else None,
+        }
+    if slug in acvm_overrides["block"]:
+        return {"type": "block", "reason": acvm_overrides["block"][slug]}
+    return None
+
+
+@app.get("/api/acvm/unmatched")
+def acvm_unmatched():
+    """Return catalogue products with no ACVM registration, each with top-5
+    fuzzy-match suggestions. Also flags which ones are currently blocked
+    (so the user can unblock) or forced (so they can clear/change)."""
+    from rapidfuzz import fuzz, process as rf_process
+
+    if not acvm_by_name:
+        return {"available": False, "unmatched": [], "total_unmatched": 0, "total_products": len(products)}
+
+    acvm_names = list(acvm_by_name.keys())
+    unmatched: list[dict] = []
+
+    for p in products:
+        slug = p["id"]
+        has_match = bool(p.get("acvm_registration_no"))
+        override = _current_override_for(slug)
+        # Show: (a) products with no match, (b) anything with an override
+        # so the user can review and revert.
+        if has_match and override is None:
+            continue
+
+        # Build fuzzy suggestions against all ACVM trade names.
+        name = p["name"]
+        clean = re.sub(r"\s*\[.*?\]\s*", " ", name).strip()
+        raw_hits = rf_process.extract(
+            clean, acvm_names, scorer=fuzz.token_sort_ratio, limit=5
+        )
+        suggestions = []
+        for matched_name, score, _ in raw_hits:
+            acvm_p = acvm_by_name[matched_name]
+            summary = _acvm_product_summary(acvm_p)
+            summary["score"] = int(score)
+            suggestions.append(summary)
+
+        unmatched.append({
+            "slug": slug,
+            "name": name,
+            "section": p["section"],
+            "current_match": p.get("acvm_registration_no"),
+            "override": override,
+            "suggestions": suggestions,
+        })
+
+    return {
+        "available": True,
+        "unmatched": unmatched,
+        "total_unmatched": sum(1 for u in unmatched if not u["current_match"] and not u["override"]),
+        "total_products": len(products),
+    }
+
+
+@app.get("/api/acvm/overrides")
+def acvm_overrides_list():
+    """Return current override entries so the GUI can render a management tab."""
+    entries = []
+    for slug, p_num in acvm_overrides["force"].items():
+        p = acvm_by_reg.get(p_num)
+        entries.append({
+            "slug": slug,
+            "action": "force",
+            "p_number": p_num,
+            "trade_name": p.trade_name if p else None,
+            "registrant": p.registrant if p else None,
+        })
+    for slug, reason in acvm_overrides["block"].items():
+        entries.append({
+            "slug": slug,
+            "action": "block",
+            "reason": reason,
+        })
+    return {"overrides": entries}
+
+
+@app.get("/api/acvm/product/{p_number}")
+def acvm_product(p_number: str):
+    """Look up a P-number directly — used when the user types one manually."""
+    key = p_number.upper().strip()
+    p = acvm_by_reg.get(key)
+    if not p:
+        raise HTTPException(404, f"P-number {key} not in ACVM register")
+    return _acvm_product_summary(p)
+
+
+class AcvmOverrideRequest(BaseModel):
+    slug: str
+    action: str  # "force" | "block" | "clear"
+    p_number: str | None = None
+    reason: str | None = None
+
+
+@app.post("/api/acvm/override")
+def acvm_override(req: AcvmOverrideRequest):
+    """Apply an override to acvm_overrides.json. Takes effect on the next
+    run of the ACVM pipeline stage — this endpoint does not rewrite the
+    already-assembled catalogue."""
+    slug = req.slug
+    if req.action == "force":
+        if not req.p_number:
+            raise HTTPException(400, "p_number required for 'force'")
+        key = req.p_number.upper().strip()
+        if key not in acvm_by_reg:
+            raise HTTPException(400, f"{key} is not in the ACVM register")
+        acvm_overrides["force"][slug] = key
+        acvm_overrides["block"].pop(slug, None)
+    elif req.action == "block":
+        if not req.reason:
+            raise HTTPException(400, "reason required for 'block'")
+        acvm_overrides["block"][slug] = req.reason
+        acvm_overrides["force"].pop(slug, None)
+    elif req.action == "clear":
+        acvm_overrides["force"].pop(slug, None)
+        acvm_overrides["block"].pop(slug, None)
+    else:
+        raise HTTPException(400, f"Unknown action: {req.action}")
+
+    _save_acvm_overrides()
+    return {"ok": True, "override": _current_override_for(slug)}
 
 
 # ---------------------------------------------------------------------------
