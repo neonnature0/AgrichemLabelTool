@@ -620,3 +620,12 @@ kbd {
   margin-top: 12px;
   justify-content: flex-end;
 }
+
+/* Rebuild banner pulse animation */
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+.product-list-header .btn-primary {
+  margin-left: auto;
+}

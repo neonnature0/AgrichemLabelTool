@@ -931,7 +931,10 @@ async function renderAcvmReview(container) {
   header.appendChild(el('h2', {}, 'ACVM Match Review'));
   header.appendChild(el('div', { className: 'acvm-sub' },
     `${data.total_unmatched} unmatched of ${data.total_products} products. ` +
-    `Changes take effect next time you run the ACVM pipeline stage.`));
+    `Click Rebuild to apply any saved overrides.`));
+  const rebuildBtn = el('button', { className: 'btn btn-primary' }, 'Rebuild catalogue');
+  rebuildBtn.onclick = () => triggerRebuild();
+  header.appendChild(rebuildBtn);
   wrapper.appendChild(header);
 
   // Split into three groups for clarity.
@@ -1093,14 +1096,14 @@ function openSplitDialog(product) {
   body.appendChild(textarea);
 
   const btnRow = el('div', { className: 'split-btn-row' });
-  const saveBtn = el('button', { className: 'btn btn-primary' }, 'Save split');
+  const saveBtn = el('button', { className: 'btn btn-primary' }, 'Save & rebuild');
   saveBtn.onclick = async () => {
     const names = textarea.value.split('\n').map(s => s.trim()).filter(Boolean);
     if (names.length < 2) { alert('Enter at least 2 product names'); return; }
     try {
       await api('/product-splits', { method: 'POST', body: { slug: product.slug, names } });
       modal.classList.add('hidden');
-      showToast('Split saved. Run assemble + acvm stages to apply.', null);
+      triggerRebuild();
     } catch (e) { alert('Failed: ' + e.message); }
   };
   const cancelBtn = el('button', { className: 'btn' }, 'Cancel');
@@ -1121,4 +1124,75 @@ async function applyOverride(slug, body) {
   } catch (e) {
     alert('Failed: ' + e.message);
   }
+}
+
+// ─── Catalogue rebuild (apply overrides) ────────────────────────────────
+// Runs the assemble + ACVM-match stages in-process. Uses the cached ACVM
+// register — no network. Completes in ~5s. Used after saving a product
+// split or ACVM override to make the change take effect without CLI.
+
+let rebuildPoller = null;
+
+async function triggerRebuild() {
+  try {
+    const res = await api('/catalogue/rebuild', { method: 'POST' });
+    if (!res.ok) {
+      alert(`Rebuild not started: ${res.reason}`);
+      return;
+    }
+    startRebuildPolling();
+  } catch (e) { alert('Rebuild failed to start: ' + e.message); }
+}
+
+function startRebuildPolling() {
+  if (rebuildPoller) return;
+  showRebuildBanner({ running: true, phase: 'assembling', message: 'Starting rebuild...' });
+  rebuildPoller = setInterval(async () => {
+    try {
+      const status = await api('/catalogue/rebuild/status');
+      showRebuildBanner(status);
+      if (!status.running) {
+        clearInterval(rebuildPoller);
+        rebuildPoller = null;
+        if (status.phase === 'done') {
+          setTimeout(() => {
+            hideRebuildBanner();
+            // Refresh whichever page is open — the catalogue is new.
+            route();
+            loadCoverage();
+            showToast(status.message || 'Catalogue rebuilt', null);
+          }, 800);
+        }
+      }
+    } catch (e) { /* retry */ }
+  }, 600);
+}
+
+function showRebuildBanner(status) {
+  let banner = document.getElementById('rebuild-banner');
+  if (!banner) {
+    banner = el('div', { id: 'rebuild-banner', className: 'bootstrap-banner' });
+    document.body.insertBefore(banner, document.getElementById('app'));
+  }
+  banner.replaceChildren();
+  if (status.running) {
+    banner.appendChild(el('div', { className: 'bootstrap-title' },
+      status.message || 'Rebuilding catalogue...'));
+    banner.appendChild(el('div', { className: 'bootstrap-sub' },
+      `Phase: ${status.phase}`));
+    const bar = el('div', { className: 'bootstrap-bar' });
+    bar.appendChild(el('div', { className: 'bootstrap-fill', style: { width: '100%', animation: 'pulse 1.2s ease-in-out infinite' } }));
+    banner.appendChild(bar);
+  } else if (status.phase === 'error') {
+    banner.appendChild(el('div', { className: 'bootstrap-title bootstrap-error' }, 'Rebuild failed'));
+    banner.appendChild(el('div', { className: 'bootstrap-sub' }, status.error || 'Unknown error'));
+    const btn = el('button', { className: 'btn btn-primary' }, 'Dismiss');
+    btn.onclick = hideRebuildBanner;
+    banner.appendChild(btn);
+  }
+}
+
+function hideRebuildBanner() {
+  const banner = document.getElementById('rebuild-banner');
+  if (banner) banner.remove();
 }

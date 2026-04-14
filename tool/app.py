@@ -76,6 +76,15 @@ acvm_by_name: dict = {}
 acvm_by_reg: dict = {}
 acvm_overrides: dict = {"block": {}, "force": {}}
 
+rebuild_state: dict = {
+    "phase": "idle",           # "idle" | "assembling" | "matching" | "done" | "error"
+    "running": False,
+    "message": "",
+    "error": None,
+    "started_at": None,
+    "finished_at": None,
+}
+
 bootstrap_state: dict = {
     "phase": "idle",           # "idle" | "extracting_text" | "extracting_fields" | "saving" | "done" | "error"
     "running": False,
@@ -108,20 +117,8 @@ def startup():
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
     logger.info("Loading catalogue and manifest (fast startup)...")
 
-    # Load catalogue
-    if CATALOGUE_PATH.exists():
-        import orjson
-        cat = orjson.loads(CATALOGUE_PATH.read_bytes())
-        products.clear()
-        for tp in cat.get("trade_products", []):
-            products.append({
-                "id": tp["id"],
-                "name": tp["name"],
-                "section": tp["section"],
-                "acvm_registration_no": tp.get("acvm_registration_no"),
-            })
-            if tp.get("acvm_registration_no"):
-                product_reg_map[tp["id"]] = tp["acvm_registration_no"]
+    # Load catalogue into in-memory state.
+    _load_catalogue_into_memory()
 
     # Load manifest
     if MANIFEST_PATH.exists():
@@ -188,6 +185,166 @@ def _save_acvm_overrides():
         "force": acvm_overrides["force"],
     }
     _save_json(ACVM_OVERRIDES_PATH, payload)
+
+
+def _run_rebuild():
+    """Re-run assemble + ACVM match against already-parsed staging data.
+    Uses the cached ACVM CSV — no network. Takes ~5 seconds. Reloads the
+    in-memory catalogue state so endpoints reflect the new data."""
+    import json as _json
+    import orjson
+
+    try:
+        with _bootstrap_lock:  # reuse the same lock to serialise all heavy work
+            if rebuild_state["running"] or bootstrap_state["running"]:
+                return
+            rebuild_state.update({
+                "running": True,
+                "phase": "assembling",
+                "message": "Loading staging data...",
+                "error": None,
+                "started_at": _now_iso(),
+                "finished_at": None,
+            })
+
+        # 1) Load raw_*.json from staging
+        from src.assembler import assemble_catalogue
+        import src.assembler as _asm
+        from src.config import OUTPUT_DIR, STAGING_DIR
+        from src.parsers.phi_table import PhiTableResult, PhiTableRow
+        from src.parsers.rm_table import RmTableResult, RmTableRow
+        from src.parsers.changes_table import ChangesTableResult, ChangesTableRow
+        from src.parsers.flagged_table import FlaggedTableResult, FlaggedTableRow
+
+        staging = {
+            "phi": STAGING_DIR / "raw_phi_table.json",
+            "rm": STAGING_DIR / "raw_rm_table.json",
+            "changes": STAGING_DIR / "raw_changes_table.json",
+            "flagged": STAGING_DIR / "raw_flagged_table.json",
+        }
+        if not staging["phi"].exists():
+            raise RuntimeError(
+                "No parsed schedule found in data/staging/. Run the 'parse' stage from the CLI first."
+            )
+
+        phi_rows = [PhiTableRow(**r) for r in _json.loads(staging["phi"].read_text(encoding="utf-8"))]
+        phi_result = PhiTableResult(rows=phi_rows, warnings=[], pages_processed=0)
+        rm_result = None
+        changes_result = None
+        flagged_result = None
+        if staging["rm"].exists():
+            rm_rows = [RmTableRow(**r) for r in _json.loads(staging["rm"].read_text(encoding="utf-8"))]
+            rm_result = RmTableResult(rows=rm_rows, warnings=[], pages_processed=0)
+        if staging["changes"].exists():
+            ch_rows = [ChangesTableRow(**r) for r in _json.loads(staging["changes"].read_text(encoding="utf-8"))]
+            changes_result = ChangesTableResult(rows=ch_rows, warnings=[], pages_processed=0)
+        if staging["flagged"].exists():
+            fl_rows = [FlaggedTableRow(**r) for r in _json.loads(staging["flagged"].read_text(encoding="utf-8"))]
+            flagged_result = FlaggedTableResult(rows=fl_rows, warnings=[], pages_processed=0)
+
+        # Bust the assembler's splits cache so freshly-saved overrides apply.
+        _asm._product_splits_cache = None
+
+        # 2) Assemble
+        rebuild_state["message"] = "Assembling catalogue..."
+        # Read the existing catalogue's metadata so we preserve season + source_hash.
+        if CATALOGUE_PATH.exists():
+            old = orjson.loads(CATALOGUE_PATH.read_bytes())
+            season = old.get("season", "unknown")
+            source_pdf = old.get("source_pdf", "")
+            source_hash = old.get("source_hash", "")
+        else:
+            season, source_pdf, source_hash = "unknown", "", ""
+
+        catalogue = assemble_catalogue(
+            phi_result, rm_result, changes_result, flagged_result,
+            season=season, source_pdf=source_pdf, source_hash=source_hash,
+        )
+
+        # 3) Match against ACVM + enrich
+        rebuild_state["phase"] = "matching"
+        rebuild_state["message"] = "Matching against ACVM register..."
+        from src.stages.match_acvm import match_products
+        from src.stages.enrich_acvm import enrich_catalogue_with_acvm
+        match_result = match_products(catalogue.trade_products, acvm_by_name)
+        enriched = enrich_catalogue_with_acvm(catalogue, match_result)
+
+        # 4) Write catalogue + extracts
+        rebuild_state["message"] = "Writing catalogue..."
+        out_dir = OUTPUT_DIR / season if season != "unknown" else CATALOGUE_PATH.parent
+        out_dir.mkdir(parents=True, exist_ok=True)
+        catalogue_bytes = orjson.dumps(
+            enriched.model_dump(),
+            option=orjson.OPT_INDENT_2 | orjson.OPT_SORT_KEYS,
+        )
+        CATALOGUE_PATH.write_bytes(catalogue_bytes)
+
+        # Rewrite the same 4 extracts the CLI writes, to keep them in sync.
+        def _write_extract(path: Path, items):
+            path.write_bytes(orjson.dumps(
+                [i.model_dump() for i in items],
+                option=orjson.OPT_INDENT_2 | orjson.OPT_SORT_KEYS,
+            ))
+        _write_extract(out_dir / "active_ingredients.json", enriched.active_ingredients)
+        _write_extract(out_dir / "trade_products.json", enriched.trade_products)
+        _write_extract(out_dir / "phi_matrix.json", enriched.phi_entries)
+        _write_extract(out_dir / "rm_rules.json", enriched.resistance_management_rules)
+
+        # 5) Refresh the tool's in-memory state
+        _load_catalogue_into_memory()
+
+        rebuild_state["phase"] = "done"
+        rebuild_state["message"] = (
+            f"Rebuilt: {len(enriched.trade_products)} products, "
+            f"{len(match_result.matches)} ACVM-matched"
+        )
+        logger.info("Rebuild complete: %s", rebuild_state["message"])
+    except Exception as e:
+        logger.exception("Rebuild failed")
+        rebuild_state["phase"] = "error"
+        rebuild_state["error"] = str(e)
+    finally:
+        rebuild_state["running"] = False
+        rebuild_state["finished_at"] = _now_iso()
+
+
+@app.get("/api/catalogue/rebuild/status")
+def rebuild_status():
+    return dict(rebuild_state)
+
+
+@app.post("/api/catalogue/rebuild")
+def rebuild_catalogue():
+    """Re-run assemble + ACVM match in the background. Uses cached ACVM
+    CSV — no network. Call this after saving product-split or ACVM-override
+    changes so they take effect without a CLI run."""
+    if rebuild_state["running"]:
+        return {"ok": False, "reason": "already_running"}
+    if bootstrap_state["running"]:
+        return {"ok": False, "reason": "bootstrap_running"}
+    thread = threading.Thread(target=_run_rebuild, daemon=True)
+    thread.start()
+    return {"ok": True}
+
+
+def _load_catalogue_into_memory():
+    """Parse catalogue.json and populate the `products` list + `product_reg_map`.
+    Used at startup and after a rebuild."""
+    products.clear()
+    product_reg_map.clear()
+    if not CATALOGUE_PATH.exists():
+        return
+    import orjson
+    cat = orjson.loads(CATALOGUE_PATH.read_bytes())
+    for tp in cat.get("trade_products", []):
+        products.append({
+            "id": tp["id"],
+            "name": tp["name"],
+            "section": tp["section"],
+            "acvm_registration_no": tp.get("acvm_registration_no"),
+        })
+        if tp.get("acvm_registration_no"):
+            product_reg_map[tp["id"]] = tp["acvm_registration_no"]
 
 
 def _build_label_paths():
