@@ -1,0 +1,7 @@
+{
+  "_comment": "Trade-name split overrides. When the PDF parser concatenates two products from the same cell (e.g. separated by a line break instead of a semicolon), add an entry here. The key is the mashed-together product's current slug (hyphens, not underscores); the value is an array of the correct separate trade names.",
+  "knock-out-extra-agstar-lion-490dst-nufarm": [
+    "Knock out Extra [AgStar]",
+    "Lion 490DST [Nufarm]"
+  ]
+}

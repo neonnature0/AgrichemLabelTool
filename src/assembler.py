@@ -12,9 +12,11 @@ Responsibilities:
 
 from __future__ import annotations
 
+import json
 import logging
 import re
 from datetime import datetime, timezone
+from pathlib import Path
 
 from src.config import ALL_MARKET_CODES, PARSER_VERSION
 from src.models import (
@@ -56,16 +58,51 @@ def _clean_trade_name(raw: str) -> str:
     return text
 
 
+_PRODUCT_SPLITS_PATH = (
+    Path(__file__).resolve().parent.parent / "data" / "corrections" / "product_splits.json"
+)
+_product_splits_cache: dict[str, list[str]] | None = None
+
+
+def _load_product_splits() -> dict[str, list[str]]:
+    """Load trade-name split overrides (keyed by slug of the mashed-together
+    product). Lets us fix PDF-parser artefacts where two products end up in
+    one cell without a semicolon between them. Cached per process."""
+    global _product_splits_cache
+    if _product_splits_cache is None:
+        if _PRODUCT_SPLITS_PATH.exists():
+            try:
+                data = json.loads(_PRODUCT_SPLITS_PATH.read_text(encoding="utf-8"))
+                _product_splits_cache = {
+                    k: v for k, v in data.items()
+                    if not k.startswith("_") and isinstance(v, list)
+                }
+            except Exception as e:
+                logger.warning("Failed to load product_splits.json: %s", e)
+                _product_splits_cache = {}
+        else:
+            _product_splits_cache = {}
+    return _product_splits_cache
+
+
 def _split_trade_names(raw: str) -> list[str]:
-    """Split semicolon-separated trade names and clean each one."""
+    """Split semicolon-separated trade names, clean each, and apply any
+    split-overrides for products the PDF parser merged into one cell."""
     # First rejoin hyphenated wraps across the whole string
     cleaned = re.sub(r"(\w)-\n(\w)", r"\1\2", raw)
     parts = cleaned.split(";")
+    splits = _load_product_splits()
     result = []
     for part in parts:
         name = part.replace("\n", " ")
         name = re.sub(r"\s+", " ", name).strip()
-        if name:
+        if not name:
+            continue
+        # Apply split-override if this name slugifies to a known entry.
+        slug = make_slug(name)
+        if slug in splits:
+            result.extend(splits[slug])
+        else:
             result.append(name)
     return result
 

@@ -586,3 +586,37 @@ kbd {
 .acvm-block {
   margin-top: 10px;
 }
+
+/* ─── Split-product dialog & row actions ────────────────────────────── */
+
+.acvm-row-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.split-note {
+  font-size: 13px;
+  color: var(--charcoal-light);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+.split-textarea {
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 10px;
+  border: 1px solid var(--grey-300);
+  resize: vertical;
+}
+.split-textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(138, 101, 45, 0.15);
+}
+.split-btn-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  justify-content: flex-end;
+}

@@ -1032,20 +1032,85 @@ function renderAcvmRow(u) {
   manual.append(pInput, applyBtn);
   row.appendChild(manual);
 
-  // Block action (only shown when not already blocked)
+  // Block + Split actions row
+  const actionsRow = el('div', { className: 'acvm-row-actions' });
   if (u.override?.type !== 'block') {
-    const blockWrap = el('div', { className: 'acvm-block' });
     const blockBtn = el('button', { className: 'btn btn-wrong' }, 'Block this product');
     blockBtn.onclick = async () => {
       const reason = prompt(`Why block "${u.name}" from ACVM matching?\n(e.g. "Withdrawn from register" — saved to acvm_overrides.json)`);
       if (reason === null || reason.trim() === '') return;
       await applyOverride(u.slug, { action: 'block', reason: reason.trim() });
     };
-    blockWrap.appendChild(blockBtn);
-    row.appendChild(blockWrap);
+    actionsRow.appendChild(blockBtn);
   }
+  const splitBtn = el('button', { className: 'btn' }, 'Split into separate products');
+  splitBtn.onclick = () => openSplitDialog(u);
+  actionsRow.appendChild(splitBtn);
+  row.appendChild(actionsRow);
 
   return row;
+}
+
+// ─── Split-product dialog ──────────────────────────────────────────────
+// When the PDF parser merges two products into one cell (two text lines
+// concatenated with a space instead of a semicolon), the user tells the
+// assembler how to split them. Writes to data/corrections/product_splits.json
+// and takes effect next time the assemble stage runs.
+
+function openSplitDialog(product) {
+  // Best-guess initial split: break at `] ` boundaries which usually separate
+  // `Name [Registrant] Name [Registrant]` patterns.
+  const parts = product.name.split(/\]\s+(?=[A-Z])/);
+  const guess = parts.map((part, i) => i < parts.length - 1 ? part + ']' : part);
+
+  let modal = document.getElementById('split-modal');
+  if (!modal) {
+    modal = el('div', { id: 'split-modal', className: 'modal' });
+    document.body.appendChild(modal);
+  }
+  modal.classList.remove('hidden');
+  modal.replaceChildren();
+
+  const content = el('div', { className: 'modal-content' });
+  const header = el('div', { className: 'modal-header' });
+  header.appendChild(el('h3', {}, 'Split product into multiple'));
+  const close = el('button', { className: 'modal-close' }, '\u00d7');
+  close.onclick = () => modal.classList.add('hidden');
+  header.appendChild(close);
+  content.appendChild(header);
+
+  const body = el('div', { style: { padding: '16px' } });
+  body.appendChild(el('p', { className: 'split-note' },
+    `The schedule PDF had "${product.name}" as a single entry, but it\u2019s actually multiple products. ` +
+    `Enter each on its own line below. Takes effect next time the assemble pipeline stage runs.`));
+
+  const textarea = el('textarea', {
+    className: 'split-textarea',
+    rows: '6',
+    placeholder: 'One product name per line\ne.g.\nKnock out Extra [AgStar]\nLion 490DST [Nufarm]',
+  });
+  textarea.value = guess.filter(Boolean).join('\n');
+  body.appendChild(textarea);
+
+  const btnRow = el('div', { className: 'split-btn-row' });
+  const saveBtn = el('button', { className: 'btn btn-primary' }, 'Save split');
+  saveBtn.onclick = async () => {
+    const names = textarea.value.split('\n').map(s => s.trim()).filter(Boolean);
+    if (names.length < 2) { alert('Enter at least 2 product names'); return; }
+    try {
+      await api('/product-splits', { method: 'POST', body: { slug: product.slug, names } });
+      modal.classList.add('hidden');
+      showToast('Split saved. Run assemble + acvm stages to apply.', null);
+    } catch (e) { alert('Failed: ' + e.message); }
+  };
+  const cancelBtn = el('button', { className: 'btn' }, 'Cancel');
+  cancelBtn.onclick = () => modal.classList.add('hidden');
+  btnRow.append(saveBtn, cancelBtn);
+  body.appendChild(btnRow);
+  content.appendChild(body);
+  modal.appendChild(content);
+
+  setTimeout(() => textarea.focus(), 0);
 }
 
 async function applyOverride(slug, body) {

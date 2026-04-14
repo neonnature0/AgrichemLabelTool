@@ -45,6 +45,7 @@ CORRECTIONS_PATH = CORRECTIONS_DIR / "corrections.json"
 ANNOTATIONS_PATH = CORRECTIONS_DIR / "annotations.json"
 LEARNED_PATTERNS_PATH = CORRECTIONS_DIR / "learned_patterns.json"
 ACVM_OVERRIDES_PATH = CORRECTIONS_DIR / "acvm_overrides.json"
+PRODUCT_SPLITS_PATH = CORRECTIONS_DIR / "product_splits.json"
 TEXT_CACHE = CORRECTIONS_DIR / "label_texts_cache.json"
 EXTRACTION_CACHE = CORRECTIONS_DIR / "extraction_cache.json"
 
@@ -813,6 +814,59 @@ def acvm_override(req: AcvmOverrideRequest):
 
     _save_acvm_overrides()
     return {"ok": True, "override": _current_override_for(slug)}
+
+
+# ---------------------------------------------------------------------------
+# Trade-name split overrides (fixes PDF parser merging two products into one)
+# ---------------------------------------------------------------------------
+def _load_product_splits_raw() -> dict:
+    """Return the full splits file contents (including _comment), for the
+    GUI to round-trip when writing."""
+    if PRODUCT_SPLITS_PATH.exists():
+        try:
+            return json.loads(PRODUCT_SPLITS_PATH.read_text(encoding="utf-8"))
+        except Exception:
+            return {}
+    return {}
+
+
+@app.get("/api/product-splits")
+def product_splits_list():
+    """Current split overrides. Each entry maps a slug → array of trade names."""
+    data = _load_product_splits_raw()
+    entries = [
+        {"slug": k, "names": v}
+        for k, v in data.items()
+        if not k.startswith("_") and isinstance(v, list)
+    ]
+    return {"splits": entries}
+
+
+class ProductSplitRequest(BaseModel):
+    slug: str
+    names: list[str] | None = None  # None or [] = delete
+
+
+@app.post("/api/product-splits")
+def product_splits_set(req: ProductSplitRequest):
+    """Save (or delete) a split entry. Takes effect next time the assemble
+    stage runs."""
+    data = _load_product_splits_raw()
+    if not req.names:
+        data.pop(req.slug, None)
+    else:
+        cleaned = [n.strip() for n in req.names if n.strip()]
+        if len(cleaned) < 2:
+            raise HTTPException(400, "A split must produce at least 2 names")
+        data[req.slug] = cleaned
+    # Preserve the _comment if it exists; add one if not.
+    if "_comment" not in data:
+        data = {
+            "_comment": "Trade-name split overrides. Key = slug of the mashed-together product; value = array of the correct separate trade names.",
+            **data,
+        }
+    _save_json(PRODUCT_SPLITS_PATH, data)
+    return {"ok": True}
 
 
 # ---------------------------------------------------------------------------

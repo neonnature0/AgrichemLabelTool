@@ -1,7 +1,29 @@
 {
   "_comment": "Manual overrides for ACVM matching. 'block' prevents false fuzzy matches. 'force' assigns a specific P-number.",
   "block": {
-    "confidor": "P009817 is Condor (fungicide), not Confidor (insecticide). Confidor withdrawn from ACVM register."
+    "confidor": "P009817 is Condor (fungicide), not Confidor (insecticide). Confidor withdrawn from ACVM register.",
+    "botran-75wp": "Withdrawn from register",
+    "liberty-200sl-agrobeats": "Not a New Zealand product",
+    "tyllanex-herbicide": "Withdrawn from register"
   },
-  "force": {}
+  "force": {
+    "entrust-sc-naturalyte-insect-control": "P009135",
+    "flick-500-sc": "P009037",
+    "hml32": "P008633",
+    "hortcare-spinosad": "P008879",
+    "ken-up-aquatic-360-kenso": "P008338",
+    "ken-up-dry-680-sg-kenso": "P008339",
+    "kencozeb-750-wg": "P009034",
+    "nordox-75wg": "P006085",
+    "maxout-540-kenso": "P008991",
+    "ohayo-500sc": "P008151",
+    "oxy-500sc": "P007996",
+    "sulphur-800-wdg": "P008992",
+    "sulphur-800-wdg-insecticides": "P008992",
+    "taekwando-250cs": "P009810",
+    "timberwolf-900-wg": "P009036",
+    "weed-weapon-natural-power": "P009599",
+    "weedoff": "P009679",
+    "capella-wg": "P009230"
+  }
 }
