@@ -826,6 +826,134 @@ def validate_catalogue():
 
 
 # ---------------------------------------------------------------------------
+# Catalogue Explorer — filterable browse of the schedule data
+# ---------------------------------------------------------------------------
+# Unlike `products` (summary list for label review), this view needs the
+# full catalogue: AIs, RM rules, PHI/REI/WHP entries, sections, markets.
+# Parsed once per request; catalogue.json is small (~3 MB).
+
+def _read_catalogue() -> dict:
+    if not CATALOGUE_PATH.exists():
+        raise HTTPException(404, "No catalogue on disk. Run the pipeline first.")
+    import orjson
+    return orjson.loads(CATALOGUE_PATH.read_bytes())
+
+
+@app.get("/api/catalogue")
+def catalogue_browse():
+    """Full catalogue for the Explorer view + filter metadata.
+    Client-side filtering is fine for ~260 products."""
+    cat = _read_catalogue()
+
+    # Slimmed product list — full detail comes from /products/{id}
+    tps = []
+    sections: set[str] = set()
+    for tp in cat.get("trade_products", []):
+        sections.add(tp["section"])
+        tps.append({
+            "id": tp["id"],
+            "name": tp["name"],
+            "section": tp["section"],
+            "active_ingredient_ids": tp.get("active_ingredient_ids", []),
+            "rm_rule_codes": tp.get("rm_rule_codes", []),
+            "acvm_registration_no": tp.get("acvm_registration_no"),
+            "registrant": tp.get("registrant"),
+            "formulation_type": tp.get("formulation_type"),
+            "has_label": tp["id"] in label_texts,
+        })
+
+    # Active ingredients with MOA info for the MOA filter
+    ais = []
+    moa_groups: set[str] = set()
+    for ai in cat.get("active_ingredients", []):
+        moa = ai.get("moa_group_name")
+        if moa:
+            moa_groups.add(moa)
+        ais.append({
+            "id": ai["id"],
+            "name": ai["name"],
+            "section": ai["section"],
+            "moa_group_name": moa,
+            "frac_code": ai.get("frac_code"),
+            "irac_code": ai.get("irac_code"),
+            "hrac_code": ai.get("hrac_code"),
+            "restriction_level": ai.get("restriction_level"),
+        })
+
+    # RM rules (lean)
+    rm_rules = []
+    for r in cat.get("resistance_management_rules", []):
+        rm_rules.append({
+            "rule_code": r["rule_code"],
+            "moa_group_name": r.get("moa_group_name"),
+            "category": r.get("category"),
+            "max_applications": r.get("max_applications"),
+            "requires_tank_mix": r.get("requires_tank_mix", False),
+        })
+
+    # Markets: distinct from PHI entries
+    markets = sorted({e["market_code"] for e in cat.get("phi_entries", [])})
+
+    return {
+        "products": tps,
+        "active_ingredients": ais,
+        "rm_rules": rm_rules,
+        "markets": markets,
+        "sections": sorted(sections),
+        "moa_groups": sorted(moa_groups),
+        "season": cat.get("season"),
+    }
+
+
+@app.get("/api/catalogue/products/{product_id}")
+def catalogue_product_detail(product_id: str):
+    """Full per-product detail: AIs, RM rules, PHI/REI/WHP by market,
+    ACVM info, label-review status."""
+    cat = _read_catalogue()
+    tp = next((p for p in cat.get("trade_products", []) if p["id"] == product_id), None)
+    if not tp:
+        raise HTTPException(404, f"Product {product_id} not in catalogue")
+
+    ai_map = {a["id"]: a for a in cat.get("active_ingredients", [])}
+    rule_map = {r["rule_code"]: r for r in cat.get("resistance_management_rules", [])}
+
+    # Join PHI/REI/WHP by product id
+    phi_by_market: dict[str, dict] = {}
+    for e in cat.get("phi_entries", []):
+        if e["trade_product_id"] == product_id:
+            phi_by_market[e["market_code"]] = e["phi"]
+    rei: dict | None = None
+    for e in cat.get("rei_entries", []):
+        if e["trade_product_id"] == product_id:
+            rei = e["rei"]
+            break
+    whp: dict[str, dict] = {}
+    for e in cat.get("whp_entries", []):
+        if e["trade_product_id"] == product_id:
+            whp[e["whp_type"]] = e["whp"]
+
+    # Extraction / review status (from the in-memory maps)
+    ext = extractions.get(product_id, {})
+    ver = verified.get(product_id, {})
+    label_status = {
+        "has_label": product_id in label_texts,
+        "extraction_confidence": ext.get("extraction_confidence", "none"),
+        "fields_reviewed": len(ver),
+        "total_fields": 17,
+    }
+
+    return {
+        "product": tp,
+        "active_ingredients": [ai_map[aid] for aid in tp.get("active_ingredient_ids", []) if aid in ai_map],
+        "rm_rules": [rule_map[c] for c in tp.get("rm_rule_codes", []) or [] if c in rule_map],
+        "phi_by_market": phi_by_market,
+        "rei": rei,
+        "whp": whp,
+        "label_status": label_status,
+    }
+
+
+# ---------------------------------------------------------------------------
 # Dashboard aggregate
 # ---------------------------------------------------------------------------
 @app.get("/api/dashboard")

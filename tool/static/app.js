@@ -93,6 +93,8 @@ function route() {
     renderAcvmReview(app);
   } else if (hash === '#/products') {
     renderProductList(app);
+  } else if (hash === '#/catalogue') {
+    renderCatalogue(app);
   } else {
     renderDashboard(app);
   }
@@ -101,6 +103,7 @@ function route() {
     : hash === '#/patterns' ? 'patterns'
     : hash === '#/acvm' ? 'acvm'
     : hash === '#/products' ? 'list'
+    : hash === '#/catalogue' ? 'catalogue'
     : 'dashboard';
   document.querySelector(`[data-route="${r}"]`)?.classList.add('active');
 }
@@ -1429,4 +1432,313 @@ function renderValidationSection() {
   section.appendChild(runBtn);
   section.appendChild(results);
   return section;
+}
+
+// ─── Catalogue Explorer ─────────────────────────────────────────────────
+// Filterable browse of the schedule data. Not the same as the label-review
+// Products list — this is about understanding the catalogue content.
+//
+// Filters run client-side over ~260 products; no pagination or virtualization.
+// Clicking a row opens a side panel with the product's full PHI matrix,
+// joined AIs, RM rules, and ACVM info.
+
+let catalogueData = null;
+let catalogueFilters = {
+  section: '',
+  moa: '',
+  acvm: 'any',   // any | matched | unmatched
+  hasLabel: 'any', // any | yes | no
+  search: '',
+};
+
+async function renderCatalogue(container) {
+  setContent(container, el('p', {}, 'Loading catalogue...'));
+  try { catalogueData = await api('/catalogue'); }
+  catch (e) {
+    setContent(container, el('p', { style: { color: 'var(--red)' } }, 'Error: ' + e.message));
+    return;
+  }
+
+  const wrapper = el('div', { className: 'catalogue-wrap' });
+  wrapper.appendChild(renderCatalogueFilters());
+  wrapper.appendChild(renderCatalogueTable());
+  const panel = el('aside', { id: 'catalogue-detail', className: 'catalogue-detail hidden' });
+  wrapper.appendChild(panel);
+  setContent(container, wrapper);
+}
+
+function renderCatalogueFilters() {
+  const side = el('aside', { className: 'catalogue-filters' });
+  side.appendChild(el('h3', {}, 'Filter'));
+
+  const addSelect = (labelText, field, options) => {
+    const label = el('label', { className: 'filter-label' }, labelText);
+    const select = el('select', { className: 'filter-select' });
+    select.appendChild(el('option', { value: '' }, 'Any'));
+    for (const opt of options) {
+      const o = el('option', { value: opt }, opt);
+      if (catalogueFilters[field] === opt) o.selected = true;
+      select.appendChild(o);
+    }
+    select.onchange = () => { catalogueFilters[field] = select.value; refreshCatalogueTable(); };
+    side.append(label, select);
+  };
+
+  addSelect('Section', 'section', catalogueData.sections);
+  addSelect('MOA group', 'moa', catalogueData.moa_groups);
+
+  // ACVM status radio-ish select
+  const acvmLabel = el('label', { className: 'filter-label' }, 'ACVM status');
+  const acvmSelect = el('select', { className: 'filter-select' });
+  for (const [v, t] of [['any', 'Any'], ['matched', 'Matched'], ['unmatched', 'Unmatched']]) {
+    const o = el('option', { value: v }, t);
+    if (catalogueFilters.acvm === v) o.selected = true;
+    acvmSelect.appendChild(o);
+  }
+  acvmSelect.onchange = () => { catalogueFilters.acvm = acvmSelect.value; refreshCatalogueTable(); };
+  side.append(acvmLabel, acvmSelect);
+
+  // Has label
+  const labelLabel = el('label', { className: 'filter-label' }, 'Label PDF');
+  const labelSelect = el('select', { className: 'filter-select' });
+  for (const [v, t] of [['any', 'Any'], ['yes', 'Has label'], ['no', 'No label']]) {
+    const o = el('option', { value: v }, t);
+    if (catalogueFilters.hasLabel === v) o.selected = true;
+    labelSelect.appendChild(o);
+  }
+  labelSelect.onchange = () => { catalogueFilters.hasLabel = labelSelect.value; refreshCatalogueTable(); };
+  side.append(labelLabel, labelSelect);
+
+  // Text search
+  const searchLabel = el('label', { className: 'filter-label' }, 'Search');
+  const search = el('input', { type: 'text', className: 'filter-select', placeholder: 'Name or AI...', value: catalogueFilters.search });
+  search.oninput = () => { catalogueFilters.search = search.value; refreshCatalogueTable(); };
+  side.append(searchLabel, search);
+
+  // Clear
+  const clear = el('button', { className: 'btn', style: { marginTop: '12px' } }, 'Clear filters');
+  clear.onclick = () => {
+    catalogueFilters = { section: '', moa: '', acvm: 'any', hasLabel: 'any', search: '' };
+    renderCatalogue(document.getElementById('app'));
+  };
+  side.appendChild(clear);
+
+  return side;
+}
+
+function renderCatalogueTable() {
+  const section = el('section', { className: 'catalogue-main' });
+  const heading = el('div', { className: 'catalogue-heading' });
+  heading.appendChild(el('h2', {}, 'Catalogue'));
+  heading.appendChild(el('div', { id: 'catalogue-count', className: 'catalogue-count' }, ''));
+  section.appendChild(heading);
+
+  const tableWrap = el('div', { className: 'catalogue-table-wrap' });
+  const table = el('table', { className: 'catalogue-table' });
+  const thead = el('thead', {});
+  const hr = el('tr', {});
+  for (const h of ['Name', 'Section', 'Active ingredients', 'ACVM', 'Label']) {
+    hr.appendChild(el('th', {}, h));
+  }
+  thead.appendChild(hr);
+  table.appendChild(thead);
+  const tbody = el('tbody', { id: 'catalogue-tbody' });
+  table.appendChild(tbody);
+  tableWrap.appendChild(table);
+  section.appendChild(tableWrap);
+
+  setTimeout(refreshCatalogueTable, 0);
+  return section;
+}
+
+function refreshCatalogueTable() {
+  const tbody = document.getElementById('catalogue-tbody');
+  const count = document.getElementById('catalogue-count');
+  if (!tbody || !catalogueData) return;
+
+  const aiMap = {};
+  for (const ai of catalogueData.active_ingredients) aiMap[ai.id] = ai;
+
+  const q = catalogueFilters.search.trim().toLowerCase();
+  const filtered = catalogueData.products.filter(p => {
+    if (catalogueFilters.section && p.section !== catalogueFilters.section) return false;
+    if (catalogueFilters.moa) {
+      const productMoas = p.active_ingredient_ids
+        .map(id => aiMap[id]?.moa_group_name)
+        .filter(Boolean);
+      if (!productMoas.includes(catalogueFilters.moa)) return false;
+    }
+    if (catalogueFilters.acvm === 'matched' && !p.acvm_registration_no) return false;
+    if (catalogueFilters.acvm === 'unmatched' && p.acvm_registration_no) return false;
+    if (catalogueFilters.hasLabel === 'yes' && !p.has_label) return false;
+    if (catalogueFilters.hasLabel === 'no' && p.has_label) return false;
+    if (q) {
+      const inName = p.name.toLowerCase().includes(q);
+      const inAis = p.active_ingredient_ids.some(id => (aiMap[id]?.name || '').toLowerCase().includes(q));
+      if (!inName && !inAis) return false;
+    }
+    return true;
+  });
+
+  tbody.replaceChildren();
+  for (const p of filtered) {
+    const tr = el('tr', {});
+    tr.style.cursor = 'pointer';
+    tr.onclick = () => showCatalogueDetail(p.id);
+    tr.appendChild(el('td', {}, el('strong', {}, p.name)));
+    tr.appendChild(el('td', { className: 'cat-section' }, p.section));
+    const aiNames = p.active_ingredient_ids.map(id => aiMap[id]?.name).filter(Boolean).join(', ');
+    tr.appendChild(el('td', { className: 'cat-ais' }, aiNames));
+    tr.appendChild(el('td', { className: 'mono' }, p.acvm_registration_no || '—'));
+    tr.appendChild(el('td', {}, p.has_label ? '✓' : '—'));
+    tbody.appendChild(tr);
+  }
+
+  if (count) {
+    count.textContent = `${filtered.length} of ${catalogueData.products.length} products`;
+  }
+}
+
+async function showCatalogueDetail(productId) {
+  const panel = document.getElementById('catalogue-detail');
+  if (!panel) return;
+  panel.classList.remove('hidden');
+  panel.replaceChildren();
+  panel.appendChild(el('p', {}, 'Loading...'));
+
+  let data;
+  try { data = await api(`/catalogue/products/${productId}`); }
+  catch (e) { panel.replaceChildren(el('p', { style: { color: 'var(--red)' } }, 'Error: ' + e.message)); return; }
+
+  panel.replaceChildren();
+
+  // Close button
+  const close = el('button', { className: 'cat-close', title: 'Close' }, '×');
+  close.onclick = () => panel.classList.add('hidden');
+  panel.appendChild(close);
+
+  panel.appendChild(el('h3', { className: 'cat-detail-title' }, data.product.name));
+  panel.appendChild(el('div', { className: 'cat-detail-section-badge' }, data.product.section));
+
+  // ACVM block
+  const acvmBlock = el('div', { className: 'cat-block' });
+  acvmBlock.appendChild(el('h4', {}, 'ACVM Registration'));
+  if (data.product.acvm_registration_no) {
+    acvmBlock.appendChild(el('div', {},
+      el('span', { className: 'mono' }, data.product.acvm_registration_no),
+      ' · ' + (data.product.registrant || 'unknown registrant')));
+    if (data.product.formulation_type) acvmBlock.appendChild(el('div', { className: 'cat-meta' }, 'Formulation: ' + data.product.formulation_type));
+  } else {
+    acvmBlock.appendChild(el('div', { style: { color: 'var(--grey-500)' } }, 'Not matched'));
+  }
+  panel.appendChild(acvmBlock);
+
+  // Active ingredients
+  const aiBlock = el('div', { className: 'cat-block' });
+  aiBlock.appendChild(el('h4', {}, `Active ingredients (${data.active_ingredients.length})`));
+  for (const ai of data.active_ingredients) {
+    const row = el('div', { className: 'cat-ai-row' });
+    row.appendChild(el('span', { className: 'cat-ai-name' }, ai.name));
+    const codes = [ai.moa_group_name, ai.frac_code, ai.irac_code, ai.hrac_code].filter(Boolean).join(' · ');
+    if (codes) row.appendChild(el('span', { className: 'cat-meta' }, codes));
+    aiBlock.appendChild(row);
+  }
+  panel.appendChild(aiBlock);
+
+  // RM rules
+  if (data.rm_rules.length) {
+    const rmBlock = el('div', { className: 'cat-block' });
+    rmBlock.appendChild(el('h4', {}, `Resistance rules (${data.rm_rules.length})`));
+    for (const r of data.rm_rules) {
+      const row = el('div', { className: 'cat-rm-row' });
+      row.appendChild(el('span', { className: 'mono cat-rm-code' }, r.rule_code));
+      const parts = [];
+      if (r.moa_group_name) parts.push(r.moa_group_name);
+      if (r.max_applications) parts.push(`max ${r.max_applications}/season`);
+      if (r.requires_tank_mix) parts.push('tank-mix required');
+      if (parts.length) row.appendChild(el('span', { className: 'cat-meta' }, parts.join(' · ')));
+      rmBlock.appendChild(row);
+    }
+    panel.appendChild(rmBlock);
+  }
+
+  // PHI matrix
+  const phiKeys = Object.keys(data.phi_by_market || {}).sort();
+  if (phiKeys.length || data.rei || Object.keys(data.whp || {}).length) {
+    const phiBlock = el('div', { className: 'cat-block' });
+    phiBlock.appendChild(el('h4', {}, 'Intervals'));
+    if (phiKeys.length) {
+      const table = el('table', { className: 'cat-phi-table' });
+      const thead = el('thead', {});
+      const hr = el('tr', {});
+      hr.appendChild(el('th', {}, 'Market'));
+      hr.appendChild(el('th', {}, 'PHI'));
+      thead.appendChild(hr);
+      table.appendChild(thead);
+      const tbody = el('tbody', {});
+      for (const market of phiKeys) {
+        const tr = el('tr', {});
+        tr.appendChild(el('td', { className: 'mono' }, market));
+        tr.appendChild(el('td', {}, phiValueString(data.phi_by_market[market])));
+        tbody.appendChild(tr);
+      }
+      table.appendChild(tbody);
+      phiBlock.appendChild(table);
+    }
+    if (data.rei) {
+      phiBlock.appendChild(el('div', { className: 'cat-phi-extra' },
+        'REI: ', phiValueString(data.rei)));
+    }
+    for (const [type, whp] of Object.entries(data.whp || {})) {
+      phiBlock.appendChild(el('div', { className: 'cat-phi-extra' },
+        `WHP (${type.replace('_', ' ')}): ` + phiValueString(whp)));
+    }
+    panel.appendChild(phiBlock);
+  }
+
+  // Label status + link to review
+  const labelBlock = el('div', { className: 'cat-block' });
+  labelBlock.appendChild(el('h4', {}, 'Label review'));
+  const ls = data.label_status;
+  if (ls.has_label) {
+    labelBlock.appendChild(el('div', {},
+      `Confidence: `,
+      el('span', { className: `badge badge-${ls.extraction_confidence}` }, ls.extraction_confidence)));
+    labelBlock.appendChild(el('div', { className: 'cat-meta' },
+      `${ls.fields_reviewed} of ${ls.total_fields} fields reviewed`));
+    const openBtn = el('button', { className: 'btn btn-primary', style: { marginTop: '8px' } }, 'Open in Labels');
+    openBtn.onclick = () => { location.hash = `#/product/${productId}`; };
+    labelBlock.appendChild(openBtn);
+  } else {
+    labelBlock.appendChild(el('div', { style: { color: 'var(--grey-500)' } }, 'No label PDF on disk'));
+  }
+  panel.appendChild(labelBlock);
+
+  if (data.product.label_claim) {
+    const claim = el('div', { className: 'cat-block' });
+    claim.appendChild(el('h4', {}, 'Label claim'));
+    claim.appendChild(el('div', { className: 'cat-claim' }, data.product.label_claim));
+    panel.appendChild(claim);
+  }
+  if (data.product.notes) {
+    const notes = el('div', { className: 'cat-block' });
+    notes.appendChild(el('h4', {}, 'Notes'));
+    notes.appendChild(el('div', { className: 'cat-claim' }, data.product.notes));
+    panel.appendChild(notes);
+  }
+}
+
+function phiValueString(pv) {
+  if (!pv) return '—';
+  if (pv.raw) return pv.raw;
+  const parts = [];
+  if (pv.value != null) parts.push(`${pv.value}${pv.unit ? ' ' + pv.unit : ''}`);
+  if (pv.el_stage) {
+    let s = pv.el_stage;
+    if (pv.el_stage_end) s += `–${pv.el_stage_end}`;
+    if (pv.el_offset_days) s += ` +${pv.el_offset_days}d`;
+    parts.push(s);
+  }
+  if (pv.code) parts.push(pv.code);
+  return parts.join(' / ') || '—';
 }
