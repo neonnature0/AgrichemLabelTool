@@ -13,14 +13,16 @@ from __future__ import annotations
 
 import json
 import logging
+import queue
 import re
 import threading
+import time
 import warnings
 from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -75,6 +77,49 @@ product_reg_map: dict[str, str] = {}
 acvm_by_name: dict = {}
 acvm_by_reg: dict = {}
 acvm_overrides: dict = {"block": {}, "force": {}}
+
+# ─── Pipeline runner state ─────────────────────────────────────────────
+# Stage outputs go through Python's logging — a QueueLogHandler pushes
+# formatted lines into a thread-safe queue, which the SSE endpoint drains.
+# Stages never need to know about the GUI.
+OUTDATED_THRESHOLD_DAYS = 180  # matches scripts/run_label_check.py
+
+pipeline_state: dict = {
+    "phase": "idle",
+    "running": False,
+    "stages_requested": [],
+    "stages_completed": [],
+    "stages_errored": [],
+    "message": "",
+    "error": None,
+    "started_at": None,
+    "finished_at": None,
+}
+_pipeline_log_queue: "queue.Queue[str]" = queue.Queue(maxsize=50000)
+
+
+class _QueueLogHandler(logging.Handler):
+    """Formats log records and enqueues them for SSE streaming."""
+    def __init__(self, q: "queue.Queue[str]"):
+        super().__init__()
+        self.q = q
+        self.setFormatter(logging.Formatter("[%(levelname)s] %(name)s: %(message)s"))
+
+    def emit(self, record: logging.LogRecord) -> None:
+        try:
+            self.q.put_nowait(self.format(record))
+        except queue.Full:
+            pass
+
+
+def _pipe_log(msg: str) -> None:
+    """Push a framing status line into the log queue (in addition to
+    whatever the stages emit via logging)."""
+    try:
+        _pipeline_log_queue.put_nowait(msg)
+    except queue.Full:
+        pass
+
 
 rebuild_state: dict = {
     "phase": "idle",           # "idle" | "assembling" | "matching" | "done" | "error"
@@ -325,6 +370,502 @@ def rebuild_catalogue():
     thread = threading.Thread(target=_run_rebuild, daemon=True)
     thread.start()
     return {"ok": True}
+
+
+# ---------------------------------------------------------------------------
+# Pipeline runner (full assemble → acvm → labels → diff)
+# ---------------------------------------------------------------------------
+def _stage_parse(source_pdf_str: str | None, force: bool) -> None:
+    from src.parsers.phi_table import parse_phi_table
+    from src.parsers.rm_table import parse_rm_table
+    from src.parsers.changes_table import parse_changes_table
+    from src.parsers.flagged_table import parse_flagged_table
+    from src.utils.hashing import hash_file
+    import orjson
+
+    pdf_path = Path(source_pdf_str) if source_pdf_str else (DATA_DIR / "input" / "schedule.pdf")
+    if not pdf_path.is_absolute():
+        pdf_path = PROJECT_ROOT / pdf_path
+    if not pdf_path.exists():
+        raise FileNotFoundError(
+            f"Source PDF not found at {pdf_path}. Place schedule.pdf in data/input/."
+        )
+
+    # Idempotency: skip if the PDF hasn't changed since last parse.
+    if not force and CATALOGUE_PATH.exists():
+        try:
+            existing = orjson.loads(CATALOGUE_PATH.read_bytes())
+            if existing.get("source_hash") == hash_file(pdf_path):
+                _pipe_log("PDF unchanged since last parse — skipping (force=false)")
+                return
+        except Exception:
+            pass  # fall through and re-parse
+
+    _pipe_log(f"Parsing schedule PDF: {pdf_path.name}")
+    parse_phi_table(pdf_path, write_staging=True)
+    parse_rm_table(pdf_path, write_staging=True)
+    parse_changes_table(pdf_path, write_staging=True)
+    parse_flagged_table(pdf_path, write_staging=True)
+
+
+def _stage_assemble_and_match(run_match: bool) -> None:
+    """Shared logic: read staging, assemble, optionally ACVM-match, write."""
+    import src.assembler as _asm
+    from src.assembler import assemble_catalogue
+    from src.config import OUTPUT_DIR, STAGING_DIR
+    from src.parsers.phi_table import PhiTableResult, PhiTableRow
+    from src.parsers.rm_table import RmTableResult, RmTableRow
+    from src.parsers.changes_table import ChangesTableResult, ChangesTableRow
+    from src.parsers.flagged_table import FlaggedTableResult, FlaggedTableRow
+    import orjson
+
+    staging = STAGING_DIR / "raw_phi_table.json"
+    if not staging.exists():
+        raise RuntimeError("No parsed schedule found. Run the 'parse' stage first.")
+
+    phi_rows = [PhiTableRow(**r) for r in json.loads(staging.read_text(encoding="utf-8"))]
+    phi_result = PhiTableResult(rows=phi_rows, warnings=[], pages_processed=0)
+
+    def _load_opt(path: Path, row_cls, result_cls):
+        if not path.exists():
+            return None
+        rows = [row_cls(**r) for r in json.loads(path.read_text(encoding="utf-8"))]
+        return result_cls(rows=rows, warnings=[], pages_processed=0)
+
+    rm_result = _load_opt(STAGING_DIR / "raw_rm_table.json", RmTableRow, RmTableResult)
+    changes_result = _load_opt(STAGING_DIR / "raw_changes_table.json", ChangesTableRow, ChangesTableResult)
+    flagged_result = _load_opt(STAGING_DIR / "raw_flagged_table.json", FlaggedTableRow, FlaggedTableResult)
+
+    # Reset splits cache so freshly-saved overrides apply.
+    _asm._product_splits_cache = None
+
+    if CATALOGUE_PATH.exists():
+        old = orjson.loads(CATALOGUE_PATH.read_bytes())
+        season = old.get("season", "unknown")
+        source_pdf = old.get("source_pdf", "")
+        source_hash = old.get("source_hash", "")
+    else:
+        season, source_pdf, source_hash = "unknown", "", ""
+
+    _pipe_log("Assembling catalogue from staging...")
+    cat = assemble_catalogue(
+        phi_result, rm_result, changes_result, flagged_result,
+        season=season, source_pdf=source_pdf, source_hash=source_hash,
+    )
+
+    if run_match and acvm_by_name:
+        from src.stages.match_acvm import match_products
+        from src.stages.enrich_acvm import enrich_catalogue_with_acvm
+        _pipe_log(f"Matching {len(cat.trade_products)} products against ACVM register...")
+        match_result = match_products(cat.trade_products, acvm_by_name)
+        _pipe_log(f"Matched {len(match_result.matches)}/{len(cat.trade_products)} products")
+        cat = enrich_catalogue_with_acvm(cat, match_result)
+
+    out_dir = (OUTPUT_DIR / season) if season != "unknown" else CATALOGUE_PATH.parent
+    out_dir.mkdir(parents=True, exist_ok=True)
+    CATALOGUE_PATH.write_bytes(orjson.dumps(
+        cat.model_dump(), option=orjson.OPT_INDENT_2 | orjson.OPT_SORT_KEYS,
+    ))
+    for name, items in [
+        ("active_ingredients.json", cat.active_ingredients),
+        ("trade_products.json", cat.trade_products),
+        ("phi_matrix.json", cat.phi_entries),
+        ("rm_rules.json", cat.resistance_management_rules),
+    ]:
+        (out_dir / name).write_bytes(orjson.dumps(
+            [i.model_dump() for i in items],
+            option=orjson.OPT_INDENT_2 | orjson.OPT_SORT_KEYS,
+        ))
+
+
+def _stage_acvm_fetch_labels() -> None:
+    """Network: scrape ACVM detail pages, download any new label PDFs.
+    Mirrors the acvm sub-flow in scripts/run_pipeline.py."""
+    import orjson
+    from src.models import SeasonCatalogue
+    from src.config import STAGING_DIR, LABELS_DIR as LABELS
+    from src.parsers.acvm_detail_scraper import create_session, scrape_details
+    from src.stages.fetch_labels import fetch_labels
+
+    if not CATALOGUE_PATH.exists():
+        raise RuntimeError("No catalogue to fetch labels against. Run assemble + acvm match first.")
+    cat = SeasonCatalogue(**orjson.loads(CATALOGUE_PATH.read_bytes()))
+
+    slug_to_pnum = {
+        tp.id: tp.acvm_registration_no
+        for tp in cat.trade_products
+        if getattr(tp, "acvm_registration_no", None)
+    }
+    slug_to_name = {tp.id: tp.name for tp in cat.trade_products}
+    _pipe_log(f"Scraping ACVM detail pages for {len(slug_to_pnum)} matched products...")
+
+    session = create_session()
+    detail_cache = STAGING_DIR / "acvm_detail_cache"
+    detail_results = scrape_details(session, slug_to_pnum, cache_dir=detail_cache)
+    with_labels = sum(1 for r in detail_results.values() if r.labels)
+    _pipe_log(f"Detail pages: {len(detail_results)} scraped, {with_labels} have label URLs")
+
+    if with_labels > 0:
+        _pipe_log("Downloading label PDFs...")
+        docs = fetch_labels(session, detail_results, slug_to_name)
+        _pipe_log(f"Fetched {len(docs)} label documents")
+
+
+def _stage_labels(force: bool) -> None:
+    """Re-extract text + fields from label PDFs. Same code path as the
+    one-time bootstrap, but can be triggered via the pipeline runner."""
+    from src.parsers.label_text_extractor import extract_label_text
+    from src.stages.extract_label_data import extract_single_label
+
+    _pipe_log(f"Extracting text from {len(label_paths)} PDFs (force={force})")
+    for i, (pid, pdf_path) in enumerate(label_paths.items(), start=1):
+        if i % 25 == 0:
+            _pipe_log(f"  {i}/{len(label_paths)} texts...")
+        if not force and pid in label_texts:
+            continue
+        try:
+            text = extract_label_text(pdf_path)
+            if text:
+                label_texts[pid] = text
+        except Exception as e:
+            logger.warning("Text extract failed for %s: %s", pid, e)
+
+    _pipe_log(f"Running field extractors on {len(label_texts)} labels...")
+    for i, pid in enumerate(list(label_texts.keys()), start=1):
+        if i % 25 == 0:
+            _pipe_log(f"  {i}/{len(label_texts)} fields...")
+        if not force and pid in extractions:
+            continue
+        pdf_path = label_paths.get(pid)
+        if not pdf_path:
+            continue
+        reg_no = product_reg_map.get(pid, pid)
+        try:
+            data = extract_single_label(pdf_path, pid, reg_no)
+            if data:
+                extractions[pid] = data.model_dump()
+        except Exception as e:
+            logger.warning("Field extract failed for %s: %s", pid, e)
+
+    _save_json(TEXT_CACHE, label_texts)
+    _save_json(EXTRACTION_CACHE, extractions)
+
+
+def _stage_diff(previous_catalogue_path: str | None) -> None:
+    if not previous_catalogue_path:
+        raise ValueError("Diff stage requires a previous-season catalogue path")
+    import orjson
+    from src.models import SeasonCatalogue
+    from src.stages.diff_seasons import diff_seasons
+    from src.config import OUTPUT_DIR
+
+    prev_path = Path(previous_catalogue_path)
+    if not prev_path.is_absolute():
+        prev_path = PROJECT_ROOT / prev_path
+    if not prev_path.exists():
+        raise FileNotFoundError(f"Previous catalogue not found: {prev_path}")
+    if not CATALOGUE_PATH.exists():
+        raise RuntimeError("Current catalogue missing — run assemble first")
+
+    prev = SeasonCatalogue(**orjson.loads(prev_path.read_bytes()))
+    curr = SeasonCatalogue(**orjson.loads(CATALOGUE_PATH.read_bytes()))
+    _pipe_log(f"Comparing {prev.season} → {curr.season}...")
+    entries = diff_seasons(prev, curr)
+    _pipe_log(f"Found {len(entries)} changelog entries")
+
+    out_dir = OUTPUT_DIR / curr.season
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "changelog.json").write_bytes(orjson.dumps(
+        [e.model_dump() for e in entries],
+        option=orjson.OPT_INDENT_2 | orjson.OPT_SORT_KEYS,
+    ))
+
+
+def _run_pipeline(
+    stages: list[str],
+    *,
+    force: bool,
+    download_labels: bool,
+    source_pdf: str | None,
+    previous_season_path: str | None,
+) -> None:
+    # Drain stale log lines from any previous run.
+    while not _pipeline_log_queue.empty():
+        try: _pipeline_log_queue.get_nowait()
+        except queue.Empty: break
+
+    handler = _QueueLogHandler(_pipeline_log_queue)
+    root = logging.getLogger()
+    root.addHandler(handler)
+    prev_level = root.level
+    root.setLevel(logging.INFO)
+
+    try:
+        with _bootstrap_lock:
+            if pipeline_state["running"] or bootstrap_state["running"] or rebuild_state["running"]:
+                return
+            pipeline_state.update({
+                "phase": "starting",
+                "running": True,
+                "stages_requested": list(stages),
+                "stages_completed": [],
+                "stages_errored": [],
+                "message": "",
+                "error": None,
+                "started_at": _now_iso(),
+                "finished_at": None,
+            })
+        _pipe_log(f"Running pipeline: {' → '.join(stages)}")
+
+        for stage in stages:
+            pipeline_state["phase"] = stage
+            _pipe_log(f"── Stage: {stage} ──")
+            t0 = time.time()
+            try:
+                if stage == "parse":
+                    _stage_parse(source_pdf, force)
+                elif stage == "assemble":
+                    _stage_assemble_and_match(run_match=False)
+                elif stage == "acvm":
+                    _stage_assemble_and_match(run_match=True)
+                    if download_labels:
+                        _stage_acvm_fetch_labels()
+                elif stage == "labels":
+                    _stage_labels(force=force)
+                elif stage == "diff":
+                    _stage_diff(previous_season_path)
+                else:
+                    raise ValueError(f"Unknown stage: {stage}")
+                dt = time.time() - t0
+                pipeline_state["stages_completed"].append(stage)
+                _pipe_log(f"✓ {stage} ({dt:.1f}s)")
+            except Exception as e:
+                pipeline_state["stages_errored"].append(stage)
+                _pipe_log(f"✗ {stage} failed: {e}")
+                raise
+
+        # Refresh anything that might have changed on disk.
+        _load_catalogue_into_memory()
+        _build_label_paths()
+
+        pipeline_state["phase"] = "done"
+        pipeline_state["message"] = f"Completed: {', '.join(stages)}"
+    except Exception as e:
+        logger.exception("Pipeline failed")
+        pipeline_state["phase"] = "error"
+        pipeline_state["error"] = str(e)
+    finally:
+        root.removeHandler(handler)
+        root.setLevel(prev_level)
+        pipeline_state["running"] = False
+        pipeline_state["finished_at"] = _now_iso()
+        _pipe_log("[END]")
+
+
+class PipelineRunRequest(BaseModel):
+    stages: list[str]
+    force: bool = False
+    download_labels: bool = False
+    source_pdf: str | None = None
+    previous_season_path: str | None = None
+
+
+@app.post("/api/pipeline/run")
+def pipeline_run(req: PipelineRunRequest):
+    if pipeline_state["running"] or bootstrap_state["running"] or rebuild_state["running"]:
+        return {"ok": False, "reason": "busy"}
+    valid = {"parse", "assemble", "acvm", "labels", "diff"}
+    bad = [s for s in req.stages if s not in valid]
+    if bad:
+        raise HTTPException(400, f"Unknown stages: {bad}. Valid: {sorted(valid)}")
+    if not req.stages:
+        raise HTTPException(400, "No stages requested")
+    thread = threading.Thread(
+        target=_run_pipeline,
+        args=(req.stages,),
+        kwargs={
+            "force": req.force,
+            "download_labels": req.download_labels,
+            "source_pdf": req.source_pdf,
+            "previous_season_path": req.previous_season_path,
+        },
+        daemon=True,
+    )
+    thread.start()
+    return {"ok": True}
+
+
+@app.get("/api/pipeline/status")
+def pipeline_status():
+    return dict(pipeline_state)
+
+
+@app.get("/api/pipeline/stream")
+def pipeline_stream():
+    """Server-sent events: drains the log queue as stages run.
+    Browser EventSource closes on 'event: end'."""
+    def generate():
+        # Opener so the connection fires onopen.
+        yield ": stream-open\n\n"
+        while True:
+            try:
+                line = _pipeline_log_queue.get(timeout=0.5)
+            except queue.Empty:
+                if not pipeline_state["running"]:
+                    yield "event: end\ndata: \n\n"
+                    return
+                yield ": keepalive\n\n"
+                continue
+            # SSE data must not contain raw newlines.
+            safe = line.replace("\r", "").replace("\n", "\\n")
+            yield f"data: {safe}\n\n"
+            if line == "[END]":
+                yield "event: end\ndata: \n\n"
+                return
+    return StreamingResponse(generate(), media_type="text/event-stream")
+
+
+# ---------------------------------------------------------------------------
+# Label freshness
+# ---------------------------------------------------------------------------
+@app.get("/api/labels/freshness")
+def labels_freshness():
+    """Report each label's last-checked age. Anything older than
+    OUTDATED_THRESHOLD_DAYS is flagged."""
+    now = datetime.now(timezone.utc)
+    rows = []
+    for reg_no, entry in manifest.items():
+        last_checked = entry.get("last_checked")
+        age_days = None
+        if last_checked:
+            try:
+                dt = datetime.fromisoformat(last_checked.replace("Z", "+00:00"))
+                age_days = (now - dt).days
+            except Exception:
+                pass
+        current = next((v for v in entry.get("versions", []) if v.get("is_current")), None)
+        rows.append({
+            "p_number": reg_no,
+            "trade_name": entry.get("trade_name") or (current.get("filename") if current else reg_no),
+            "last_checked": last_checked,
+            "age_days": age_days,
+            "is_outdated": age_days is not None and age_days > OUTDATED_THRESHOLD_DAYS,
+            "has_current": current is not None,
+        })
+    rows.sort(key=lambda r: (r["age_days"] is None, -(r["age_days"] or 0)))
+    outdated = sum(1 for r in rows if r["is_outdated"])
+    return {
+        "threshold_days": OUTDATED_THRESHOLD_DAYS,
+        "total": len(rows),
+        "outdated": outdated,
+        "labels": rows,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Validation
+# ---------------------------------------------------------------------------
+@app.post("/api/validate")
+def validate_catalogue():
+    """Run referential-integrity checks on the current catalogue.
+    Logic lifted from scripts/validate_catalogue.py."""
+    import orjson
+    if not CATALOGUE_PATH.exists():
+        raise HTTPException(404, "No catalogue on disk")
+    data = orjson.loads(CATALOGUE_PATH.read_bytes())
+    errors: list[str] = []
+    warnings_: list[str] = []
+
+    def _norm(code: str) -> str:
+        return re.sub(r"[\s\-]+", "", code.lower())
+
+    rm_codes = {r["rule_code"] for r in data.get("resistance_management_rules", [])}
+    rm_codes_norm = {_norm(c): c for c in rm_codes}
+
+    tp_rm_codes: set[str] = set()
+    for tp in data.get("trade_products", []):
+        for code in tp.get("rm_rule_codes", []) or []:
+            tp_rm_codes.add(code)
+            if code not in rm_codes and _norm(code) not in rm_codes_norm:
+                warnings_.append(
+                    f"Trade product '{tp['id']}' references RM code '{code}' not in parsed RM rules"
+                )
+    tp_rm_norms = {_norm(c) for c in tp_rm_codes}
+    for code in sorted(rm_codes):
+        if code not in tp_rm_codes and _norm(code) not in tp_rm_norms:
+            warnings_.append(f"RM rule '{code}' exists but no trade product references it")
+
+    ai_names = {ai["name"].lower() for ai in data.get("active_ingredients", [])}
+    for rule in data.get("resistance_management_rules", []):
+        for ai_name in rule.get("applicable_active_ingredients", []) or []:
+            if ai_name.lower() not in ai_names:
+                warnings_.append(
+                    f"RM rule '{rule['rule_code']}' references AI '{ai_name}' not in active ingredients"
+                )
+
+    for fp in data.get("flagged_products", []):
+        ai_lower = fp["active_ingredient"].lower()
+        found = any(
+            ai_lower in ai["name"].lower() or ai["name"].lower() in ai_lower
+            for ai in data.get("active_ingredients", [])
+        )
+        if not found:
+            warnings_.append(
+                f"Flagged AI '{fp['active_ingredient']}' not found in active ingredients"
+            )
+
+    return {
+        "errors": errors,
+        "warnings": warnings_,
+        "summary": {
+            "total_products": len(data.get("trade_products", [])),
+            "total_ais": len(data.get("active_ingredients", [])),
+            "total_rm_rules": len(rm_codes),
+        },
+    }
+
+
+# ---------------------------------------------------------------------------
+# Dashboard aggregate
+# ---------------------------------------------------------------------------
+@app.get("/api/dashboard")
+def dashboard():
+    """Stat-card data for the Dashboard page. One call, one render."""
+    total = len(extractions)
+    reviewed = sum(1 for v in verified.values() if v)
+    fields_extracted = sum(_count_extracted_fields(ext) for ext in extractions.values())
+    max_fields = total * 17 if total else 0
+    coverage_pct = round(100 * fields_extracted / max_fields) if max_fields else 0
+
+    # Freshness
+    now = datetime.now(timezone.utc)
+    outdated = 0
+    for entry in manifest.values():
+        lc = entry.get("last_checked")
+        if not lc:
+            outdated += 1
+            continue
+        try:
+            dt = datetime.fromisoformat(lc.replace("Z", "+00:00"))
+            if (now - dt).days > OUTDATED_THRESHOLD_DAYS:
+                outdated += 1
+        except Exception:
+            outdated += 1
+
+    unmatched = sum(1 for p in products if not p.get("acvm_registration_no"))
+
+    return {
+        "products_total": len(products),
+        "products_unmatched_acvm": unmatched,
+        "labels_total": len(label_paths),
+        "labels_with_text": len(label_texts),
+        "labels_outdated": outdated,
+        "extraction_coverage_pct": coverage_pct,
+        "reviewed": reviewed,
+        "learned_patterns": sum(len(v) for v in learned_patterns.values()),
+        "last_pipeline_run": pipeline_state.get("finished_at"),
+        "last_pipeline_status": pipeline_state.get("phase") if not pipeline_state.get("running") else "running",
+    }
 
 
 def _load_catalogue_into_memory():

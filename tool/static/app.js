@@ -91,14 +91,17 @@ function route() {
     renderPatterns(app);
   } else if (hash === '#/acvm') {
     renderAcvmReview(app);
-  } else {
+  } else if (hash === '#/products') {
     renderProductList(app);
+  } else {
+    renderDashboard(app);
   }
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
   const r = hash === '#/coverage' ? 'coverage'
     : hash === '#/patterns' ? 'patterns'
     : hash === '#/acvm' ? 'acvm'
-    : 'list';
+    : hash === '#/products' ? 'list'
+    : 'dashboard';
   document.querySelector(`[data-route="${r}"]`)?.classList.add('active');
 }
 
@@ -1195,4 +1198,235 @@ function showRebuildBanner(status) {
 function hideRebuildBanner() {
   const banner = document.getElementById('rebuild-banner');
   if (banner) banner.remove();
+}
+
+// ─── Dashboard ──────────────────────────────────────────────────────────
+// Landing page. Pulls together stat cards, the pipeline runner, the label
+// freshness table, and a validation button. Everything that's "run stuff"
+// or "see top-line numbers" lives here.
+
+const PIPELINE_STAGES = [
+  { key: 'parse',    label: 'Parse',    desc: 'Re-parse the schedule PDF' },
+  { key: 'assemble', label: 'Assemble', desc: 'Rebuild catalogue from staging' },
+  { key: 'acvm',     label: 'ACVM',     desc: 'Match (and optionally download new labels)' },
+  { key: 'labels',   label: 'Labels',   desc: 'Re-extract text + fields from label PDFs' },
+  { key: 'diff',     label: 'Diff',     desc: 'Compare to a previous season' },
+];
+
+let pipelineSse = null;
+
+async function renderDashboard(container) {
+  setContent(container, el('p', {}, 'Loading...'));
+  let stats;
+  try { stats = await api('/dashboard'); }
+  catch (e) { setContent(container, el('p', { style: { color: 'var(--red)' } }, 'Error: ' + e.message)); return; }
+
+  const wrapper = el('div', {});
+  wrapper.appendChild(el('h2', { style: { marginBottom: '12px' } }, 'Dashboard'));
+
+  const grid = el('div', { className: 'stat-grid' });
+  const cards = [
+    { label: 'Products', value: stats.products_total, sub: `${stats.products_unmatched_acvm} unmatched` },
+    { label: 'Labels', value: stats.labels_total, sub: `${stats.labels_with_text} extracted` },
+    { label: 'Extraction coverage', value: stats.extraction_coverage_pct + '%', sub: `${stats.reviewed} products reviewed` },
+    { label: 'Outdated labels', value: stats.labels_outdated, sub: '>180 days' },
+    { label: 'Learned patterns', value: stats.learned_patterns, sub: 'approved regexes' },
+    { label: 'Last pipeline', value: stats.last_pipeline_status || 'never', sub: stats.last_pipeline_run ? stats.last_pipeline_run.substring(0, 16).replace('T', ' ') : '—' },
+  ];
+  for (const c of cards) {
+    const card = el('div', { className: 'stat-card' });
+    card.appendChild(el('div', { className: 'stat-label' }, c.label));
+    card.appendChild(el('div', { className: 'stat-value' }, String(c.value)));
+    card.appendChild(el('div', { className: 'stat-sub' }, c.sub));
+    grid.appendChild(card);
+  }
+  wrapper.appendChild(grid);
+
+  wrapper.appendChild(renderPipelineRunner());
+
+  const bottomRow = el('div', { className: 'dashboard-bottom' });
+  bottomRow.appendChild(renderFreshnessSection());
+  bottomRow.appendChild(renderValidationSection());
+  wrapper.appendChild(bottomRow);
+
+  setContent(container, wrapper);
+}
+
+function renderPipelineRunner() {
+  const section = el('div', { className: 'dash-section' });
+  section.appendChild(el('h3', {}, 'Pipeline'));
+
+  const controls = el('div', { className: 'pipeline-controls' });
+
+  const stagesRow = el('div', { className: 'stage-row' });
+  for (const s of PIPELINE_STAGES) {
+    const label = el('label', { className: 'stage-chip' });
+    const cb = el('input', { type: 'checkbox', value: s.key, id: `stage-${s.key}` });
+    if (s.key !== 'diff') cb.checked = true;
+    label.append(cb, document.createTextNode(' ' + s.label));
+    label.title = s.desc;
+    stagesRow.appendChild(label);
+  }
+  controls.appendChild(stagesRow);
+
+  const options = el('div', { className: 'pipeline-options' });
+  const forceLabel = el('label', {});
+  const forceCb = el('input', { type: 'checkbox', id: 'opt-force' });
+  forceLabel.append(forceCb, document.createTextNode(' Force re-run (ignore source-hash idempotency)'));
+  options.appendChild(forceLabel);
+  const dlLabel = el('label', {});
+  const dlCb = el('input', { type: 'checkbox', id: 'opt-download' });
+  dlLabel.append(dlCb, document.createTextNode(' Download new label PDFs (acvm stage, network)'));
+  options.appendChild(dlLabel);
+  controls.appendChild(options);
+
+  const runBtn = el('button', { className: 'btn btn-primary', id: 'pipeline-run-btn' }, 'Run pipeline');
+  runBtn.onclick = () => startPipelineRun();
+  controls.appendChild(runBtn);
+
+  section.appendChild(controls);
+
+  const statusStrip = el('div', { className: 'pipeline-status', id: 'pipeline-status' });
+  section.appendChild(statusStrip);
+  const logPane = el('pre', { className: 'pipeline-log', id: 'pipeline-log' });
+  section.appendChild(logPane);
+  api('/pipeline/status').then(st => updatePipelineStatusUi(st));
+
+  return section;
+}
+
+async function startPipelineRun() {
+  const stages = PIPELINE_STAGES
+    .map(s => s.key)
+    .filter(k => document.getElementById(`stage-${k}`)?.checked);
+  if (stages.length === 0) { alert('Select at least one stage'); return; }
+  const force = !!document.getElementById('opt-force')?.checked;
+  const download_labels = !!document.getElementById('opt-download')?.checked;
+
+  const log = document.getElementById('pipeline-log');
+  if (log) log.textContent = '';
+
+  try {
+    const res = await api('/pipeline/run', { method: 'POST', body: { stages, force, download_labels } });
+    if (!res.ok) { alert(`Cannot start: ${res.reason}`); return; }
+    subscribePipelineStream();
+  } catch (e) { alert('Failed to start: ' + e.message); }
+}
+
+function subscribePipelineStream() {
+  if (pipelineSse) { try { pipelineSse.close(); } catch (e) {} }
+  pipelineSse = new EventSource('/api/pipeline/stream');
+  pipelineSse.onmessage = (ev) => {
+    const log = document.getElementById('pipeline-log');
+    if (!log) return;
+    log.textContent += ev.data.replaceAll('\\n', '\n') + '\n';
+    log.scrollTop = log.scrollHeight;
+  };
+  pipelineSse.addEventListener('end', async () => {
+    pipelineSse.close();
+    pipelineSse = null;
+    const st = await api('/pipeline/status').catch(() => null);
+    if (st) updatePipelineStatusUi(st);
+    setTimeout(() => renderDashboard(document.getElementById('app')), 400);
+  });
+  pipelineSse.onerror = () => {
+    pipelineSse?.close();
+    pipelineSse = null;
+  };
+  const statusPoller = setInterval(async () => {
+    if (!pipelineSse) { clearInterval(statusPoller); return; }
+    const st = await api('/pipeline/status').catch(() => null);
+    if (st) updatePipelineStatusUi(st);
+  }, 2000);
+}
+
+function updatePipelineStatusUi(st) {
+  const strip = document.getElementById('pipeline-status');
+  const btn = document.getElementById('pipeline-run-btn');
+  if (!strip) return;
+  strip.replaceChildren();
+  const requested = st.stages_requested || [];
+  const done = new Set(st.stages_completed || []);
+  const errored = new Set(st.stages_errored || []);
+  const stages = requested.length ? requested : PIPELINE_STAGES.map(x => x.key);
+  for (const s of stages) {
+    let cls = 'stage-dot';
+    if (errored.has(s)) cls += ' dot-error';
+    else if (done.has(s)) cls += ' dot-done';
+    else if (st.phase === s && st.running) cls += ' dot-running';
+    strip.appendChild(el('span', { className: cls, title: s }, s));
+  }
+  if (btn) {
+    btn.disabled = !!st.running;
+    btn.textContent = st.running ? 'Running...' : 'Run pipeline';
+  }
+}
+
+function renderFreshnessSection() {
+  const section = el('div', { className: 'dash-section' });
+  section.appendChild(el('h3', {}, 'Label freshness'));
+  const tableWrap = el('div', { id: 'freshness-table' });
+  tableWrap.textContent = 'Loading...';
+  section.appendChild(tableWrap);
+  api('/labels/freshness').then(data => {
+    tableWrap.replaceChildren();
+    const sub = el('p', { className: 'dash-sub' },
+      `${data.outdated} of ${data.total} labels last checked more than ${data.threshold_days} days ago.`);
+    tableWrap.appendChild(sub);
+    const table = el('table', { className: 'freshness-table' });
+    const thead = el('thead', {});
+    const hr = el('tr', {});
+    for (const h of ['P-number', 'Trade name', 'Last checked', 'Age (days)']) hr.appendChild(el('th', {}, h));
+    thead.appendChild(hr);
+    table.appendChild(thead);
+    const tbody = el('tbody', {});
+    const rows = data.labels.filter(r => r.is_outdated);
+    if (rows.length === 0) {
+      const tr = el('tr', {});
+      const td = el('td', { colspan: '4', style: { color: 'var(--grey-500)', padding: '16px' } }, 'No outdated labels.');
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+    } else {
+      for (const r of rows) {
+        const tr = el('tr', {});
+        tr.appendChild(el('td', { className: 'mono' }, r.p_number));
+        tr.appendChild(el('td', {}, r.trade_name || ''));
+        tr.appendChild(el('td', {}, r.last_checked ? r.last_checked.substring(0, 10) : '—'));
+        tr.appendChild(el('td', {}, r.age_days === null ? '—' : String(r.age_days)));
+        tbody.appendChild(tr);
+      }
+    }
+    table.appendChild(tbody);
+    tableWrap.appendChild(table);
+  }).catch(e => { tableWrap.textContent = 'Error: ' + e.message; });
+  return section;
+}
+
+function renderValidationSection() {
+  const section = el('div', { className: 'dash-section' });
+  section.appendChild(el('h3', {}, 'Validation'));
+  section.appendChild(el('p', { className: 'dash-sub' }, 'Cross-check referential integrity of the current catalogue.'));
+  const runBtn = el('button', { className: 'btn btn-primary' }, 'Run validation');
+  const results = el('div', { id: 'validation-results', style: { marginTop: '12px' } });
+  runBtn.onclick = async () => {
+    runBtn.disabled = true; runBtn.textContent = 'Running...';
+    try {
+      const res = await api('/validate', { method: 'POST' });
+      results.replaceChildren();
+      const summary = el('div', { style: { marginBottom: '8px' } },
+        `${res.errors.length} error(s), ${res.warnings.length} warning(s) — ` +
+        `${res.summary.total_products} products, ${res.summary.total_ais} AIs, ${res.summary.total_rm_rules} RM rules`);
+      results.appendChild(summary);
+      if (res.warnings.length) {
+        const list = el('ul', { className: 'validation-list' });
+        for (const w of res.warnings.slice(0, 50)) list.appendChild(el('li', {}, w));
+        if (res.warnings.length > 50) list.appendChild(el('li', { style: { color: 'var(--grey-500)' } }, `(${res.warnings.length - 50} more...)`));
+        results.appendChild(list);
+      }
+    } catch (e) { results.textContent = 'Error: ' + e.message; }
+    finally { runBtn.disabled = false; runBtn.textContent = 'Run validation'; }
+  };
+  section.appendChild(runBtn);
+  section.appendChild(results);
+  return section;
 }
