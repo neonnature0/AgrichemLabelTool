@@ -13,3 +13,7 @@ htmlcov/
 data/input/*.pdf
 data/staging/
 data/output/
+
+# Bootstrap caches — regenerable, large, not human-tuned
+data/corrections/label_texts_cache.json
+data/corrections/extraction_cache.json
