@@ -14,6 +14,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+import threading
 import warnings
 from datetime import datetime, timezone
 from pathlib import Path
@@ -63,6 +64,21 @@ label_paths: dict[str, Path] = {}
 # product_id → reg_no
 product_reg_map: dict[str, str] = {}
 
+# Bootstrap (label-text extraction) state. Accessed from the background
+# thread + the status endpoint. The module-level dict is mutated in-place;
+# the GIL keeps individual field reads/writes atomic, which is enough for
+# this single-user tool.
+bootstrap_state: dict = {
+    "phase": "idle",           # "idle" | "extracting_text" | "extracting_fields" | "saving" | "done" | "error"
+    "running": False,
+    "current": 0,
+    "total": 0,
+    "error": None,
+    "started_at": None,
+    "finished_at": None,
+}
+_bootstrap_lock = threading.Lock()
+
 # ---------------------------------------------------------------------------
 # App
 # ---------------------------------------------------------------------------
@@ -76,10 +92,13 @@ app.mount("/static", StaticFiles(directory=str(TOOL_DIR / "static")), name="stat
 # ---------------------------------------------------------------------------
 @app.on_event("startup")
 def startup():
+    """Fast startup: load catalogue, manifest, build label paths, load caches
+    if present, load correction files. Never runs heavy PDF extraction —
+    that's deferred to POST /api/bootstrap/run (see _run_bootstrap)."""
     global products, manifest, verified, corrections, annotations, learned_patterns
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
-    logger.info("Loading catalogue and label data...")
+    logger.info("Loading catalogue and manifest (fast startup)...")
 
     # Load catalogue
     if CATALOGUE_PATH.exists():
@@ -100,70 +119,22 @@ def startup():
     if MANIFEST_PATH.exists():
         manifest.update(json.loads(MANIFEST_PATH.read_text(encoding="utf-8")))
 
-    # Check for cached texts and extractions
-    # (constants defined at module level for use in other endpoints)
+    # Build label paths (lightweight — no PDF parsing).
+    _build_label_paths()
 
-    if TEXT_CACHE.exists() and EXTRACTION_CACHE.exists():
-        logger.info("Loading from cache...")
-        cached_texts = json.loads(TEXT_CACHE.read_text(encoding="utf-8"))
-        cached_extractions = json.loads(EXTRACTION_CACHE.read_text(encoding="utf-8"))
-
-        # Build label paths
-        for reg_no, entry in manifest.items():
-            current = next((v for v in entry.get("versions", []) if v.get("is_current")), None)
-            if not current:
-                continue
-            pdf_path = LABELS_DIR / reg_no / current["filename"]
-            if not pdf_path.exists():
-                continue
-            pid = next((k for k, v in product_reg_map.items() if v == reg_no), None)
-            if not pid:
-                pid = reg_no
-            label_paths[pid] = pdf_path
-
-        label_texts.update(cached_texts)
-        extractions.update(cached_extractions)
-        logger.info("Loaded %d texts and %d extractions from cache", len(label_texts), len(extractions))
-    else:
-        # First run: extract from PDFs and cache
-        from src.parsers.label_text_extractor import extract_label_text
-
-        logger.info("First run — extracting text from %d label PDFs...", len(manifest))
-        for reg_no, entry in manifest.items():
-            current = next((v for v in entry.get("versions", []) if v.get("is_current")), None)
-            if not current:
-                continue
-            pdf_path = LABELS_DIR / reg_no / current["filename"]
-            if not pdf_path.exists():
-                continue
-            pid = next((k for k, v in product_reg_map.items() if v == reg_no), None)
-            if not pid:
-                pid = reg_no
-            label_paths[pid] = pdf_path
-            text = extract_label_text(pdf_path)
-            if text:
-                label_texts[pid] = text
-
-        logger.info("Loaded %d label texts into memory", len(label_texts))
-
-        # Run extraction on all labels
-        from src.stages.extract_label_data import extract_single_label
-
-        for pid in label_texts:
-            pdf_path = label_paths.get(pid)
-            if not pdf_path:
-                continue
-            reg_no = product_reg_map.get(pid, pid)
-            data = extract_single_label(pdf_path, pid, reg_no)
-            if data:
-                extractions[pid] = data.model_dump()
-
-        logger.info("Extracted data for %d labels", len(extractions))
-
-        # Cache for fast restart
-        _save_json(TEXT_CACHE, label_texts)
-        _save_json(EXTRACTION_CACHE, extractions)
-        logger.info("Cached texts and extractions for fast restart")
+    # Load cached texts / extractions if they exist.
+    if TEXT_CACHE.exists():
+        try:
+            label_texts.update(json.loads(TEXT_CACHE.read_text(encoding="utf-8")))
+            logger.info("Loaded %d label texts from cache", len(label_texts))
+        except Exception as e:
+            logger.warning("Failed to load text cache: %s", e)
+    if EXTRACTION_CACHE.exists():
+        try:
+            extractions.update(json.loads(EXTRACTION_CACHE.read_text(encoding="utf-8")))
+            logger.info("Loaded %d extractions from cache", len(extractions))
+        except Exception as e:
+            logger.warning("Failed to load extraction cache: %s", e)
 
     # Load correction files
     CORRECTIONS_DIR.mkdir(parents=True, exist_ok=True)
@@ -171,6 +142,124 @@ def startup():
     corrections.update(_load_json(CORRECTIONS_PATH))
     annotations.update(_load_json(ANNOTATIONS_PATH))
     learned_patterns.update(_load_json(LEARNED_PATTERNS_PATH))
+    logger.info("Startup complete. Pending extractions: %d/%d",
+                len(label_paths) - len(extractions), len(label_paths))
+
+
+def _build_label_paths():
+    """Discover current-version label PDFs on disk from the manifest."""
+    for reg_no, entry in manifest.items():
+        current = next((v for v in entry.get("versions", []) if v.get("is_current")), None)
+        if not current:
+            continue
+        pdf_path = LABELS_DIR / reg_no / current["filename"]
+        if not pdf_path.exists():
+            continue
+        pid = next((k for k, v in product_reg_map.items() if v == reg_no), None)
+        if not pid:
+            pid = reg_no
+        label_paths[pid] = pdf_path
+
+
+def _run_bootstrap(force: bool = False):
+    """Background task: extract text from all label PDFs and run field
+    extractors. Updates bootstrap_state as it goes. Called from
+    POST /api/bootstrap/run in a daemon thread."""
+    from src.parsers.label_text_extractor import extract_label_text
+    from src.stages.extract_label_data import extract_single_label
+
+    try:
+        with _bootstrap_lock:
+            if bootstrap_state["running"]:
+                return
+            bootstrap_state.update({
+                "running": True,
+                "phase": "extracting_text",
+                "current": 0,
+                "total": len(label_paths),
+                "error": None,
+                "started_at": _now_iso(),
+                "finished_at": None,
+            })
+
+        # Phase 1: extract text from each PDF (skip if already cached unless force).
+        for i, (pid, pdf_path) in enumerate(label_paths.items(), start=1):
+            bootstrap_state["current"] = i
+            if not force and pid in label_texts:
+                continue
+            try:
+                text = extract_label_text(pdf_path)
+                if text:
+                    label_texts[pid] = text
+            except Exception as e:
+                logger.warning("Text extraction failed for %s: %s", pid, e)
+
+        # Phase 2: run field extractors on every label.
+        bootstrap_state["phase"] = "extracting_fields"
+        bootstrap_state["current"] = 0
+        bootstrap_state["total"] = len(label_texts)
+        for i, pid in enumerate(list(label_texts.keys()), start=1):
+            bootstrap_state["current"] = i
+            if not force and pid in extractions:
+                continue
+            pdf_path = label_paths.get(pid)
+            if not pdf_path:
+                continue
+            reg_no = product_reg_map.get(pid, pid)
+            try:
+                data = extract_single_label(pdf_path, pid, reg_no)
+                if data:
+                    extractions[pid] = data.model_dump()
+            except Exception as e:
+                logger.warning("Field extraction failed for %s: %s", pid, e)
+
+        # Phase 3: persist caches.
+        bootstrap_state["phase"] = "saving"
+        _save_json(TEXT_CACHE, label_texts)
+        _save_json(EXTRACTION_CACHE, extractions)
+
+        bootstrap_state["phase"] = "done"
+        logger.info("Bootstrap complete: %d texts, %d extractions",
+                    len(label_texts), len(extractions))
+    except Exception as e:
+        logger.exception("Bootstrap failed")
+        bootstrap_state["phase"] = "error"
+        bootstrap_state["error"] = str(e)
+    finally:
+        bootstrap_state["running"] = False
+        bootstrap_state["finished_at"] = _now_iso()
+
+
+@app.get("/api/bootstrap/status")
+def bootstrap_status():
+    """Current bootstrap state, plus cache counts so the GUI can decide
+    whether to prompt the user."""
+    return {
+        **bootstrap_state,
+        "total_labels": len(label_paths),
+        "texts_extracted": len(label_texts),
+        "fields_extracted": len(extractions),
+        "needs_bootstrap": len(label_paths) > 0 and (
+            len(label_texts) < len(label_paths)
+            or len(extractions) < len(label_texts)
+        ),
+    }
+
+
+class BootstrapRunRequest(BaseModel):
+    force: bool = False
+
+
+@app.post("/api/bootstrap/run")
+def bootstrap_run(req: BootstrapRunRequest | None = None):
+    """Start bootstrap in a background thread. Returns immediately;
+    poll /api/bootstrap/status for progress."""
+    if bootstrap_state["running"]:
+        return {"ok": False, "reason": "already_running"}
+    force = bool(req and req.force)
+    thread = threading.Thread(target=_run_bootstrap, args=(force,), daemon=True)
+    thread.start()
+    return {"ok": True}
 
 
 def _load_json(path: Path) -> dict:

@@ -20,18 +20,23 @@ There's also a **web tool** for reviewing extractions, correcting mistakes, and 
 ## Quick start
 
 ### Requirements
-- Python 3.12+
+- Python 3.12+ ([download](https://www.python.org/downloads/))
 - The NZW Spray Schedule PDF (place at `data/input/schedule.pdf`)
 
-### Install
+### Launch (Windows — easy mode)
+Double-click **`start.bat`**. It creates the venv, installs dependencies on first run, and opens the tool at http://127.0.0.1:8000.
+
+The first time you open the tool, a banner prompts you to click **"Extract labels"** — this parses the ~248 label PDFs (a few minutes) and caches the results so every future launch is instant. Everything runs from the GUI.
+
+### Launch (manual / macOS / Linux)
 ```bash
 python -m venv .venv
-.venv\Scripts\activate       # Windows
-# source .venv/bin/activate  # macOS/Linux
+source .venv/bin/activate       # or .venv\Scripts\activate on Windows
 pip install -e .[dev]
+python -m uvicorn tool.app:app --port 8000
 ```
 
-### Run the full pipeline
+### Run the full pipeline (CLI, optional)
 ```bash
 python scripts/run_pipeline.py --pdf data/input/schedule.pdf --season 2025-2026
 ```
@@ -50,12 +55,6 @@ python scripts/run_pipeline.py --stages diff           # regenerate changelog
 ```
 
 Stages are idempotent — re-running with the same inputs is cheap (source PDF is hashed, ACVM responses are cached 30 days).
-
-### Launch the verification tool
-```bash
-python -m uvicorn tool.app:app --reload --port 8000
-```
-Open http://localhost:8000 and start reviewing products (sorted by confidence — lowest first).
 
 ## How the verification tool works
 

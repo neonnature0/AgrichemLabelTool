@@ -434,3 +434,44 @@ kbd {
   border-radius: 3px;
   color: var(--charcoal);
 }
+
+/* ─── Bootstrap banner ──────────────────────────────────────────────── */
+
+.bootstrap-banner {
+  background: var(--forest-light);
+  color: var(--white);
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-bottom: 2px solid var(--gold);
+}
+.bootstrap-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+.bootstrap-title.bootstrap-error { color: #ffb3b3; }
+.bootstrap-sub {
+  font-size: 13px;
+  opacity: 0.85;
+}
+.bootstrap-banner .btn {
+  align-self: flex-start;
+  background: var(--gold);
+  color: var(--white);
+  border: none;
+  padding: 8px 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.bootstrap-banner .btn:hover { background: #a37a3a; }
+.bootstrap-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+}
+.bootstrap-fill {
+  height: 100%;
+  background: var(--gold);
+  transition: width 300ms ease;
+}

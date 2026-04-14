@@ -98,7 +98,96 @@ function route() {
 }
 
 window.addEventListener('hashchange', route);
-window.addEventListener('load', () => { loadCoverage(); route(); });
+window.addEventListener('load', () => { loadCoverage(); checkBootstrap(); route(); });
+
+// ─── Bootstrap banner (first-run / re-extract) ──────────────────────────
+
+let bootstrapPoller = null;
+
+async function checkBootstrap() {
+  try {
+    const status = await api('/bootstrap/status');
+    if (status.running || status.needs_bootstrap) {
+      showBootstrapBanner(status);
+      if (status.running) startBootstrapPolling();
+    } else {
+      hideBootstrapBanner();
+    }
+  } catch (e) { /* ignore on startup */ }
+}
+
+function showBootstrapBanner(status) {
+  let banner = document.getElementById('bootstrap-banner');
+  if (!banner) {
+    banner = el('div', { id: 'bootstrap-banner', className: 'bootstrap-banner' });
+    document.body.insertBefore(banner, document.getElementById('app'));
+  }
+  banner.replaceChildren();
+
+  if (status.running) {
+    const phaseLabels = {
+      extracting_text: 'Extracting text from label PDFs',
+      extracting_fields: 'Running field extractors',
+      saving: 'Saving cache',
+    };
+    const label = phaseLabels[status.phase] || status.phase;
+    const pct = status.total > 0 ? Math.round(100 * status.current / status.total) : 0;
+    banner.appendChild(el('div', { className: 'bootstrap-title' }, `${label}…`));
+    banner.appendChild(el('div', { className: 'bootstrap-sub' },
+      `${status.current} / ${status.total} (${pct}%)`));
+    const bar = el('div', { className: 'bootstrap-bar' });
+    bar.appendChild(el('div', { className: 'bootstrap-fill', style: { width: pct + '%' } }));
+    banner.appendChild(bar);
+  } else if (status.phase === 'error') {
+    banner.appendChild(el('div', { className: 'bootstrap-title bootstrap-error' }, 'Extraction failed'));
+    banner.appendChild(el('div', { className: 'bootstrap-sub' }, status.error || 'Unknown error'));
+    const btn = el('button', { className: 'btn btn-primary' }, 'Retry');
+    btn.onclick = runBootstrap;
+    banner.appendChild(btn);
+  } else {
+    // needs_bootstrap
+    banner.appendChild(el('div', { className: 'bootstrap-title' },
+      'Label data not yet extracted'));
+    banner.appendChild(el('div', { className: 'bootstrap-sub' },
+      `${status.texts_extracted} / ${status.total_labels} labels have text extracted. ` +
+      `Run the extractor to populate the tool (first run takes a few minutes).`));
+    const btn = el('button', { className: 'btn btn-primary' },
+      `Extract ${status.total_labels} labels`);
+    btn.onclick = runBootstrap;
+    banner.appendChild(btn);
+  }
+}
+
+function hideBootstrapBanner() {
+  const banner = document.getElementById('bootstrap-banner');
+  if (banner) banner.remove();
+  if (bootstrapPoller) { clearInterval(bootstrapPoller); bootstrapPoller = null; }
+}
+
+async function runBootstrap() {
+  try {
+    await api('/bootstrap/run', { method: 'POST', body: { force: false } });
+    startBootstrapPolling();
+  } catch (e) { alert('Failed to start: ' + e.message); }
+}
+
+function startBootstrapPolling() {
+  if (bootstrapPoller) return;
+  bootstrapPoller = setInterval(async () => {
+    try {
+      const status = await api('/bootstrap/status');
+      showBootstrapBanner(status);
+      if (!status.running) {
+        clearInterval(bootstrapPoller);
+        bootstrapPoller = null;
+        if (status.phase === 'done') {
+          // Reload products so the list reflects new extractions.
+          setTimeout(() => { hideBootstrapBanner(); route(); loadCoverage(); }, 1200);
+        }
+      }
+    } catch (e) { /* retry next tick */ }
+  }, 1000);
+}
 
 // ─── API ────────────────────────────────────────────────────────────────
 
