@@ -1,0 +1,480 @@
+// Cordyn Label Verification Tool — Frontend SPA
+// Note: This is a LOCAL tool running on localhost only. All data comes from
+// our own API backend. innerHTML is used for rendering trusted server data.
+
+const FIELDS = [
+  { key: 'hsr_number', label: 'HSR Number', type: 'scalar' },
+  { key: 'signal_word', label: 'Signal Word', type: 'scalar' },
+  { key: 'active_ingredients', label: 'Active Ingredients', type: 'list' },
+  { key: 'container_sizes', label: 'Container Sizes', type: 'list' },
+  { key: 'target_rates', label: 'Application Rates', type: 'rates' },
+  { key: 'rainfastness_hours', label: 'Rainfastness', type: 'scalar', suffix: ' hours' },
+  { key: 'max_applications_per_season', label: 'Max Applications/Season', type: 'scalar' },
+  { key: 'growth_stage_earliest', label: 'Growth Stage Window', type: 'growth_stage' },
+  { key: 'tank_mix_incompatible', label: 'Tank Mix (Incompatible)', type: 'list' },
+  { key: 'tank_mix_required', label: 'Tank Mix (Required)', type: 'list' },
+  { key: 'label_buffer_zone_m', label: 'Buffer Zone', type: 'scalar', suffix: ' m' },
+  { key: 'ppe_requirements', label: 'PPE Requirements', type: 'list' },
+  { key: 'environmental_cautions', label: 'Environmental Cautions', type: 'list' },
+  { key: 'hsno_classifications', label: 'HSNO Classifications', type: 'list' },
+  { key: 'shelf_life_years', label: 'Shelf Life', type: 'scalar', suffix: ' years' },
+  { key: 'label_whp_raw', label: 'WHP (cross-val)', type: 'raw' },
+  { key: 'label_rei_raw', label: 'REI (cross-val)', type: 'raw' },
+];
+
+const TAG_FIELDS = [
+  'max_applications', 'rainfastness', 'target_rate', 'buffer_zone',
+  'growth_stage', 'tank_mix', 'active_ingredients', 'container_sizes',
+  'hsno_classifications', 'shelf_life', 'signal_word', 'hsr_number',
+];
+
+let currentProducts = [];
+let currentFilter = 'has-label';
+let currentSearch = '';
+
+// ─── Utility: safe text escaping ────────────────────────────────────────
+
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = str || '';
+  return d.textContent.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// ─── Utility: DOM builder ───────────────────────────────────────────────
+
+function el(tag, attrs, ...children) {
+  const e = document.createElement(tag);
+  if (attrs) {
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === 'onclick' || k.startsWith('on')) e[k] = v;
+      else if (k === 'className') e.className = v;
+      else if (k === 'style' && typeof v === 'object') Object.assign(e.style, v);
+      else e.setAttribute(k, v);
+    }
+  }
+  for (const c of children) {
+    if (typeof c === 'string') e.appendChild(document.createTextNode(c));
+    else if (c) e.appendChild(c);
+  }
+  return e;
+}
+
+function setContent(container, ...nodes) {
+  container.replaceChildren(...nodes);
+}
+
+// ─── Router ─────────────────────────────────────────────────────────────
+
+function route() {
+  const hash = location.hash || '#/';
+  const app = document.getElementById('app');
+  if (hash.startsWith('#/product/')) {
+    renderProductDetail(app, hash.replace('#/product/', ''));
+  } else if (hash === '#/coverage') {
+    renderCoverage(app);
+  } else if (hash === '#/patterns') {
+    renderPatterns(app);
+  } else {
+    renderProductList(app);
+  }
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const r = hash === '#/coverage' ? 'coverage' : hash === '#/patterns' ? 'patterns' : 'list';
+  document.querySelector(`[data-route="${r}"]`)?.classList.add('active');
+}
+
+window.addEventListener('hashchange', route);
+window.addEventListener('load', () => { loadCoverage(); route(); });
+
+// ─── API ────────────────────────────────────────────────────────────────
+
+async function api(path, opts = {}) {
+  const res = await fetch(`/api${path}`, {
+    headers: { 'Content-Type': 'application/json' },
+    ...opts,
+    body: opts.body ? JSON.stringify(opts.body) : undefined,
+  });
+  if (!res.ok) throw new Error(`API ${res.status}`);
+  return res.json();
+}
+
+async function loadCoverage() {
+  try {
+    const cov = await api('/coverage');
+    const bar = document.querySelector('.progress-fill');
+    const text = document.querySelector('.progress-text');
+    const pct = cov.total > 0 ? Math.round(100 * cov.verified / cov.total) : 0;
+    bar.style.width = pct + '%';
+    text.textContent = `${cov.verified}/${cov.total} verified`;
+  } catch (e) { /* startup timing */ }
+}
+
+// ─── Product List ───────────────────────────────────────────────────────
+
+async function renderProductList(container) {
+  setContent(container, el('p', {}, 'Loading products...'));
+  try { currentProducts = await api('/products'); }
+  catch (e) { setContent(container, el('p', { style: { color: 'var(--red)' } }, 'Error: ' + e.message)); return; }
+
+  const wrapper = el('div', {});
+
+  // Header
+  const header = el('div', { className: 'product-list-header' });
+  header.appendChild(el('h2', {}, `Products (${currentProducts.length})`));
+  const searchInput = el('input', { className: 'search-input', placeholder: 'Search by name...', value: currentSearch });
+  searchInput.oninput = () => { currentSearch = searchInput.value; renderProductRows(); };
+  header.appendChild(searchInput);
+
+  const chips = el('div', { className: 'filter-chips' });
+  const filterLabels = {'has-label': 'Has label', 'all': 'All', 'no-label': 'No label', 'low': 'Low conf.', 'unverified': 'Unverified'};
+  for (const f of ['has-label', 'all', 'no-label', 'low', 'unverified']) {
+    const chip = el('button', { className: 'filter-chip' + (currentFilter === f ? ' active' : '') }, filterLabels[f]);
+    chip.onclick = () => { currentFilter = f; renderProductList(container); };
+    chips.appendChild(chip);
+  }
+  header.appendChild(chips);
+  wrapper.appendChild(header);
+
+  // Table
+  const table = el('table', {});
+  const thead = el('thead', {});
+  const headRow = el('tr', {});
+  for (const h of ['Product', 'Section', 'Confidence', 'Fields', 'Verified']) {
+    headRow.appendChild(el('th', {}, h));
+  }
+  thead.appendChild(headRow);
+  table.appendChild(thead);
+  const tbody = el('tbody', { id: 'product-tbody' });
+  table.appendChild(tbody);
+  wrapper.appendChild(table);
+  setContent(container, wrapper);
+  renderProductRows();
+}
+
+function renderProductRows() {
+  const tbody = document.getElementById('product-tbody');
+  if (!tbody) return;
+  let filtered = currentProducts;
+  if (currentFilter === 'has-label') filtered = filtered.filter(p => p.has_label);
+  if (currentFilter === 'no-label') filtered = filtered.filter(p => !p.has_label);
+  if (currentFilter === 'low') filtered = filtered.filter(p => p.has_label && p.confidence === 'low');
+  if (currentFilter === 'unverified') filtered = filtered.filter(p => p.has_label && p.verified_count === 0);
+  if (currentSearch) {
+    const q = currentSearch.toLowerCase();
+    filtered = filtered.filter(p => p.name.toLowerCase().includes(q));
+  }
+  tbody.replaceChildren();
+  for (const p of filtered) {
+    const row = el('tr', {});
+    row.onclick = () => { location.hash = `#/product/${p.id}`; };
+    row.appendChild(el('td', {}, el('strong', {}, p.name)));
+    row.appendChild(el('td', {}, p.section));
+    const badge = el('span', { className: `badge badge-${p.confidence}` }, p.confidence);
+    row.appendChild(el('td', {}, badge));
+    row.appendChild(el('td', {}, `${p.extracted_count}/${p.total_fields}`));
+    row.appendChild(el('td', {}, p.verified_count > 0 ? p.verified_count + ' fields' : '-'));
+    tbody.appendChild(row);
+  }
+}
+
+// ─── Product Detail ─────────────────────────────────────────────────────
+
+async function renderProductDetail(container, productId) {
+  setContent(container, el('p', {}, 'Loading...'));
+  let data;
+  try { data = await api(`/products/${productId}`); }
+  catch (e) { setContent(container, el('p', { style: { color: 'var(--red)' } }, 'Error: ' + e.message)); return; }
+
+  const { product, extraction, verified: ver, has_label } = data;
+  const wrapper = el('div', {});
+
+  // Back link
+  const backDiv = el('div', { className: 'detail-back' });
+  const backLink = el('a', { href: '#/' }, '\u2190 Back to products');
+  backDiv.appendChild(backLink);
+  wrapper.appendChild(backDiv);
+
+  // Title
+  const conf = extraction.extraction_confidence || 'none';
+  const title = el('h2', { style: { marginBottom: '12px' } });
+  title.appendChild(document.createTextNode((product?.name || productId) + ' '));
+  title.appendChild(el('span', { className: `badge badge-${conf}` }, conf));
+  wrapper.appendChild(title);
+
+  if (!has_label) {
+    wrapper.appendChild(el('p', { style: { color: 'var(--grey-500)', margin: '24px 0' } },
+      'No label PDF available for this product. It may not have an ACVM registration match.'));
+    setContent(container, wrapper);
+    return;
+  }
+
+  // Split panel
+  const detailContainer = el('div', { className: 'detail-container' });
+
+  // PDF panel
+  const pdfPanel = el('div', { className: 'pdf-panel' });
+  const iframe = el('iframe', { src: `/api/products/${productId}/label`, id: 'pdf-iframe' });
+  pdfPanel.appendChild(iframe);
+  detailContainer.appendChild(pdfPanel);
+
+  // Extraction panel
+  const extPanel = el('div', { className: 'extraction-panel', id: 'extraction-panel' });
+  detailContainer.appendChild(extPanel);
+
+  wrapper.appendChild(detailContainer);
+  setContent(container, wrapper);
+
+  renderExtractionFields(productId, extraction, ver || {});
+}
+
+function renderExtractionFields(productId, ext, ver) {
+  const panel = document.getElementById('extraction-panel');
+  if (!panel) return;
+  panel.replaceChildren();
+
+  for (const field of FIELDS) {
+    const val = ext[field.key];
+    const rawKey = field.key + '_raw';
+    const raw = ext[rawKey];
+    const verified = ver[field.key];
+    const hasValue = val !== null && val !== undefined && (!Array.isArray(val) || val.length > 0);
+    const card = el('div', { className: 'field-card' + (verified?.status === 'correct' ? ' field-verified' : verified?.status === 'wrong' ? ' field-corrected' : '') });
+
+    // Header
+    const header = el('div', { className: 'field-card-header' });
+    header.appendChild(el('span', { className: 'field-name' }, field.label));
+    if (verified) {
+      header.appendChild(el('span', { className: `badge badge-${verified.status === 'correct' ? 'high' : 'medium'}` }, verified.status));
+    }
+    card.appendChild(header);
+
+    // Value
+    if (hasValue) {
+      const valDiv = el('div', { className: 'field-value' });
+      if (field.type === 'list' && Array.isArray(val)) {
+        valDiv.textContent = val.map(v => typeof v === 'object' ? (v.name ? `${v.name} ${v.concentration_value || ''} ${v.concentration_unit || ''}` : JSON.stringify(v)) : String(v)).join(', ');
+      } else if (field.type === 'rates' && Array.isArray(val)) {
+        valDiv.textContent = val.map(r => `${r.target}: ${r.rate_value}`).join('; ');
+      } else if (field.type === 'growth_stage') {
+        valDiv.textContent = `${ext.growth_stage_earliest || '?'} to ${ext.growth_stage_latest || '?'}`;
+      } else {
+        valDiv.textContent = String(val) + (field.suffix || '');
+      }
+      card.appendChild(valDiv);
+      if (raw) {
+        const rawDiv = el('div', { className: 'field-raw' });
+        rawDiv.textContent = String(raw).substring(0, 150);
+        card.appendChild(rawDiv);
+      }
+    } else {
+      card.appendChild(el('div', { className: 'field-not-found' }, 'Not found'));
+    }
+
+    // Actions
+    const actions = el('div', { className: 'field-actions' });
+    const btnCorrect = el('button', { className: 'btn btn-correct' }, 'Correct');
+    btnCorrect.onclick = () => verifyField(productId, field.key, 'correct');
+    const btnWrong = el('button', { className: 'btn btn-wrong' }, 'Wrong');
+    btnWrong.onclick = () => {
+      const v = prompt(`Enter the correct value for "${field.label}":`);
+      if (v !== null) {
+        api(`/products/${productId}/correct`, { method: 'POST', body: { field: field.key, correct_value: v } })
+          .then(() => verifyField(productId, field.key, 'wrong'));
+      }
+    };
+    const btnAbsent = el('button', { className: 'btn btn-absent' }, 'Not on label');
+    btnAbsent.onclick = () => verifyField(productId, field.key, 'absent');
+    actions.append(btnCorrect, btnWrong, btnAbsent);
+    card.appendChild(actions);
+
+    panel.appendChild(card);
+  }
+
+  // Manual annotation section
+  const annoCard = el('div', { className: 'field-card', style: { background: 'var(--grey-100)' } });
+  annoCard.appendChild(el('div', { className: 'field-name' }, 'Manual Annotation'));
+  annoCard.appendChild(el('p', { style: { fontSize: '12px', margin: '8px 0' } }, 'Paste label text here, then select the field type:'));
+  const textarea = el('textarea', {
+    id: 'manual-annotation-text',
+    placeholder: 'Paste label text here...',
+    style: { width: '100%', height: '60px', fontFamily: 'var(--mono)', fontSize: '12px', border: '1px solid var(--grey-300)', padding: '8px' },
+  });
+  annoCard.appendChild(textarea);
+  const tagBtns = el('div', { style: { display: 'flex', gap: '4px', marginTop: '8px', flexWrap: 'wrap' } });
+  for (const f of TAG_FIELDS) {
+    const btn = el('button', { className: 'tag-btn' }, f.replace(/_/g, ' '));
+    btn.onclick = () => annotateManual(productId, f);
+    tagBtns.appendChild(btn);
+  }
+  annoCard.appendChild(tagBtns);
+  panel.appendChild(annoCard);
+}
+
+async function verifyField(productId, field, status) {
+  await api(`/products/${productId}/verify`, { method: 'POST', body: { field, status } });
+  route();
+  loadCoverage();
+}
+
+async function annotateManual(productId, field) {
+  const textarea = document.getElementById('manual-annotation-text');
+  const text = textarea?.value?.trim();
+  if (!text) { alert('Please paste or type the label text first'); return; }
+  const value = prompt(`Enter the structured value for "${field}":\n\nText: "${text.substring(0, 80)}..."`);
+
+  try {
+    const result = await api(`/products/${productId}/annotate`, {
+      method: 'POST',
+      body: { field, selected_text: text, structured_value: value },
+    });
+    if (result.candidates && result.candidates.length > 0) {
+      showPatternModal(result.candidates, field, productId);
+    } else {
+      alert('Annotation saved. No patterns generated (text may be too short).');
+    }
+  } catch (e) { alert('Error: ' + e.message); }
+}
+
+// ─── Pattern Learning Modal ─────────────────────────────────────────────
+
+function showPatternModal(candidates, field, sourceProduct) {
+  const modal = document.getElementById('pattern-modal');
+  const body = document.getElementById('pattern-modal-body');
+  body.replaceChildren();
+
+  body.appendChild(el('p', { style: { marginBottom: '12px' } },
+    `Generated ${candidates.length} candidate pattern(s) for ${field}:`));
+
+  for (const c of candidates) {
+    const block = el('div', { style: { marginBottom: '16px', padding: '12px', background: 'var(--grey-100)' } });
+    block.appendChild(el('div', { style: { fontSize: '11px', color: 'var(--grey-500)', marginBottom: '4px' } }, c.strategy));
+    const patternDiv = el('div', { className: 'pattern-text' });
+    patternDiv.textContent = c.pattern;
+    block.appendChild(patternDiv);
+    block.appendChild(el('div', { className: 'pattern-result' },
+      `${c.new_match_count} new matches / ${c.total_matches} total`));
+    if (c.new_match_count > 0) {
+      block.appendChild(el('div', { className: 'match-list' },
+        'New: ' + c.new_matches.slice(0, 8).join(', ')));
+    }
+    const btns = el('div', { style: { marginTop: '8px', display: 'flex', gap: '8px' } });
+    const approveBtn = el('button', { className: 'btn btn-primary' }, 'Approve');
+    approveBtn.onclick = () => approvePattern(c.pattern, field, sourceProduct);
+    const rejectBtn = el('button', { className: 'btn' }, 'Reject');
+    rejectBtn.onclick = () => closePatternModal();
+    btns.append(approveBtn, rejectBtn);
+    block.appendChild(btns);
+    body.appendChild(block);
+  }
+
+  // Custom pattern editor
+  const editorSection = el('div', { style: { marginTop: '16px', borderTop: '1px solid var(--grey-300)', paddingTop: '12px' } });
+  editorSection.appendChild(el('div', { className: 'field-name' }, 'Write custom pattern'));
+  const patternInput = el('input', { className: 'pattern-input', id: 'custom-pattern', placeholder: 'Enter regex pattern...' });
+  editorSection.appendChild(patternInput);
+  const testBtn = el('button', { className: 'btn' }, 'Test');
+  testBtn.onclick = () => testCustomPattern(field);
+  editorSection.appendChild(testBtn);
+  editorSection.appendChild(el('div', { id: 'custom-pattern-result' }));
+  body.appendChild(editorSection);
+
+  modal.classList.remove('hidden');
+}
+
+function closePatternModal() {
+  document.getElementById('pattern-modal').classList.add('hidden');
+}
+
+async function approvePattern(pattern, field, sourceProduct) {
+  try {
+    const result = await api('/patterns/approve', {
+      method: 'POST',
+      body: { pattern, field, source_product: sourceProduct },
+    });
+    closePatternModal();
+    alert(`Pattern approved! Re-extracted ${result.re_extracted} products.`);
+    loadCoverage();
+    route();
+  } catch (e) { alert('Error: ' + e.message); }
+}
+
+async function testCustomPattern(field) {
+  const pattern = document.getElementById('custom-pattern').value;
+  if (!pattern) return;
+  try {
+    const result = await api('/patterns/test', { method: 'POST', body: { pattern, field } });
+    const resultDiv = document.getElementById('custom-pattern-result');
+    resultDiv.replaceChildren();
+    const info = el('div', { className: 'pattern-result', style: { marginTop: '8px' } });
+    if (!result.is_valid) {
+      info.appendChild(el('span', { style: { color: 'var(--red)' } }, 'Invalid regex!'));
+    } else {
+      info.textContent = `${result.new_match_count} new / ${result.total_matches} total`;
+      if (result.new_match_count > 0) {
+        info.appendChild(el('br', {}));
+        info.appendChild(el('span', { className: 'match-list' }, 'New: ' + result.new_matches.slice(0, 8).join(', ')));
+        const approveBtn = el('button', { className: 'btn btn-primary', style: { marginTop: '8px', display: 'block' } }, 'Approve');
+        approveBtn.onclick = () => approvePattern(pattern, field, 'manual');
+        info.appendChild(approveBtn);
+      }
+    }
+    resultDiv.appendChild(info);
+  } catch (e) {
+    const resultDiv = document.getElementById('custom-pattern-result');
+    resultDiv.replaceChildren(el('span', { style: { color: 'var(--red)' } }, e.message));
+  }
+}
+
+// ─── Coverage Dashboard ─────────────────────────────────────────────────
+
+async function renderCoverage(container) {
+  setContent(container, el('p', {}, 'Loading coverage...'));
+  try {
+    const cov = await api('/coverage');
+    const wrapper = el('div', {});
+    wrapper.appendChild(el('h2', { style: { marginBottom: '16px' } }, `Extraction Coverage (${cov.total} labels)`));
+    wrapper.appendChild(el('p', { style: { marginBottom: '16px', color: 'var(--charcoal-light)' } },
+      `${cov.verified} verified \u00b7 ${cov.learned_patterns} learned patterns`));
+
+    const grid = el('div', { className: 'coverage-grid' });
+    const sorted = Object.entries(cov.fields).sort((a, b) => b[1].pct - a[1].pct);
+    for (const [field, data] of sorted) {
+      grid.appendChild(el('div', { className: 'coverage-label' }, field.replace(/_/g, ' ')));
+      const bar = el('div', { className: 'coverage-bar' });
+      bar.appendChild(el('div', { className: 'coverage-fill', style: { width: data.pct + '%' } }));
+      grid.appendChild(bar);
+      grid.appendChild(el('div', { className: 'coverage-pct' }, `${data.count}/${data.total} (${data.pct}%)`));
+    }
+    wrapper.appendChild(grid);
+    setContent(container, wrapper);
+  } catch (e) {
+    setContent(container, el('p', { style: { color: 'var(--red)' } }, 'Error: ' + e.message));
+  }
+}
+
+// ─── Patterns View ──────────────────────────────────────────────────────
+
+async function renderPatterns(container) {
+  try {
+    const patterns = await api('/patterns');
+    const wrapper = el('div', {});
+    wrapper.appendChild(el('h2', { style: { marginBottom: '16px' } }, 'Learned Patterns'));
+    const fields = Object.keys(patterns);
+    if (fields.length === 0) {
+      wrapper.appendChild(el('p', { style: { color: 'var(--grey-500)' } },
+        'No patterns learned yet. Review products and annotate missed data to teach the system.'));
+    }
+    for (const field of fields) {
+      wrapper.appendChild(el('h3', { style: { marginTop: '16px', marginBottom: '8px' } }, field.replace(/_/g, ' ')));
+      for (const p of patterns[field]) {
+        const patDiv = el('div', { className: 'pattern-text' });
+        patDiv.textContent = p.pattern;
+        wrapper.appendChild(patDiv);
+        wrapper.appendChild(el('div', { style: { fontSize: '11px', color: 'var(--grey-500)' } },
+          `Added: ${(p.added_at || '?').substring(0, 10)} \u00b7 Matches: ${p.test_results?.total_matches || '?'} \u00b7 Status: ${p.status}`));
+      }
+    }
+    setContent(container, wrapper);
+  } catch (e) {
+    setContent(container, el('p', { style: { color: 'var(--red)' } }, 'Error: ' + e.message));
+  }
+}

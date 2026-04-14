@@ -1,0 +1,48 @@
+{
+  "barrier": [
+    {
+      "field": "active_ingredients",
+      "selected_text": "10g/L Tebuconazole",
+      "structured_value": null,
+      "annotated_at": "2026-04-02T15:58:27.228613+00:00"
+    },
+    {
+      "field": "active_ingredients",
+      "selected_text": "Contains: 10g/L Tebuconazole in the form of a ready to use liquid",
+      "structured_value": "10g/L Tebuconazole",
+      "annotated_at": "2026-04-02T16:17:39.220964+00:00"
+    },
+    {
+      "field": "active_ingredients",
+      "selected_text": "Contains: 10g/L Tebuconazole in the form of a ready to use liquid",
+      "structured_value": "10g/L Tebuconazole",
+      "annotated_at": "2026-04-02T16:18:20.819387+00:00"
+    },
+    {
+      "field": "active_ingredients",
+      "selected_text": "Contains: 10g/L Tebuconazole in the form of a ready to use liquid",
+      "structured_value": "10g/L Tebuconazole",
+      "annotated_at": "2026-04-02T16:22:07.660868+00:00"
+    },
+    {
+      "field": "active_ingredients",
+      "selected_text": "Contains: 10g/L Tebuconazole in the form of a ready to use liquid.",
+      "structured_value": "10g/L Tebuconazole",
+      "annotated_at": "2026-04-02T16:23:30.628941+00:00"
+    },
+    {
+      "field": "container_sizes",
+      "selected_text": "2 Litres\n10 Litres",
+      "structured_value": "2 Litres 10 Litres",
+      "annotated_at": "2026-04-02T16:26:02.730981+00:00"
+    }
+  ],
+  "velocity-50-sc": [
+    {
+      "field": "max_applications",
+      "selected_text": "Apply\nno more than two applications of\nVelocity™50SC per season",
+      "structured_value": "no more than two applications",
+      "annotated_at": "2026-04-02T16:39:55.680321+00:00"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "_comment": "Manual overrides for ACVM matching. 'block' prevents false fuzzy matches. 'force' assigns a specific P-number.",
+  "block": {
+    "confidor": "P009817 is Condor (fungicide), not Confidor (insecticide). Confidor withdrawn from ACVM register."
+  },
+  "force": {}
+}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cordyn — Label Verification Tool</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <nav id="nav">
+    <div class="nav-brand">Cordyn Label Tool</div>
+    <div class="nav-links">
+      <a href="#/" class="nav-link active" data-route="list">Products</a>
+      <a href="#/coverage" class="nav-link" data-route="coverage">Coverage</a>
+      <a href="#/patterns" class="nav-link" data-route="patterns">Patterns</a>
+    </div>
+    <div id="progress-bar" class="progress-bar">
+      <div class="progress-fill" style="width: 0%"></div>
+      <span class="progress-text">Loading...</span>
+    </div>
+  </nav>
+
+  <main id="app"></main>
+
+  <!-- Pattern learning modal -->
+  <div id="pattern-modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Pattern Learning</h3>
+        <button class="modal-close" onclick="closePatternModal()">&times;</button>
+      </div>
+      <div id="pattern-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Annotation tag menu (floating) -->
+  <div id="tag-menu" class="tag-menu hidden">
+    <div class="tag-menu-title">Tag as:</div>
+    <div class="tag-menu-buttons"></div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

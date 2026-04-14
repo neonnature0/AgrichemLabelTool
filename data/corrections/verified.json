@@ -1,0 +1,26 @@
+{
+  "barrier": {
+    "hsr_number": {
+      "status": "correct",
+      "at": "2026-04-02T15:49:49.446896+00:00"
+    }
+  },
+  "velocity-50-sc": {
+    "hsr_number": {
+      "status": "correct",
+      "at": "2026-04-02T16:38:26.255749+00:00"
+    },
+    "container_sizes": {
+      "status": "correct",
+      "at": "2026-04-02T16:38:35.426009+00:00"
+    },
+    "active_ingredients": {
+      "status": "correct",
+      "at": "2026-04-02T16:38:39.783811+00:00"
+    },
+    "target_rates": {
+      "status": "correct",
+      "at": "2026-04-02T16:38:56.574182+00:00"
+    }
+  }
+}

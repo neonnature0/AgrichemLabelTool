@@ -1,0 +1,68 @@
+{
+  "active_ingredients": [
+    {
+      "pattern": ".{1,60}?:\\s+10g/L\\s+.{1,60}?in\\s+the\\s+form\\s+of\\s+a\\s+ready\\s+to\\s+use\\s+liquid",
+      "source": "barrier",
+      "test_results": {
+        "new_matches": 1,
+        "total_matches": 1
+      },
+      "status": "approved",
+      "added_at": "2026-04-02T16:17:50.862803+00:00"
+    },
+    {
+      "pattern": ".{1,60}?:\\s+10g/L\\s+.{1,60}?in\\s+the\\s+form\\s+of\\s+a\\s+ready\\s+to\\s+use\\s+liquid",
+      "source": "barrier",
+      "test_results": {
+        "new_matches": 1,
+        "total_matches": 1
+      },
+      "status": "approved",
+      "added_at": "2026-04-02T16:18:34.661541+00:00"
+    },
+    {
+      "pattern": ".{1,60}?:\\s+10g/L\\s+.{1,60}?in\\s+the\\s+form\\s+of\\s+a\\s+ready\\s+to\\s+use\\s+liquid",
+      "source": "barrier",
+      "test_results": {
+        "new_matches": 1,
+        "total_matches": 1
+      },
+      "status": "approved",
+      "added_at": "2026-04-02T16:22:11.866005+00:00"
+    },
+    {
+      "pattern": ".{1,60}?:\\s+10g/L\\s+.{1,60}?in\\s+the\\s+form\\s+of\\s+a\\s+ready\\s+to\\s+use\\s+liquid\\.",
+      "source": "barrier",
+      "test_results": {
+        "new_matches": 1,
+        "total_matches": 1
+      },
+      "status": "approved",
+      "added_at": "2026-04-02T16:23:34.996233+00:00"
+    }
+  ],
+  "container_sizes": [
+    {
+      "pattern": "2\\s+.{1,60}?\\\n10\\s+.{1,60}?",
+      "source": "barrier",
+      "test_results": {
+        "new_matches": 1,
+        "total_matches": 5
+      },
+      "status": "approved",
+      "added_at": "2026-04-02T16:26:05.324404+00:00"
+    }
+  ],
+  "max_applications": [
+    {
+      "pattern": "more\\ than\\s+(\\d+).{0,40}?application.{0,40}?per.{0,40}?season",
+      "source": "velocity-50-sc",
+      "test_results": {
+        "new_matches": 11,
+        "total_matches": 11
+      },
+      "status": "approved",
+      "added_at": "2026-04-02T16:40:24.713731+00:00"
+    }
+  ]
+}

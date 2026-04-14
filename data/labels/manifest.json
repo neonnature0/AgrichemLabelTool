@@ -1,0 +1,3226 @@
+{
+  "P000677": {
+    "last_checked": "2026-04-02T12:45:59.118368+00:00",
+    "trade_name": "Thiram 80 WDG",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.118345+00:00",
+        "filename": "Thiram 80 WDG - P000677 - Approved Label - Feb 2024.pdf",
+        "hash": "0ad46a8bad4b7eadd66f078e68b0fc83f580133f1d9ae20739abdb6e1731583f",
+        "is_current": true,
+        "label_date": "Feb 2024"
+      }
+    ]
+  },
+  "P002062": {
+    "last_checked": "2026-04-02T12:45:58.314828+00:00",
+    "trade_name": "Polyram DF",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.314804+00:00",
+        "filename": "Polyram DF - P002062 - Approved Label - Mar 2025.pdf",
+        "hash": "6d4e7db9242bd443c979e91dd1a5027d47da63261ce93fb1249ca989645a1b07",
+        "is_current": true,
+        "label_date": "Mar 2025"
+      }
+    ]
+  },
+  "P002584": {
+    "last_checked": "2026-04-02T12:45:56.062628+00:00",
+    "trade_name": "Botran 75WP",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.062604+00:00",
+        "filename": "Botran 75WP - P002584 - Approved Label - May 2022.pdf",
+        "hash": "4c2bb472865c1f2933e363a74a29e33606e357ceca7665e52c7dcb3e73b757e0",
+        "is_current": true,
+        "label_date": "May 2022"
+      }
+    ]
+  },
+  "P002686": {
+    "last_checked": "2026-04-02T12:45:59.310257+00:00",
+    "trade_name": "Vinevax Bio-Dowel",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.310237+00:00",
+        "filename": "Vinevax Bio-Dowel - P002686 - Approved Label - Dec 2023.pdf",
+        "hash": "365a6489c5f7345462423139405bcf8dc901e50ce450f324b2d22a7adc800a43",
+        "is_current": true,
+        "label_date": "Dec 2023"
+      }
+    ]
+  },
+  "P002810": {
+    "last_checked": "2026-04-02T12:45:58.577518+00:00",
+    "trade_name": "Ripcord",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.577501+00:00",
+        "filename": "Ripcord - P002810 - Approved Label - Feb 2025.pdf",
+        "hash": "4956565fa53ec77dc276b600d314a2477b4682dcfc27efbcfeff2a12435def59",
+        "is_current": true,
+        "label_date": "Feb 2025"
+      }
+    ]
+  },
+  "P003064": {
+    "last_checked": "2026-04-02T12:45:56.165304+00:00",
+    "trade_name": "Buster",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.165281+00:00",
+        "filename": "Buster - P003064 - Approved Label - Mar 2024.pdf",
+        "hash": "944478b630beae973b8ecf2f8b5e926bb063460659885d299b3e7329a4c378b4",
+        "is_current": true,
+        "label_date": "Mar 2024"
+      }
+    ]
+  },
+  "P003342": {
+    "last_checked": "2026-04-02T12:45:55.895209+00:00",
+    "trade_name": "Assett",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:55.895189+00:00",
+        "filename": "Assett - P003342 - Approved Label - May 2025.pdf",
+        "hash": "746f8c85fca2bc644ec8c5a974b4f3524a9df631df8c00ae93fe314c8cec4940",
+        "is_current": true,
+        "label_date": "May 2025"
+      }
+    ]
+  },
+  "P003493": {
+    "last_checked": "2026-04-02T12:45:57.636192+00:00",
+    "trade_name": "Kumulus DF",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.636168+00:00",
+        "filename": "Kumulus DF - P003493 - Approved Label - May 2024.pdf",
+        "hash": "411f428469059a91f39724110d0a17cc6103767e50367eb36d5618d0b60a2934",
+        "is_current": true,
+        "label_date": "May 2024"
+      }
+    ]
+  },
+  "P003495": {
+    "last_checked": "2026-04-02T12:45:57.481393+00:00",
+    "trade_name": "Karate Zeon",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.481369+00:00",
+        "filename": "Karate Zeon - P003495 - Approved Label - Apr 2024.pdf",
+        "hash": "a3127fe306a0c4548f80d00e41c20b653d43adb891fe727dbe7209ce27abfb7b",
+        "is_current": true,
+        "label_date": "Apr 2024"
+      }
+    ]
+  },
+  "P003507": {
+    "last_checked": "2026-04-02T12:45:56.528690+00:00",
+    "trade_name": "Delan WG",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.528673+00:00",
+        "filename": "Delan WG - P003507 - Approved Label - Feb 2024.pdf",
+        "hash": "f91237114379aaeaa0acb7cab40fece3a63d25c3bb980051e372d347125bdec2",
+        "is_current": true,
+        "label_date": "Feb 2024"
+      }
+    ]
+  },
+  "P003853": {
+    "last_checked": "2026-04-02T12:45:56.573317+00:00",
+    "trade_name": "DiPel DF",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.573294+00:00",
+        "filename": "DiPel DF - P003853 - Approved Label - Oct 2024.pdf",
+        "hash": "b4778884292be2feb5b400d2ed1f506b15d52b0c21e2548c464048a0cbc74270",
+        "is_current": true,
+        "label_date": "Oct 2024"
+      }
+    ]
+  },
+  "P004053": {
+    "last_checked": "2026-04-02T12:45:56.616361+00:00",
+    "trade_name": "Dithane Rainshield Neo Tec",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.616338+00:00",
+        "filename": "Dithane Rainshield Neo Tec - P004053 - Approved Label - Feb 2026.pdf",
+        "hash": "e5c97f9569e8e02d61d359c6b622629fcb097f0931a3fcab5c6f017c12d4776a",
+        "is_current": true,
+        "label_date": "Feb 2026"
+      }
+    ]
+  },
+  "P004114": {
+    "last_checked": "2026-04-02T12:45:59.102625+00:00",
+    "trade_name": "Thiram 40F",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.102602+00:00",
+        "filename": "Thiram 40F - P004114 - Approved Label - Sep 2023.pdf",
+        "hash": "662c762098e32856e72e56d6b3de73c7fffe6968b3bab8b4b7bf0d068f926dde",
+        "is_current": true,
+        "label_date": "Sep 2023"
+      }
+    ]
+  },
+  "P004231": {
+    "last_checked": "2026-04-02T12:45:59.325029+00:00",
+    "trade_name": "Vinevax Pruning Wound Dressing",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.325005+00:00",
+        "filename": "Vinevax Pruning Wound Dressing - P004231 - Approved Label - Jan 2025.pdf",
+        "hash": "953233dd44c7f340308b0224c4aaadc070539d2e574fdef7f67360b0bad8b0e9",
+        "is_current": true,
+        "label_date": "Jan 2025"
+      }
+    ]
+  },
+  "P004470": {
+    "last_checked": "2026-04-02T12:45:58.216828+00:00",
+    "trade_name": "Penncozeb DF",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.216803+00:00",
+        "filename": "Penncozeb DF - P004470 - Approved Label - Aug 2025.pdf",
+        "hash": "19e335f714036e171246210eb1ee320ede568d3027ae3ec2d146a8b7c6a0dc7b",
+        "is_current": true,
+        "label_date": "Aug 2025"
+      }
+    ]
+  },
+  "P004529": {
+    "last_checked": "2026-04-02T12:45:56.544405+00:00",
+    "trade_name": "Delfin",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.544386+00:00",
+        "filename": "Delfin - P004529 - Approved Label - Sept 2025.pdf",
+        "hash": "59fd4e9161e9587c2198081aa4b782b0d2605c1db7cf749e88033e669243e5ae",
+        "is_current": true,
+        "label_date": "Sept 2025"
+      }
+    ]
+  },
+  "P004659": {
+    "last_checked": "2026-04-02T12:45:57.523528+00:00",
+    "trade_name": "Katana",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.523503+00:00",
+        "filename": "Katana - P004659 - Approved Label - Oct 2024.pdf",
+        "hash": "87f8a0c418937620b27057af91931805c6b854a9908fa071d137aaec5038e386",
+        "is_current": true,
+        "label_date": "Oct 2024"
+      }
+    ]
+  },
+  "P004795": {
+    "last_checked": "2026-04-02T12:45:57.887746+00:00",
+    "trade_name": "Microthiol Disperss",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.887723+00:00",
+        "filename": "Microthiol Disperss - P004795 - Approved Label - Dec 2024.pdf",
+        "hash": "dd954cf8369a5ff74aed36e2e1f419d1e6c2286dd6b8e4f339a34989e759c357",
+        "is_current": true,
+        "label_date": "Dec 2024"
+      }
+    ]
+  },
+  "P004900": {
+    "last_checked": "2026-04-02T12:45:58.636535+00:00",
+    "trade_name": "Scala",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.636518+00:00",
+        "filename": "Scala - P004900 - Approved Label - P004900-Label-Oct 2018.pdf",
+        "hash": "be7e18f027c80b24f1cd0ebbe881fc33b28b9bd56d39a405ca187bdff0e2285b",
+        "is_current": true,
+        "label_date": "P004900-Label-Oct 2018"
+      }
+    ]
+  },
+  "P005017": {
+    "last_checked": "2026-04-02T12:45:55.951038+00:00",
+    "trade_name": "Bactur",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:55.951015+00:00",
+        "filename": "Bactur - P005017 - Approved Label - Nov 2024.pdf",
+        "hash": "c26ef9654d5cc0b2f843137b8f943fd6a5d701524fdfd91c7a955eaaaa0dbced",
+        "is_current": true,
+        "label_date": "Nov 2024"
+      }
+    ]
+  },
+  "P005113": {
+    "last_checked": "2026-04-02T12:45:58.954773+00:00",
+    "trade_name": "Switch",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.954749+00:00",
+        "filename": "Switch - P005113 - Approved Label - Dec 2024.pdf",
+        "hash": "790522c9c49edf0311549d7086082b812721171d97fff23d7411f8475bcc5048",
+        "is_current": true,
+        "label_date": "Dec 2024"
+      }
+    ]
+  },
+  "P005355": {
+    "last_checked": "2026-04-02T12:45:55.920827+00:00",
+    "trade_name": "Avaunt 30WG Insecticide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:55.920803+00:00",
+        "filename": "Avaunt 30WG Insecticide - P005355 - Approved Label - Aug 2025.pdf",
+        "hash": "5fc09356a651d56f504400294b7ae4ad35de92aa9d8f02aae376b30b27a5349c",
+        "is_current": true,
+        "label_date": "Aug 2025"
+      }
+    ]
+  },
+  "P005374": {
+    "last_checked": "2026-04-02T12:45:59.145981+00:00",
+    "trade_name": "Topas 200EW",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.145957+00:00",
+        "filename": "Topas 200EW - P005374 - Approved Label - May 2025.pdf",
+        "hash": "50dc1617ee293fc4be7710e665266790263e8dddafaa8e78665e171df637153e",
+        "is_current": true,
+        "label_date": "May 2025"
+      }
+    ]
+  },
+  "P005419": {
+    "last_checked": "2026-04-02T12:45:59.063068+00:00",
+    "trade_name": "Terb 500",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.063045+00:00",
+        "filename": "Terb 500 - P005419 - Approved Label - July 2022.pdf",
+        "hash": "84d51fddfde8e75b931c32070e946ad5dbdca22dd8bdccc58a5924e8900874f4",
+        "is_current": true,
+        "label_date": "July 2022"
+      }
+    ]
+  },
+  "P005441": {
+    "last_checked": "2026-04-02T12:45:58.496633+00:00",
+    "trade_name": "Rainbow & Brown Glyphosate 360",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.496615+00:00",
+        "filename": "Rainbow & Brown Glyphosate 360 - P005441 - Approved Label - Sept 2024.pdf",
+        "hash": "bdcd89c61030e24868005256d783f714f82a491ea5ddab1d00619a18f03517d5",
+        "is_current": true,
+        "label_date": "Sept 2024"
+      }
+    ]
+  },
+  "P005506": {
+    "last_checked": "2026-04-02T12:45:55.727724+00:00",
+    "trade_name": "AG Copp 75",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:55.727703+00:00",
+        "filename": "AG Copp 75 - P005506 - Approved Label - Apr 2025.pdf",
+        "hash": "dbc4a5f0918f54c484d9c8da2d247688a328d3d8201763c8a042377b7e2079f1",
+        "is_current": true,
+        "label_date": "Apr 2025"
+      }
+    ]
+  },
+  "P005658": {
+    "last_checked": "2026-04-02T12:45:58.563040+00:00",
+    "trade_name": "Ridomil Gold MZ WG",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.563023+00:00",
+        "filename": "Ridomil Gold MZ WG - P005658 - Approved Label - Nov 2022.pdf",
+        "hash": "2098d76e5c8daef6fbc4a4bffdbd2dd0a914fa129ac21e828c64ecdbbd960cc9",
+        "is_current": true,
+        "label_date": "Nov 2022"
+      }
+    ]
+  },
+  "P005785": {
+    "last_checked": "2026-04-02T12:45:59.450752+00:00",
+    "trade_name": "Weedmaster G360",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.450729+00:00",
+        "filename": "Weedmaster G360 - P005785 - Approved Label - Feb 2025.pdf",
+        "hash": "d62f3d454980e19bd7ccc9d8e665a5f71f7a78b16eb37ed2775e16daf521c775",
+        "is_current": true,
+        "label_date": "Feb 2025"
+      }
+    ]
+  },
+  "P005816": {
+    "last_checked": "2026-04-02T12:45:55.812471+00:00",
+    "trade_name": "Applaud 40SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:55.812448+00:00",
+        "filename": "Applaud 40SC - P005816 - Approved Label - May 2025.pdf",
+        "hash": "1291c903494af9d337360bab03ab2ef5d2790803738002a81e4884acc1e4dc9d",
+        "is_current": true,
+        "label_date": "May 2025"
+      }
+    ]
+  },
+  "P005819": {
+    "last_checked": "2026-04-02T12:45:59.076671+00:00",
+    "trade_name": "Thiovit Jet",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.076654+00:00",
+        "filename": "Thiovit Jet - P005819 - Approved Label - May 2025.pdf",
+        "hash": "5c6a0cc9b331fab3d48a77eae6401df80a9d0b6cbe69c377d6709fe907d7e645",
+        "is_current": true,
+        "label_date": "May 2025"
+      }
+    ]
+  },
+  "P005861": {
+    "last_checked": "2026-04-02T12:45:58.110679+00:00",
+    "trade_name": "Ovation 50WDG",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.110649+00:00",
+        "filename": "Ovation 50WDG - P005861 - Approved Label - May 2021.pdf",
+        "hash": "1d01c0a232895c77028164a6a5ac8a9f8923f80132cdd155a1bf44cd850ca8ec",
+        "is_current": true,
+        "label_date": "May 2021"
+      }
+    ]
+  },
+  "P005921": {
+    "last_checked": "2026-04-02T12:45:58.867096+00:00",
+    "trade_name": "Stomp Xtra",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.867072+00:00",
+        "filename": "Stomp Xtra - P005921 - Approved Label - July 2024.pdf",
+        "hash": "03342a453f8091db8282cb5f3e87c959d910faaa57fe675633032356a1f8f15e",
+        "is_current": true,
+        "label_date": "July 2024"
+      }
+    ]
+  },
+  "P006015": {
+    "last_checked": "2026-04-02T12:45:57.692549+00:00",
+    "trade_name": "Lion Herbicide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.692530+00:00",
+        "filename": "Lion Herbicide - P006015 - Approved Label - Feb 2025.pdf",
+        "hash": "5c7b36c766194cc32882925ebbbf4d6ecaff072cb6240c20ac7d280e447eeac7",
+        "is_current": true,
+        "label_date": "Feb 2025"
+      }
+    ]
+  },
+  "P006051": {
+    "last_checked": "2026-04-02T12:45:55.882219+00:00",
+    "trade_name": "Arxada Activated Amitrole 400",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:55.882201+00:00",
+        "filename": "Arxada Activated Amitrole 400 - P006051 - Approved Label - Jul 2024.pdf",
+        "hash": "ab9e702b3d4401505fe34afdf5e5ef8571e1bbed35530dd73df14f4dd90d7ba5",
+        "is_current": true,
+        "label_date": "Jul 2024"
+      }
+    ]
+  },
+  "P006085": {
+    "last_checked": "2026-04-02T12:45:58.016783+00:00",
+    "trade_name": "Nordox 75WG",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.016763+00:00",
+        "filename": "Nordox 75WG - P006085 - Approved Label - Mar 2025.pdf",
+        "hash": "5e361d1e821aedd561cbfda1cb05887a1ff3ca8398fc106bc631aafa606bf8e8",
+        "is_current": true,
+        "label_date": "Mar 2025"
+      }
+    ]
+  },
+  "P007020": {
+    "last_checked": "2026-04-02T12:45:59.034752+00:00",
+    "trade_name": "Teldor",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.034729+00:00",
+        "filename": "Teldor - P007020 - Approved Label - Dec 2021.pdf",
+        "hash": "427f518ce463e096d44a611ef6442545e8f9681529c9782e7120199d13909e49",
+        "is_current": true,
+        "label_date": "Dec 2021"
+      }
+    ]
+  },
+  "P007026": {
+    "last_checked": "2026-04-02T12:45:59.174847+00:00",
+    "trade_name": "Touchdown IQ",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.174822+00:00",
+        "filename": "Touchdown IQ - P007026 - Approved Label - Dec 2025.pdf",
+        "hash": "da60afd9cd48460bbd383bfee5be6f5537a4693648572c276c834179d689a940",
+        "is_current": true,
+        "label_date": "Dec 2025"
+      }
+    ]
+  },
+  "P007029": {
+    "last_checked": "2026-04-02T12:45:55.739744+00:00",
+    "trade_name": "AGPRO Glyphosate 510",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:55.739725+00:00",
+        "filename": "AGPRO Glyphosate 510 - P007029 - Approved Label - July 2024.pdf",
+        "hash": "b2fc1ac36c01e8b7fa1b845e0c4dd7b1cb9f7bc0b4a1ed9970a9ab9914321c66",
+        "is_current": true,
+        "label_date": "July 2024"
+      }
+    ]
+  },
+  "P007039": {
+    "last_checked": "2026-04-02T12:45:58.452704+00:00",
+    "trade_name": "Pyganic",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.452680+00:00",
+        "filename": "Pyganic - P007039 - Approved Label - Oct 2024.pdf",
+        "hash": "b27c525f7359b62ed9df3b340e82e750f97fb5fc831e7cb6b45f7b0edab140ab",
+        "is_current": true,
+        "label_date": "Oct 2024"
+      }
+    ]
+  },
+  "P007067": {
+    "last_checked": "2026-04-02T12:45:58.092904+00:00",
+    "trade_name": "Organic JMS Stylet Oil",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.092886+00:00",
+        "filename": "Organic JMS Stylet Oil - P007067 - Approved Label - Aug 2022.pdf",
+        "hash": "1a5e4bac6e97013cfff9b3fa27e9e8cba2d6c998f9f2a496bff54aa767e098f2",
+        "is_current": true,
+        "label_date": "Aug 2022"
+      }
+    ]
+  },
+  "P007069": {
+    "last_checked": "2026-04-02T12:45:56.695198+00:00",
+    "trade_name": "Eco-Oil",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.695171+00:00",
+        "filename": "Eco-Oil - P007069 - Approved Label - Nov 2022.pdf",
+        "hash": "dc657a88490cd15e23a6f564844e39c622569ed03555bec411bb11fe90c34772",
+        "is_current": true,
+        "label_date": "Nov 2022"
+      }
+    ]
+  },
+  "P007072": {
+    "last_checked": "2026-04-02T12:45:56.710407+00:00",
+    "trade_name": "Ecocarb",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.710378+00:00",
+        "filename": "Ecocarb - P007072 - Approved Label - May 2024.pdf",
+        "hash": "25bea652f137eb42e8fff36f290da6b1dc491297e18c76c8067efbc2986ac994",
+        "is_current": true,
+        "label_date": "May 2024"
+      }
+    ]
+  },
+  "P007149": {
+    "last_checked": "2026-04-02T12:45:58.398840+00:00",
+    "trade_name": "Protector HML",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.398817+00:00",
+        "filename": "Protector HML - P007149 - Approved Label - Jan 2026.pdf",
+        "hash": "f2efb71c405177902fcece21b1e08f536eaf68a49a9cafc50772412a70fbdf96",
+        "is_current": true,
+        "label_date": "Jan 2026"
+      }
+    ]
+  },
+  "P007154": {
+    "last_checked": "2026-04-02T12:45:58.359426+00:00",
+    "trade_name": "Prodigy",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.359409+00:00",
+        "filename": "Prodigy - P007154 - Approved Label - March 2022.pdf",
+        "hash": "291d8f4ff89694960f80086376be21b2a4a07863b4ba83f9afaa754e5e61d40f",
+        "is_current": true,
+        "label_date": "March 2022"
+      }
+    ]
+  },
+  "P007212": {
+    "last_checked": "2026-04-02T12:45:56.096088+00:00",
+    "trade_name": "Botry-Zen",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.096066+00:00",
+        "filename": "Botry-Zen - P007212 - Approved Label - July 2025.pdf",
+        "hash": "7e8a77e48f9092c546f3404b6967e4d2fed80d214a7c3214bfebfd1bf43d8f4e",
+        "is_current": true,
+        "label_date": "July 2025"
+      }
+    ]
+  },
+  "P007235": {
+    "last_checked": "2026-04-02T12:45:58.679511+00:00",
+    "trade_name": "Sentinel",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.679493+00:00",
+        "filename": "Sentinel - P007235 - Approved Label - Nov 2022.pdf",
+        "hash": "3a92b243be6944ee2f73bf6d78b71bd9c433cd5742f64ef78b841b6c0f72598a",
+        "is_current": true,
+        "label_date": "Nov 2022"
+      }
+    ]
+  },
+  "P007276": {
+    "last_checked": "2026-04-02T12:45:57.845826+00:00",
+    "trade_name": "Merpan Fungicide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.845806+00:00",
+        "filename": "Merpan Fungicide - P007276 - Approved Label - Feb 2023.pdf",
+        "hash": "a18d07dff2896c8c0763c83689349f903be45cfd73a8705bfb3e995613382c58",
+        "is_current": true,
+        "label_date": "Feb 2023"
+      }
+    ]
+  },
+  "P007278": {
+    "last_checked": "2026-04-02T12:45:57.799867+00:00",
+    "trade_name": "Mavrik Aquaflo Insecticide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.799849+00:00",
+        "filename": "Mavrik Aquaflo Insecticide - P007278 - Approved Label - Aug 2025.pdf",
+        "hash": "bf5678d219519ac59407bad7c8edf0b53b75a87d2758af7b73aef9cafacb2e9a",
+        "is_current": true,
+        "label_date": "Aug 2025"
+      }
+    ]
+  },
+  "P007285": {
+    "last_checked": "2026-04-02T12:45:58.287693+00:00",
+    "trade_name": "Polaris 450 Herbicide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.287669+00:00",
+        "filename": "Polaris 450 Herbicide - P007285 - Approved Label - Sept 2024.pdf",
+        "hash": "e640ed68e0ad95ed1027770e0eca95d13015c70fc7a5c4c7d45b8145f1cc9609",
+        "is_current": true,
+        "label_date": "Sept 2024"
+      }
+    ]
+  },
+  "P007296": {
+    "last_checked": "2026-04-02T12:45:58.481557+00:00",
+    "trade_name": "Quintec",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.481532+00:00",
+        "filename": "Quintec - P007296 - Approved Label - Sep 2025.pdf",
+        "hash": "cf9e67c677a797d8ee7f31b28ec9a5625acd3e2de0c1ffba845e3e930a7708cb",
+        "is_current": true,
+        "label_date": "Sep 2025"
+      }
+    ]
+  },
+  "P007336": {
+    "last_checked": "2026-04-02T12:45:56.920321+00:00",
+    "trade_name": "Firstrate 450",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.920302+00:00",
+        "filename": "Firstrate 450 - P007336 - Approved Label - July 2024.pdf",
+        "hash": "ee8a8e939b88d353a9f3c8fc7ba35bf984ec2b5230c7eace50ac9750a500f9ae",
+        "is_current": true,
+        "label_date": "July 2024"
+      }
+    ]
+  },
+  "P007340": {
+    "last_checked": "2026-04-02T12:45:56.515521+00:00",
+    "trade_name": "Deal 510 RF",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.515501+00:00",
+        "filename": "Deal 510 RF - P007340 - Approved Label - July 2025.pdf",
+        "hash": "ec06c4239e0f05be292b0d47c1a496cf940818816e2be5e87ce3640a0675b1df",
+        "is_current": true,
+        "label_date": "July 2025"
+      }
+    ]
+  },
+  "P007396": {
+    "last_checked": "2026-04-02T12:45:58.184694+00:00",
+    "trade_name": "Pearl",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.184669+00:00",
+        "filename": "Pearl - P007396 - Approved Label - Mar 2025.pdf",
+        "hash": "0f0a7b04ef62c9d2fb76b3c457f74ed2a8ac15ac83a668fb2bb3f562a199fc48",
+        "is_current": true,
+        "label_date": "Mar 2025"
+      }
+    ]
+  },
+  "P007419": {
+    "last_checked": "2026-04-02T12:45:57.411280+00:00",
+    "trade_name": "Impulse",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.411256+00:00",
+        "filename": "Impulse - P007419 - Approved Label - July 2021.pdf",
+        "hash": "f7bc08d2c678f4b46d348dbc74c70b9634dbb19a3f085ff84f33aa0401b910b8",
+        "is_current": true,
+        "label_date": "July 2021"
+      }
+    ]
+  },
+  "P007475": {
+    "last_checked": "2026-04-02T12:45:58.763381+00:00",
+    "trade_name": "Sovrin Flo",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.763358+00:00",
+        "filename": "Sovrin Flo - P007475 - Approved Label - March 2023.pdf",
+        "hash": "b86f72e96055c82600ef8a5d7316da4937961d0ed2655ab095c0fefb90e0591b",
+        "is_current": true,
+        "label_date": "March 2023"
+      }
+    ]
+  },
+  "P007477": {
+    "last_checked": "2026-04-02T12:45:58.065693+00:00",
+    "trade_name": "Nuprid 350SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.065670+00:00",
+        "filename": "Nuprid 350SC - P007477 - Approved Label - Sept 2023.pdf",
+        "hash": "f70d0248c018781d77ae21af9c45d431e2d95658bd9c8a4ed3e25199c22b1bd1",
+        "is_current": true,
+        "label_date": "Sept 2023"
+      }
+    ]
+  },
+  "P007499": {
+    "last_checked": "2026-04-02T12:45:57.213009+00:00",
+    "trade_name": "Granny Herbicide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.212983+00:00",
+        "filename": "Granny Herbicide - P007499 - Approved Label - Apr 2024.pdf",
+        "hash": "0e8b1666dfefff42e05506b939dc8e2d24d38c8e852a410db032c05a99ccf1b9",
+        "is_current": true,
+        "label_date": "Apr 2024"
+      }
+    ]
+  },
+  "P007514": {
+    "last_checked": "2026-04-02T12:45:57.786419+00:00",
+    "trade_name": "Manzate Evolution Fungicide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.786399+00:00",
+        "filename": "Manzate Evolution Fungicide - P007514 - Approved Label - Jul 2025.pdf",
+        "hash": "26e318d48ccfca8d928cb210485453c6298ce00a25f696cb47ca1a9d5f9db24c",
+        "is_current": true,
+        "label_date": "Jul 2025"
+      }
+    ]
+  },
+  "P007532": {
+    "last_checked": "2026-04-02T12:45:57.242662+00:00",
+    "trade_name": "Gro-Chem Lime Sulphur",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.242642+00:00",
+        "filename": "Gro-Chem Lime Sulphur - P007532 - Approved Label - Feb 2025.pdf",
+        "hash": "958b751fc04343c1d3964c3e1afd2ab94e7c8be0a01e9ff137979e5e17d26370",
+        "is_current": true,
+        "label_date": "Feb 2025"
+      }
+    ]
+  },
+  "P007544": {
+    "last_checked": "2026-04-02T12:45:57.948085+00:00",
+    "trade_name": "Mortar",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.948062+00:00",
+        "filename": "Mortar - P007544 - Approved Label - Dec 2024.pdf",
+        "hash": "f96bff4e454fafce3a53a30563bfe7ff9bf031f562fd0d508f638d16b8e19fb8",
+        "is_current": true,
+        "label_date": "Dec 2024"
+      }
+    ]
+  },
+  "P007565": {
+    "last_checked": "2026-04-02T12:45:56.297732+00:00",
+    "trade_name": "Citara 200EW",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.297708+00:00",
+        "filename": "Citara 200EW - P007565 - Approved Label - Aug 2023.pdf",
+        "hash": "b426fdc0c63e70dcd4adf31902f7930470546a2196944429e299a97c8539cabc",
+        "is_current": true,
+        "label_date": "Aug 2023"
+      }
+    ]
+  },
+  "P007570": {
+    "last_checked": "2026-04-02T12:45:55.853215+00:00",
+    "trade_name": "Armour-Zen",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:55.853192+00:00",
+        "filename": "Armour-Zen - P007570 - Approved Label - Jan 2024.pdf",
+        "hash": "ca7dfb1803f7baeaaf29983752a67a5a9a2a431edc9170c3790af55ec602cb63",
+        "is_current": true,
+        "label_date": "Jan 2024"
+      }
+    ]
+  },
+  "P007578": {
+    "last_checked": "2026-04-02T12:45:57.746810+00:00",
+    "trade_name": "Manco 75 WG",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.746786+00:00",
+        "filename": "Manco 75 WG - P007578 - Approved Label - June 2025.pdf",
+        "hash": "6f1f7be1e2d98eaa3370f3c8fe2b5bbfa9ea39fe5088655d4c77d8ad96069478",
+        "is_current": true,
+        "label_date": "June 2025"
+      }
+    ]
+  },
+  "P007595": {
+    "last_checked": "2026-04-02T12:45:58.330220+00:00",
+    "trade_name": "Pristine",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.330196+00:00",
+        "filename": "Pristine - P007595 - Approved Label - Feb 2025.pdf",
+        "hash": "5873decdc6926bdce0288553865f38ca4d7c1015a2b8e16b2af1fa8f6703d33c",
+        "is_current": true,
+        "label_date": "Feb 2025"
+      }
+    ]
+  },
+  "P007617": {
+    "last_checked": "2026-04-02T12:45:55.839358+00:00",
+    "trade_name": "Arma",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:55.839334+00:00",
+        "filename": "Arma - P007617 - Approved Label - Oct 2023.pdf",
+        "hash": "8876639d596cbc843ca9686695aa3633d5a3f11d75c7fc02d158ec1d4e31db52",
+        "is_current": true,
+        "label_date": "Oct 2023"
+      }
+    ]
+  },
+  "P007641": {
+    "last_checked": "2026-04-02T12:45:56.470709+00:00",
+    "trade_name": "Cyhella",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.470686+00:00",
+        "filename": "Cyhella - P007641 - Approved Label - Jul 2025.pdf",
+        "hash": "4919e0257f0ed1eb6e989a3cceddfee7664707240fde601cc87e735be0c215d9",
+        "is_current": true,
+        "label_date": "Jul 2025"
+      }
+    ]
+  },
+  "P007643": {
+    "last_checked": "2026-04-02T12:45:59.247534+00:00",
+    "trade_name": "Unite",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.247515+00:00",
+        "filename": "Unite - P007643 - Approved Label - Dec 2023.pdf",
+        "hash": "9084cf62aa66cd7b17c50dd8f2c3356aa420321ce3a6328bc52128b6ba3ffb01",
+        "is_current": true,
+        "label_date": "Dec 2023"
+      }
+    ]
+  },
+  "P007654": {
+    "last_checked": "2026-04-02T12:45:56.213314+00:00",
+    "trade_name": "Captan 600 Flo",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.213294+00:00",
+        "filename": "Captan 600 Flo - P007654 - Approved Label - Feb 2024.pdf",
+        "hash": "aa5943eff98340c4f8e199cbc2b68439df270961eb16204cb60fa8f7e44fb3f3",
+        "is_current": true,
+        "label_date": "Feb 2024"
+      }
+    ]
+  },
+  "P007668": {
+    "last_checked": "2026-04-02T12:45:58.527262+00:00",
+    "trade_name": "Ranger",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.527232+00:00",
+        "filename": "Ranger - P007668 - Approved Label - Nov 2025.pdf",
+        "hash": "951145326b21629d8a153f0ad36bcc8bbb700d5d2c713315679bd60ae82c80c2",
+        "is_current": true,
+        "label_date": "Nov 2025"
+      }
+    ]
+  },
+  "P007673": {
+    "last_checked": "2026-04-02T12:45:57.108426+00:00",
+    "trade_name": "Gem Fungicide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.108394+00:00",
+        "filename": "Gem Fungicide - P007673 - Approved Label - Apr 2024.pdf",
+        "hash": "d9589426e6abac844f9466abd7d357510e424590e68e02fa78995d430bb0c51b",
+        "is_current": true,
+        "label_date": "Apr 2024"
+      }
+    ]
+  },
+  "P007693": {
+    "last_checked": "2026-04-02T12:45:56.045263+00:00",
+    "trade_name": "Biobit DF Biological Insecticide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.045234+00:00",
+        "filename": "Biobit DF Biological Insecticide - P007693 - Approved Label - Feb 2024.pdf",
+        "hash": "7e483d06380b13ee935e061fd1807d4a15d096b6c9fec59450194e49816bbcc0",
+        "is_current": true,
+        "label_date": "Feb 2024"
+      }
+    ]
+  },
+  "P007695": {
+    "last_checked": "2026-04-02T12:45:57.024771+00:00",
+    "trade_name": "Fusilade Forte",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.024752+00:00",
+        "filename": "Fusilade Forte - P007695 - Approved Label - Dec 2024.pdf",
+        "hash": "e5ad669b39b6663f035873ec91729f05e0d7e1b221473b1ffbc3b17024198c7e",
+        "is_current": true,
+        "label_date": "Dec 2024"
+      }
+    ]
+  },
+  "P007697": {
+    "last_checked": "2026-04-02T12:45:58.243807+00:00",
+    "trade_name": "Pinnacle",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.243784+00:00",
+        "filename": "Pinnacle - P007697 - Approved Label - Dec 2021.pdf",
+        "hash": "d55819363bd867b8b53ae53ff32cb115f3f18b2300bcc1adf5ebb9acce48ccd7",
+        "is_current": true,
+        "label_date": "Dec 2021"
+      }
+    ]
+  },
+  "P007722": {
+    "last_checked": "2026-04-02T12:45:56.353824+00:00",
+    "trade_name": "Comic",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.353807+00:00",
+        "filename": "Comic - P007722 - Approved Label - Mar 2025.pdf",
+        "hash": "57c441c03612a2a3d0d9dff3ffceaa5da8e664e0f5de5fed85adc31bcbe3b310",
+        "is_current": true,
+        "label_date": "Mar 2025"
+      }
+    ]
+  },
+  "P007726": {
+    "last_checked": "2026-04-02T12:45:57.622961+00:00",
+    "trade_name": "Kocide Opti",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.622943+00:00",
+        "filename": "Kocide Opti - P007726 - Approved Label - Apr 2025.pdf",
+        "hash": "85a55724fe88177e87fa4f49257fe2df9b56778585c87102afc6307b6548f11c",
+        "is_current": true,
+        "label_date": "Apr 2025"
+      }
+    ]
+  },
+  "P007734": {
+    "last_checked": "2026-04-02T12:45:58.982555+00:00",
+    "trade_name": "Tag G2",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.982536+00:00",
+        "filename": "Tag G2 - P007734 - Approved Label - Dec 2024.pdf",
+        "hash": "10d5fc66e67fc2d2ad05f0a0d2a422cc6c75feddeeea2db276eb2f3def01a5db",
+        "is_current": true,
+        "label_date": "Dec 2024"
+      }
+    ]
+  },
+  "P007753": {
+    "last_checked": "2026-04-02T12:45:55.992370+00:00",
+    "trade_name": "Bash",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:55.992350+00:00",
+        "filename": "Bash - P007753 - Approved Label - July 2025.pdf",
+        "hash": "677bef47946212b99f6fb60a4269e2013f3b1d72d1760a5d383a4a28a1b8600c",
+        "is_current": true,
+        "label_date": "July 2025"
+      }
+    ]
+  },
+  "P007767": {
+    "last_checked": "2026-04-02T12:45:55.826391+00:00",
+    "trade_name": "Approve 70 WP",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:55.826373+00:00",
+        "filename": "Approve 70 WP - P007767 - Approved Label - May 2024.pdf",
+        "hash": "663e36eb77e18978f762747263c5f60af8ce46841c8b775462cf769281cf20af",
+        "is_current": true,
+        "label_date": "May 2024"
+      }
+    ]
+  },
+  "P007808": {
+    "last_checked": "2026-04-02T12:45:58.717877+00:00",
+    "trade_name": "Shark",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.717854+00:00",
+        "filename": "Shark - P007808 - Approved Label - Jan 2025.pdf",
+        "hash": "264ea000f41cf7eea5abf14e94d5e9c2f2c7c847f44d12be384650ff8511579f",
+        "is_current": true,
+        "label_date": "Jan 2025"
+      }
+    ]
+  },
+  "P007836": {
+    "last_checked": "2026-04-02T12:45:57.178651+00:00",
+    "trade_name": "Goal Advanced",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.178633+00:00",
+        "filename": "Goal Advanced - P007836 - Approved Label - Jul 2024.pdf",
+        "hash": "eba629ba18b7a165d734a3ecd2ad4c8eb38fc71f7efbac6ac0a6e79fcc862c35",
+        "is_current": true,
+        "label_date": "Jul 2024"
+      }
+    ]
+  },
+  "P007845": {
+    "last_checked": "2026-04-02T12:45:56.850879+00:00",
+    "trade_name": "Excel Oil-Organic",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.850862+00:00",
+        "filename": "Excel Oil-Organic - P007845 - Approved Label - Feb 2025.pdf",
+        "hash": "49af9d3ccf3b4c925a0e6d375a91a18045f0761315f5da3177b973f4ad6c1c02",
+        "is_current": true,
+        "label_date": "Feb 2025"
+      }
+    ]
+  },
+  "P007878": {
+    "last_checked": "2026-04-02T12:45:57.005302+00:00",
+    "trade_name": "Fruitfed Captan 80WG Fungicide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.005277+00:00",
+        "filename": "Fruitfed Captan 80WG Fungicide - P007878 - Approved Label - Feb 2023.pdf",
+        "hash": "bc15c232534dee51c56a34cc3c0d230c3bfdfecb60f1d2f8a49a0a7b6dbda109",
+        "is_current": true,
+        "label_date": "Feb 2023"
+      }
+    ]
+  },
+  "P007905": {
+    "last_checked": "2026-04-02T12:45:58.791130+00:00",
+    "trade_name": "Sphinx Fungicide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.791110+00:00",
+        "filename": "Sphinx Fungicide - P007905 - Approved Label - Jun 2024.pdf",
+        "hash": "8b62e400a83dafd6ff9bfaa32d74acfe4661421c72d17f9e6f4d08e1aac98f02",
+        "is_current": true,
+        "label_date": "Jun 2024"
+      }
+    ]
+  },
+  "P007957": {
+    "last_checked": "2026-04-02T12:45:56.310998+00:00",
+    "trade_name": "Clarity",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.310975+00:00",
+        "filename": "Clarity - P007957 - Approved Label - Nov 2025.pdf",
+        "hash": "5735b0094ca78d1421c1fc54984897c004548569b3ab9dcf18c790d759fc54a0",
+        "is_current": true,
+        "label_date": "Nov 2025"
+      }
+    ]
+  },
+  "P007973": {
+    "last_checked": "2026-04-02T12:45:59.379956+00:00",
+    "trade_name": "Vivando",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.379929+00:00",
+        "filename": "Vivando - P007973 - Approved Label - Mar 2025.pdf",
+        "hash": "695cdb37a1d92cc3888c0d07512a6171d5fe217e7093a4e873b1576efdda608d",
+        "is_current": true,
+        "label_date": "Mar 2025"
+      }
+    ]
+  },
+  "P007980": {
+    "last_checked": "2026-04-02T12:45:57.976552+00:00",
+    "trade_name": "Nando",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.976530+00:00",
+        "filename": "Nando - P007980 - Approved Label - March 2022.pdf",
+        "hash": "081c952f0a3d77bb2449ae2e194172163cda86f3086d1cd22da935a9dc3240e2",
+        "is_current": true,
+        "label_date": "March 2022"
+      }
+    ]
+  },
+  "P007989": {
+    "last_checked": "2026-04-02T12:45:58.746126+00:00",
+    "trade_name": "Southwell AC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.746102+00:00",
+        "filename": "Southwell AC - P007989 - Approved Label - Mar 2026.pdf",
+        "hash": "93ad2afec7f64160e4471a16b898d93b7e1dc3942fb609e3aea1044d6120be45",
+        "is_current": true,
+        "label_date": "Mar 2026"
+      }
+    ]
+  },
+  "P007996": {
+    "last_checked": "2026-04-02T12:45:58.125607+00:00",
+    "trade_name": "Oxy 500SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.125582+00:00",
+        "filename": "Oxy 500SC - P007996 - Approved Label - Aug 2023.pdf",
+        "hash": "74cb3394a931a2bda4ada8921cd1c7533bd37621b33c35f4bb6a2a4ab2141da5",
+        "is_current": true,
+        "label_date": "Aug 2023"
+      }
+    ]
+  },
+  "P007999": {
+    "last_checked": "2026-04-02T12:45:56.413593+00:00",
+    "trade_name": "Cropstar Glyphosate 680 Granular Herbicide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.413574+00:00",
+        "filename": "Cropstar Glyphosate 680 Granular Herbicide - P007999 - Approved Label - May 2025.pdf",
+        "hash": "5552dce77794e6d81cc0312ca52bf71f241023e1e38a434976870427e451488f",
+        "is_current": true,
+        "label_date": "May 2025"
+      }
+    ]
+  },
+  "P008007": {
+    "last_checked": "2026-04-02T12:45:58.005139+00:00",
+    "trade_name": "Nirvana",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.005108+00:00",
+        "filename": "Nirvana - P008007 - Approved Label - P8007-10-Approved Label-July 2023.pdf",
+        "hash": "c7073ae21ca28db1122890d1064cd8ee13a9ac60ba4d7d78930d005c46971088",
+        "is_current": true,
+        "label_date": "P8007-10-Approved Label-July 2023"
+      }
+    ]
+  },
+  "P008056": {
+    "last_checked": "2026-04-02T12:45:58.230386+00:00",
+    "trade_name": "Pilan 500SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.230361+00:00",
+        "filename": "Pilan 500SC - P008056 - Approved Label - Nov 2021.pdf",
+        "hash": "3f4e84af60744804a9da80a3ee3324ecbcfc8b8fc0942ee7b68bfe4f82ce437f",
+        "is_current": true,
+        "label_date": "Nov 2021"
+      }
+    ]
+  },
+  "P008116": {
+    "last_checked": "2026-04-02T12:45:56.367981+00:00",
+    "trade_name": "Contego BSub",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.367963+00:00",
+        "filename": "Contego BSub - P008116 - Approved Label - Dec 2024.pdf",
+        "hash": "486251294693247e8bb62ad4081f2887e385848ceff67be229dcabebd52108d6",
+        "is_current": true,
+        "label_date": "Dec 2024"
+      }
+    ]
+  },
+  "P008124": {
+    "last_checked": "2026-04-02T12:45:56.487737+00:00",
+    "trade_name": "D-C-Tron Plus (Organic) Spray Oil",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.487714+00:00",
+        "filename": "D-C-Tron Plus (Organic) Spray Oil - P008124 - Approved Label - May 2024.pdf",
+        "hash": "e194c0a8fee921e056f0959bd25ab73d7d1c2dea569dd42c745ecaa734e20609",
+        "is_current": true,
+        "label_date": "May 2024"
+      }
+    ]
+  },
+  "P008137": {
+    "last_checked": "2026-04-02T12:45:59.202316+00:00",
+    "trade_name": "TripleX",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.202290+00:00",
+        "filename": "TripleX - P008137 - Approved Label - Nov 2024.pdf",
+        "hash": "cfaea7ab86bb9a2e6c59859fbee3e609d93277afa0638241f27e6e4a968b1821",
+        "is_current": true,
+        "label_date": "Nov 2024"
+      }
+    ]
+  },
+  "P008141": {
+    "last_checked": "2026-04-02T12:45:56.901506+00:00",
+    "trade_name": "Fiestar Non-Selective Herbicide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.901482+00:00",
+        "filename": "Fiestar Non-Selective Herbicide - P008141 - Approved Label - Feb 2023.pdf",
+        "hash": "94f9cd24c282baf2e517280ea871fc53f539adaba85a49566837f10e65d668ef",
+        "is_current": true,
+        "label_date": "Feb 2023"
+      }
+    ]
+  },
+  "P008151": {
+    "last_checked": "2026-04-02T12:45:58.078971+00:00",
+    "trade_name": "Ohayo 500SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.078947+00:00",
+        "filename": "Ohayo 500SC - P008151 - Approved Label - Jan 2025.pdf",
+        "hash": "8b9e1f9ba15832b9c6da6f1633481bf23cd4ca25874b0e6e0953ab6d59c2fb91",
+        "is_current": true,
+        "label_date": "Jan 2025"
+      }
+    ]
+  },
+  "P008158": {
+    "last_checked": "2026-04-02T12:45:59.259900+00:00",
+    "trade_name": "Valeo 500SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.259882+00:00",
+        "filename": "Valeo 500SC - P008158 - Approved Label - May 2024.pdf",
+        "hash": "cfa871a9f13ba1efa47a0bb4156d6a797d474dc18c88c03c26a461c222f6bb40",
+        "is_current": true,
+        "label_date": "May 2024"
+      }
+    ]
+  },
+  "P008180": {
+    "last_checked": "2026-04-02T12:45:57.227669+00:00",
+    "trade_name": "Greenseal Ultra",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.227647+00:00",
+        "filename": "Greenseal Ultra - P008180 - Approved Label - Dec 2025.pdf",
+        "hash": "1a2dcc43fd550006a128096d7878349574612706ec41938ea8603fc4be6c737f",
+        "is_current": true,
+        "label_date": "Dec 2025"
+      }
+    ]
+  },
+  "P008181": {
+    "last_checked": "2026-04-02T12:45:56.322963+00:00",
+    "trade_name": "Clenza",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.322933+00:00",
+        "filename": "Clenza - P008181 - Approved Label - Mar 2026.pdf",
+        "hash": "3382e2d346443e3124ce07726b18b59f395e5b49077a18e2f2b5b6acfbd783c6",
+        "is_current": true,
+        "label_date": "Mar 2026"
+      }
+    ]
+  },
+  "P008194": {
+    "last_checked": "2026-04-02T12:45:57.143033+00:00",
+    "trade_name": "Glyphosate 540",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.143014+00:00",
+        "filename": "Glyphosate 540 - P008194 - Approved Label - Dec 2024.pdf",
+        "hash": "7b8081812e23130bbea182ecfb85f672c40c4ad29b298fcc22d72d245567862e",
+        "is_current": true,
+        "label_date": "Dec 2024"
+      }
+    ]
+  },
+  "P008239": {
+    "last_checked": "2026-04-02T12:45:58.692202+00:00",
+    "trade_name": "Sequence",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.692179+00:00",
+        "filename": "Sequence - P008239 - Approved Label - May 2024.pdf",
+        "hash": "9dc64bc0f954aa352be94a8cab0c52eb09436db634f48c33df9fb1da6841c04f",
+        "is_current": true,
+        "label_date": "May 2024"
+      }
+    ]
+  },
+  "P008283": {
+    "last_checked": "2026-04-02T12:45:59.367271+00:00",
+    "trade_name": "Vitis",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.367253+00:00",
+        "filename": "Vitis - P008283 - Approved Label - Oct 2021.pdf",
+        "hash": "62e8620a75253dc70643ccd619fc26c0366a106ca0c51782bc6046a89c1d09cd",
+        "is_current": true,
+        "label_date": "Oct 2021"
+      }
+    ]
+  },
+  "P008299": {
+    "last_checked": "2026-04-02T12:45:56.443152+00:00",
+    "trade_name": "Curalan",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.443133+00:00",
+        "filename": "Curalan - P008299 - Approved Label - July 2024.pdf",
+        "hash": "ab8dabbd25d34cbbb93001560edfe5d7f0edd845ea233bc0f1bf53380058f64b",
+        "is_current": true,
+        "label_date": "July 2024"
+      }
+    ]
+  },
+  "P008310": {
+    "last_checked": "2026-04-02T12:45:55.935538+00:00",
+    "trade_name": "BacStar",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:55.935520+00:00",
+        "filename": "BacStar - P008310 - Approved Label - Jul 2025.pdf",
+        "hash": "8883da49f91002bf2fa8317f04c39e4f8781245f18c930fa33844962b6280ac5",
+        "is_current": true,
+        "label_date": "Jul 2025"
+      }
+    ]
+  },
+  "P008337": {
+    "last_checked": "2026-04-02T12:45:59.216434+00:00",
+    "trade_name": "Unishield",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.216411+00:00",
+        "filename": "Unishield - P008337 - Approved Label - July 2025.pdf",
+        "hash": "345e9682528f4e8b3acae29d650988246cde920736555315203f31b1403ab152",
+        "is_current": true,
+        "label_date": "July 2025"
+      }
+    ]
+  },
+  "P008338": {
+    "last_checked": "2026-04-02T12:45:57.552760+00:00",
+    "trade_name": "Ken-Up Aquatic 360",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.552737+00:00",
+        "filename": "Ken-Up Aquatic 360 - P008338 - Approved Label - Nov 2024.pdf",
+        "hash": "a3be1e61b122524b94a10b23af02c107b8f3342a604f2e26b3d6ca49b252d5bc",
+        "is_current": true,
+        "label_date": "Nov 2024"
+      }
+    ]
+  },
+  "P008339": {
+    "last_checked": "2026-04-02T12:45:57.568465+00:00",
+    "trade_name": "Ken-Up Dry 680 SG",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.568445+00:00",
+        "filename": "Ken-Up Dry 680 SG - P008339 - Approved Label - Nov 2024.pdf",
+        "hash": "a953f23fd90f3ee4e4dc07bbb3415c27c6470e19668a3eb99f986fbdb8333216",
+        "is_current": true,
+        "label_date": "Nov 2024"
+      }
+    ]
+  },
+  "P008371": {
+    "last_checked": "2026-04-02T12:45:58.880304+00:00",
+    "trade_name": "Strada 400SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.880279+00:00",
+        "filename": "Strada 400SC - P008371 - Approved Label - P8371-06-Approved Label-July 2023.pdf",
+        "hash": "b16498bf8a23370c5f59e1b2f15a3f91d490f659c28ca20b0b99ea5790e35099",
+        "is_current": true,
+        "label_date": "P8371-06-Approved Label-July 2023"
+      }
+    ]
+  },
+  "P008381": {
+    "last_checked": "2026-04-02T12:45:59.008765+00:00",
+    "trade_name": "Talendo",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.008746+00:00",
+        "filename": "Talendo - P008381 - Approved Label - June 2024.pdf",
+        "hash": "887014711d299b1acf6e4d4036341eb5750ed44780d02f4f8f8d0773f4df65e8",
+        "is_current": true,
+        "label_date": "June 2024"
+      }
+    ]
+  },
+  "P008405": {
+    "last_checked": "2026-04-02T12:45:59.394143+00:00",
+    "trade_name": "Vixen",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.394124+00:00",
+        "filename": "Vixen - P008405 - Approved Label - Dec 2024.pdf",
+        "hash": "b88bd6091414c08439e71701f0529c6ebbf91b02fb6a3f0d0a705f5536f3f07a",
+        "is_current": true,
+        "label_date": "Dec 2024"
+      }
+    ]
+  },
+  "P008409": {
+    "last_checked": "2026-04-02T12:45:56.389464+00:00",
+    "trade_name": "Cosavet DF Fungicide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.389443+00:00",
+        "filename": "Cosavet DF Fungicide - P008409 - Approved Label - Mar 2026.pdf",
+        "hash": "9bcd5642f2fe352172c46c00e2a32ab20b68b25d1e2ae1ae57fa2c1026e045f3",
+        "is_current": true,
+        "label_date": "Mar 2026"
+      }
+    ]
+  },
+  "P008434": {
+    "last_checked": "2026-04-02T12:45:57.962085+00:00",
+    "trade_name": "Movento 100SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.962042+00:00",
+        "filename": "Movento 100SC - P008434 - Approved Label - July 2022.pdf",
+        "hash": "5e7d44e1914e342cf5cce641da099fbe3384d782798ccb4b1a51d33de69f9ef7",
+        "is_current": true,
+        "label_date": "July 2022"
+      }
+    ]
+  },
+  "P008442": {
+    "last_checked": "2026-04-02T12:45:56.800875+00:00",
+    "trade_name": "Exault",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.800851+00:00",
+        "filename": "Exault - P008442 - Approved Label - Feb 2025.pdf",
+        "hash": "c3f5d8ea592345ac8e142e8f6a5773c3783de6718e01d85f42eb119269a603a3",
+        "is_current": true,
+        "label_date": "Feb 2025"
+      }
+    ]
+  },
+  "P008482": {
+    "last_checked": "2026-04-02T12:45:56.651365+00:00",
+    "trade_name": "Donaghy's Grunt 600",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.651343+00:00",
+        "filename": "Donaghy's Grunt 600 - P008482 - Approved Label - Feb 2025.pdf",
+        "hash": "8d76399310e339e71370cc078eeba46d7605366b15d9118b71a2a7ab02d52f7d",
+        "is_current": true,
+        "label_date": "Feb 2025"
+      }
+    ]
+  },
+  "P008519": {
+    "last_checked": "2026-04-02T12:45:57.348844+00:00",
+    "trade_name": "Hortcare Glyphosate 680",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.348821+00:00",
+        "filename": "Hortcare Glyphosate 680 - P008519 - Approved Label - July 2024.pdf",
+        "hash": "6ca4d5d06e05364748637875db94c2e9a1979bfe1766bb2ca6824e83089ab2d5",
+        "is_current": true,
+        "label_date": "July 2024"
+      }
+    ]
+  },
+  "P008524": {
+    "last_checked": "2026-04-02T12:45:58.820481+00:00",
+    "trade_name": "Spiral 500SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.820457+00:00",
+        "filename": "Spiral 500SC - P008524 - Approved Label - P8524-05-Approved Label-May 2023.pdf",
+        "hash": "2697a09641fa3827d12774b5ab6053e45122e366249cb0a62f06214cfe4a7b1b",
+        "is_current": true,
+        "label_date": "P8524-05-Approved Label-May 2023"
+      }
+    ]
+  },
+  "P008531": {
+    "last_checked": "2026-04-02T12:45:57.160707+00:00",
+    "trade_name": "Glyphosate G360",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.160686+00:00",
+        "filename": "Glyphosate G360 - P008531 - Approved Label - Dec 2024.pdf",
+        "hash": "dd0fb572723bf6d1b89df74fdf9c16bfcc06699a8402cef28bc5c038c81e3876",
+        "is_current": true,
+        "label_date": "Dec 2024"
+      }
+    ]
+  },
+  "P008532": {
+    "last_checked": "2026-04-02T12:45:56.456957+00:00",
+    "trade_name": "Cusol",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.456932+00:00",
+        "filename": "Cusol - P008532 - Approved Label - Jun 2024.pdf",
+        "hash": "dc74d194e9b1533a8e7936e8d17a8c4826d43e736c5087c7a0f947df319f057b",
+        "is_current": true,
+        "label_date": "Jun 2024"
+      }
+    ]
+  },
+  "P008545": {
+    "last_checked": "2026-04-02T12:45:57.360928+00:00",
+    "trade_name": "Hortcare Lime Sulphur",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.360902+00:00",
+        "filename": "Hortcare Lime Sulphur - P008545 - Approved Label - Apr 2022.pdf",
+        "hash": "243f7508a2317a07fe7b0f20d9448c09c4404ca62d4f2701535c5e3f03601424",
+        "is_current": true,
+        "label_date": "Apr 2022"
+      }
+    ]
+  },
+  "P008557": {
+    "last_checked": "2026-04-02T12:45:57.494202+00:00",
+    "trade_name": "Karbyon",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.494179+00:00",
+        "filename": "Karbyon - P008557 - Approved Label - Sept 2025.pdf",
+        "hash": "a807790527b6f08a89bab0ae2f47291ba340b134ed35d9980365bcd1907bcdf0",
+        "is_current": true,
+        "label_date": "Sept 2025"
+      }
+    ]
+  },
+  "P008558": {
+    "last_checked": "2026-04-02T12:45:57.991993+00:00",
+    "trade_name": "Nexus",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.991968+00:00",
+        "filename": "Nexus - P008558 - Approved Label - Dec 2024.pdf",
+        "hash": "9220c539acc09faa0a15fcc004dff8d2f9afe5d03490e86d896b447e77d548ff",
+        "is_current": true,
+        "label_date": "Dec 2024"
+      }
+    ]
+  },
+  "P008587": {
+    "last_checked": "2026-04-02T12:45:57.830768+00:00",
+    "trade_name": "MegaStar",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.830750+00:00",
+        "filename": "MegaStar - P008587 - Approved Label - Mar 2025.pdf",
+        "hash": "048b28e4a980b617dcca31b2604e9011e26cc112dfc9cc5d3eab388958c04328",
+        "is_current": true,
+        "label_date": "Mar 2025"
+      }
+    ]
+  },
+  "P008627": {
+    "last_checked": "2026-04-02T12:45:57.126343+00:00",
+    "trade_name": "Genoxy 240SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.126319+00:00",
+        "filename": "Genoxy 240SC - P008627 - Approved Label - Oct 2021.pdf",
+        "hash": "b5bc6367ddb50ee90a8fc16c5c651dc6b7d2bbcdca5886a59cfa4b09d33218c7",
+        "is_current": true,
+        "label_date": "Oct 2021"
+      }
+    ]
+  },
+  "P008633": {
+    "last_checked": "2026-04-02T12:45:57.305834+00:00",
+    "trade_name": "HML32",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.305813+00:00",
+        "filename": "HML32 - P008633 - Approved Label - March 2023.pdf",
+        "hash": "7dabf7623f7a65e999deee0969b29b89ad3a4eff3c76c21fcff8858b973e025d",
+        "is_current": true,
+        "label_date": "March 2023"
+      }
+    ]
+  },
+  "P008636": {
+    "last_checked": "2026-04-02T12:45:57.900209+00:00",
+    "trade_name": "Midi-Zen",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.900190+00:00",
+        "filename": "Midi-Zen - P008636 - Approved Label - Feb 2026.pdf",
+        "hash": "63fbfb3b79d400f1fa53da100d984ba9fb06fa2ca7c7781ac9a8c40d5ef9301b",
+        "is_current": true,
+        "label_date": "Feb 2026"
+      }
+    ]
+  },
+  "P008655": {
+    "last_checked": "2026-04-02T12:45:56.258784+00:00",
+    "trade_name": "Centurion Xtra",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.258763+00:00",
+        "filename": "Centurion Xtra - P008655 - Approved Label - Jun 2025.pdf",
+        "hash": "579b0e3c2f6e1585e73d76629965717d4edd8328c1f81f5d6749b9dc43ca5a73",
+        "is_current": true,
+        "label_date": "Jun 2025"
+      }
+    ]
+  },
+  "P008677": {
+    "last_checked": "2026-04-02T12:45:57.860473+00:00",
+    "trade_name": "Merpan Max",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.860454+00:00",
+        "filename": "Merpan Max - P008677 - Approved Label - Mar 2023.pdf",
+        "hash": "60fae05031654147792765cac7d3f300e2bfeb321fd45fb833b6673ecea37d26",
+        "is_current": true,
+        "label_date": "Mar 2023"
+      }
+    ]
+  },
+  "P008701": {
+    "last_checked": "2026-04-02T12:45:58.411335+00:00",
+    "trade_name": "Providor",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.411291+00:00",
+        "filename": "Providor - P008701 - Approved Label - June 2023.pdf",
+        "hash": "ce9cbcf9f19972fbf80feb933cb71df430dc9ea7e69b5c37292aa97d2c339592",
+        "is_current": true,
+        "label_date": "June 2023"
+      }
+    ]
+  },
+  "P008704": {
+    "last_checked": "2026-04-02T12:45:57.319346+00:00",
+    "trade_name": "Hortcare Copper Hydroxide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.319322+00:00",
+        "filename": "Hortcare Copper Hydroxide - P008704 - Approved Label - Jun 2024.pdf",
+        "hash": "5b8b47f5932d8eb9d50360e41b2e691bb70274e95047917f84bc3f8e749c519e",
+        "is_current": true,
+        "label_date": "Jun 2024"
+      }
+    ]
+  },
+  "P008725": {
+    "last_checked": "2026-04-02T12:45:58.596478+00:00",
+    "trade_name": "Roundup Ultra MAX",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.596458+00:00",
+        "filename": "Roundup Ultra MAX - P008725 - Approved Label - Dec 2025.pdf",
+        "hash": "b730ad9a8f9edec27474101a3b30985294dfd416a839c2e51d274f53a4b530f3",
+        "is_current": true,
+        "label_date": "Dec 2025"
+      }
+    ]
+  },
+  "P008730": {
+    "last_checked": "2026-04-02T12:45:57.387067+00:00",
+    "trade_name": "Hortcare Sulphur 800 DF",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.387050+00:00",
+        "filename": "Hortcare Sulphur 800 DF - P008730 - Approved Label - Feb 2022.pdf",
+        "hash": "f9bef27d444738880df44ee0fc770292c11ac70d346cbe87fcb55f4552d4a6a3",
+        "is_current": true,
+        "label_date": "Feb 2022"
+      }
+    ]
+  },
+  "P008732": {
+    "last_checked": "2026-04-02T12:45:59.187626+00:00",
+    "trade_name": "Tri-Base Blue",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.187608+00:00",
+        "filename": "Tri-Base Blue - P008732 - Approved Label - Sep 2023.pdf",
+        "hash": "fe8925990140801d49db4e7a71b28794c70cb18f04e3c5803a3e5f3bf42d844c",
+        "is_current": true,
+        "label_date": "Sep 2023"
+      }
+    ]
+  },
+  "P008733": {
+    "last_checked": "2026-04-02T12:45:59.229519+00:00",
+    "trade_name": "Unistar",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.229502+00:00",
+        "filename": "Unistar - P008733 - Approved Label - Approved Label - March 2023.pdf",
+        "hash": "f8f01270750e0e5970d5b3bcab09d0283c3cdb2b2a935b6ddac9e1f5b7bfc89d",
+        "is_current": true,
+        "label_date": "Approved Label - March 2023"
+      }
+    ]
+  },
+  "P008740": {
+    "last_checked": "2026-04-02T12:45:58.545264+00:00",
+    "trade_name": "Renovo",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.545240+00:00",
+        "filename": "Renovo - P008740 - Approved Label - P8740-07-Approved Label-March 2023.pdf",
+        "hash": "252d4a4adb9dfc338ebd1d9efa706d479f05a5102812973a67640d881f0aef64",
+        "is_current": true,
+        "label_date": "P8740-07-Approved Label-March 2023"
+      }
+    ]
+  },
+  "P008753": {
+    "last_checked": "2026-04-02T12:45:56.007056+00:00",
+    "trade_name": "Bastnate",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.007032+00:00",
+        "filename": "Bastnate - P008753 - Approved Label - April 2022.pdf",
+        "hash": "cb698d18e62fe7c51ca9a0ace98b45f21972c80b0bf1abfe953ee7acc6ea62a4",
+        "is_current": true,
+        "label_date": "April 2022"
+      }
+    ]
+  },
+  "P008769": {
+    "last_checked": "2026-04-02T12:45:59.436358+00:00",
+    "trade_name": "Weedmaster Dry",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.436341+00:00",
+        "filename": "Weedmaster Dry - P008769 - Approved Label - Feb 2025.pdf",
+        "hash": "76db390328e22c1428931911db74611c06dd2650e95c5d24f71e8e148861adb5",
+        "is_current": true,
+        "label_date": "Feb 2025"
+      }
+    ]
+  },
+  "P008772": {
+    "last_checked": "2026-04-02T12:45:57.663044+00:00",
+    "trade_name": "Linuron 400SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.663026+00:00",
+        "filename": "Linuron 400SC - P008772 - Approved Label - June 2023.pdf",
+        "hash": "529bf80d9e1cecc115d4eb476af030645ca39a4eb1f8f2eb96148f105d8800eb",
+        "is_current": true,
+        "label_date": "June 2023"
+      }
+    ]
+  },
+  "P008785": {
+    "last_checked": "2026-04-02T12:45:57.677193+00:00",
+    "trade_name": "Lion 490DST",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.677176+00:00",
+        "filename": "Lion 490DST - P008785 - Approved Label - Dec 2025.pdf",
+        "hash": "9388fbc7c8b4fcba71c96dfb845e0c7497a8fdc9e363bc037932f7abf672d6fe",
+        "is_current": true,
+        "label_date": "Dec 2025"
+      }
+    ]
+  },
+  "P008792": {
+    "last_checked": "2026-04-02T12:45:56.150155+00:00",
+    "trade_name": "BREAK-THRU Union",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.150132+00:00",
+        "filename": "BREAK-THRU Union - P008792 - Approved Label - Feb 2024.pdf",
+        "hash": "ca3617ecf544857ec5cf500b46972ecc2062b1c6d1716a454bbb97a47fd10d3a",
+        "is_current": true,
+        "label_date": "Feb 2024"
+      }
+    ]
+  },
+  "P008819": {
+    "last_checked": "2026-04-02T12:45:57.466912+00:00",
+    "trade_name": "Kaiso 50WG",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.466888+00:00",
+        "filename": "Kaiso 50WG - P008819 - Approved Label - Aug 2023.pdf",
+        "hash": "e50ba98ccc7ce2734ded85bac8ac74651bfce9f26107311a07ffe6aefb7936f2",
+        "is_current": true,
+        "label_date": "Aug 2023"
+      }
+    ]
+  },
+  "P008843": {
+    "last_checked": "2026-04-02T12:45:59.479559+00:00",
+    "trade_name": "Weedmaster TS 470",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.479535+00:00",
+        "filename": "Weedmaster TS 470 - P008843 - Approved Label - Dec 2025.pdf",
+        "hash": "ca9dd4ee820884c1135cd4c4a662b1b06c76dea0bc836124e57d8db6cd159d82",
+        "is_current": true,
+        "label_date": "Dec 2025"
+      }
+    ]
+  },
+  "P008878": {
+    "last_checked": "2026-04-02T12:45:58.425911+00:00",
+    "trade_name": "PruneTec",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.425890+00:00",
+        "filename": "PruneTec - P008878 - Approved Label - Dec 2024.pdf",
+        "hash": "9d0578d2e8c6dff8284e38dbb5641e5323578c392cb981ddc2873f04bcda2e5f",
+        "is_current": true,
+        "label_date": "Dec 2024"
+      }
+    ]
+  },
+  "P008879": {
+    "last_checked": "2026-04-02T12:45:57.373913+00:00",
+    "trade_name": "Hortcare Spinosad",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.373808+00:00",
+        "filename": "Hortcare Spinosad - P008879 - Approved Label - May 2022.pdf",
+        "hash": "83614a8c1445ca636b284137b23da3fd83eae4e27a57daf1cd499a4d2e8741e2",
+        "is_current": true,
+        "label_date": "May 2022"
+      }
+    ]
+  },
+  "P008895": {
+    "last_checked": "2026-04-02T12:45:56.670451+00:00",
+    "trade_name": "Dryphosate 680SG",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.670432+00:00",
+        "filename": "Dryphosate 680SG - P008895 - Approved Label - July 2024.pdf",
+        "hash": "0f618c6ab0f50a5d4ca710b382da7f628a55ddd3f9a3237e74e86b7dc5c4c9bb",
+        "is_current": true,
+        "label_date": "July 2024"
+      }
+    ]
+  },
+  "P008921": {
+    "last_checked": "2026-04-02T12:45:56.195997+00:00",
+    "trade_name": "Capetec",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.195970+00:00",
+        "filename": "Capetec - P008921 - Approved Label - Nov 2025.pdf",
+        "hash": "44d35e2b7e84f40a941353d20cfeb05b5325bb27cbed41333f950b199e4dd2d9",
+        "is_current": true,
+        "label_date": "Nov 2025"
+      }
+    ]
+  },
+  "P008927": {
+    "last_checked": "2026-04-02T12:45:58.610895+00:00",
+    "trade_name": "Savage 350 Insecticide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.610868+00:00",
+        "filename": "Savage 350 Insecticide - P008927 - Approved Label - Oct 2024.pdf",
+        "hash": "a5da2c4cf5bdfe4068b2c2f011ba360cc189e4ba6eec6ece8f4dc9855fc82fdf",
+        "is_current": true,
+        "label_date": "Oct 2024"
+      }
+    ]
+  },
+  "P008964": {
+    "last_checked": "2026-04-02T12:45:58.438450+00:00",
+    "trade_name": "Punch",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.438427+00:00",
+        "filename": "Punch - P008964 - Approved Label - P8964-08-Approved Label-March 2023.pdf",
+        "hash": "0e6f75988904dab6ef67af67cc3b07080b66f446e609746ef8103ae2507e0cdf",
+        "is_current": true,
+        "label_date": "P8964-08-Approved Label-March 2023"
+      }
+    ]
+  },
+  "P008991": {
+    "last_checked": "2026-04-02T12:45:57.815547+00:00",
+    "trade_name": "Max-Out 540",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.815527+00:00",
+        "filename": "Max-Out 540 - P008991 - Approved Label - Nov 2024.pdf",
+        "hash": "b3604f8233b56055c357d80a245a467bfcae03228e03e42fac65542c84b5064d",
+        "is_current": true,
+        "label_date": "Nov 2024"
+      }
+    ]
+  },
+  "P008992": {
+    "last_checked": "2026-04-02T12:45:58.893977+00:00",
+    "trade_name": "Sulphur 800 WDG",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.893952+00:00",
+        "filename": "Sulphur 800 WDG - P008992 - Approved Label - July 2025.pdf",
+        "hash": "8d69df4ae4b3fba8a8d2489107b2067ff2e67c1294a23d54cfa90f938ba21a67",
+        "is_current": true,
+        "label_date": "July 2025"
+      }
+    ]
+  },
+  "P009010": {
+    "last_checked": "2026-04-02T12:45:59.282362+00:00",
+    "trade_name": "Velocity 50 SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.282339+00:00",
+        "filename": "Velocity 50 SC - P009010 - Approved Label - Mar 2025.pdf",
+        "hash": "62c826a4a2c9540e668656552906c00681a4cdaeaf6e47e517b69b0202ebf4b5",
+        "is_current": true,
+        "label_date": "Mar 2025"
+      }
+    ]
+  },
+  "P009012": {
+    "last_checked": "2026-04-02T12:45:55.799604+00:00",
+    "trade_name": "Apex",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:55.799585+00:00",
+        "filename": "Apex - P009012 - Approved Label - Aug 2025.pdf",
+        "hash": "8082ed976829aa90e2c1bdbf3b318d94198658e23efb657092b8406e310e3bdf",
+        "is_current": true,
+        "label_date": "Aug 2025"
+      }
+    ]
+  },
+  "P009031": {
+    "last_checked": "2026-04-02T12:45:58.665420+00:00",
+    "trade_name": "Scythe",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.665398+00:00",
+        "filename": "Scythe - P009031 - Approved Label - Nov 2024.pdf",
+        "hash": "7e368d345bc8a0642aaa5bbbbdce6759ee67f0c1e01aa52419fcef619bf62685",
+        "is_current": true,
+        "label_date": "Nov 2024"
+      }
+    ]
+  },
+  "P009034": {
+    "last_checked": "2026-04-02T12:45:57.581934+00:00",
+    "trade_name": "Kencozeb 750 WG",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.581910+00:00",
+        "filename": "Kencozeb 750 WG - P009034 - Approved Label - Oct 2024.pdf",
+        "hash": "ac6d4bf3cb850dddc8f1d9eca6da1f7e042d4520aae21e3636143d0f4bb52e32",
+        "is_current": true,
+        "label_date": "Oct 2024"
+      }
+    ]
+  },
+  "P009036": {
+    "last_checked": "2026-04-02T12:45:59.131907+00:00",
+    "trade_name": "Timberwolf 900 WG",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.131890+00:00",
+        "filename": "Timberwolf 900 WG - P009036 - Approved Label - Mar 2025.pdf",
+        "hash": "fd024942c3d4fd7a24769a0d7cbde8f869e97d9b07a095b2dba99a4e984a95bd",
+        "is_current": true,
+        "label_date": "Mar 2025"
+      }
+    ]
+  },
+  "P009037": {
+    "last_checked": "2026-04-02T12:45:56.938039+00:00",
+    "trade_name": "Flick 500 SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.938021+00:00",
+        "filename": "Flick 500 SC - P009037 - Approved Label - Nov 2022.pdf",
+        "hash": "cad09e05cefe281e22b9a0107e5f80f924d45767886ee72f46c56f4a83dc2e19",
+        "is_current": true,
+        "label_date": "Nov 2022"
+      }
+    ]
+  },
+  "P009044": {
+    "last_checked": "2026-04-02T12:45:59.531319+00:00",
+    "trade_name": "ZETaPY",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.531295+00:00",
+        "filename": "ZETaPY - P009044 - Approved Label - Feb 2026.pdf",
+        "hash": "a1e03c4ba0c00ac8f8aa02460288f254bdce0242b9e27a013adc0afb8f3eb35d",
+        "is_current": true,
+        "label_date": "Feb 2026"
+      }
+    ]
+  },
+  "P009046": {
+    "last_checked": "2026-04-02T12:45:57.076209+00:00",
+    "trade_name": "Gelseal Ultra Spray-On",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.076184+00:00",
+        "filename": "Gelseal Ultra Spray-On - P009046 - Approved Label - Feb 2026.pdf",
+        "hash": "064d27321f3feb55589eb10feb3e4b069e029cf1b512aab9f43b09aba7ba5967",
+        "is_current": true,
+        "label_date": "Feb 2026"
+      }
+    ]
+  },
+  "P009053": {
+    "last_checked": "2026-04-02T12:45:55.783382+00:00",
+    "trade_name": "Announce",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:55.783352+00:00",
+        "filename": "Announce - P009053 - Approved Label - Aug 2022.pdf",
+        "hash": "dc266311e032f84736afb6955b9144efd2cf7ae5e8f0af622c94f32a8cf588bc",
+        "is_current": true,
+        "label_date": "Aug 2022"
+      }
+    ]
+  },
+  "P009060": {
+    "last_checked": "2026-04-02T12:45:59.019923+00:00",
+    "trade_name": "Talent",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.019899+00:00",
+        "filename": "Talent - P009060 - Approved Label - Nov 2021.pdf",
+        "hash": "5ec9cd2e2e7c108b4d94a0018a8dc4df029aaeb808ce2aa6c49d1ec5356aa4aa",
+        "is_current": true,
+        "label_date": "Nov 2021"
+      }
+    ]
+  },
+  "P009077": {
+    "last_checked": "2026-04-02T12:45:56.956151+00:00",
+    "trade_name": "Flute",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.956123+00:00",
+        "filename": "Flute - P009077 - Approved Label - Sep 2025.pdf",
+        "hash": "6276a4041521615eff6c4fe3dcb158bc2553ed05528324239eac1920626e8276",
+        "is_current": true,
+        "label_date": "Sep 2025"
+      }
+    ]
+  },
+  "P009104": {
+    "last_checked": "2026-04-02T12:45:56.730257+00:00",
+    "trade_name": "EnSpray 99",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.730237+00:00",
+        "filename": "EnSpray 99 - P009104 - Approved Label - Jan 2026.pdf",
+        "hash": "6efc63b9452c772dfe159f36fecb703bc0c00ec4bcd7ea7d63697c3187bd402a",
+        "is_current": true,
+        "label_date": "Jan 2026"
+      }
+    ]
+  },
+  "P009123": {
+    "last_checked": "2026-04-02T12:45:57.539159+00:00",
+    "trade_name": "Ken-Up 500 Flexi Herbicide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.539129+00:00",
+        "filename": "Ken-Up 500 Flexi Herbicide - P009123 - Approved Label - Nov 2024.pdf",
+        "hash": "cd9103ecf9021624fe95892a9969feeb961149f40f5dd7d84f7ce738655f5b9d",
+        "is_current": true,
+        "label_date": "Nov 2024"
+      }
+    ]
+  },
+  "P009135": {
+    "last_checked": "2026-04-02T12:45:56.748589+00:00",
+    "trade_name": "Entrust SC Naturalyte Insect Control",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.748568+00:00",
+        "filename": "Entrust SC Naturalyte Insect Control - P009135 - Approved Label - Oct 2024.pdf",
+        "hash": "d04070cb3c3a0676fb3a32042e2cfdb1fa2f9c81e8733f6a531048025af0a980",
+        "is_current": true,
+        "label_date": "Oct 2024"
+      }
+    ]
+  },
+  "P009146": {
+    "last_checked": "2026-04-02T12:45:58.371172+00:00",
+    "trade_name": "Prolectus",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.371148+00:00",
+        "filename": "Prolectus - P009146 - Approved Label - Jun 2023.pdf",
+        "hash": "ff69b0899cbc695ecbd97a2f71a4a3ff51023c30fd9320c7f13064aa09dc2596",
+        "is_current": true,
+        "label_date": "Jun 2023"
+      }
+    ]
+  },
+  "P009155": {
+    "last_checked": "2026-04-02T12:45:56.768522+00:00",
+    "trade_name": "Esteem",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.768473+00:00",
+        "filename": "Esteem - P009155 - Approved Label - May 2022.pdf",
+        "hash": "9db4a37530c067d5fad2c45c0253610a32500dfd87eb5202a4e16c3932817a5f",
+        "is_current": true,
+        "label_date": "May 2022"
+      }
+    ]
+  },
+  "P009161": {
+    "last_checked": "2026-04-02T12:45:57.705869+00:00",
+    "trade_name": "Luna Sensation",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.705843+00:00",
+        "filename": "Luna Sensation - P009161 - Approved Label - Dec 2021.pdf",
+        "hash": "07b4a3943bd4e5e239214523319127ae6cbbca7008f652732288a42c66797e2f",
+        "is_current": true,
+        "label_date": "Dec 2021"
+      }
+    ]
+  },
+  "P009169": {
+    "last_checked": "2026-04-02T12:45:56.244747+00:00",
+    "trade_name": "Carafe",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.244730+00:00",
+        "filename": "Carafe - P009169 - Approved Label - May 2025.pdf",
+        "hash": "d5c12999987b199d81116af9a45d3ad2763908b3f33166e50259b07eb1ba1098",
+        "is_current": true,
+        "label_date": "May 2025"
+      }
+    ]
+  },
+  "P009197": {
+    "last_checked": "2026-04-02T12:45:56.125077+00:00",
+    "trade_name": "Botrynil",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.125054+00:00",
+        "filename": "Botrynil - P009197 - Approved Label - Apr 2021.pdf",
+        "hash": "74d8a62b4f3398e15998229701bb465c0a9aa7e5982cf1ddedec41043fe5bbc0",
+        "is_current": true,
+        "label_date": "Apr 2021"
+      }
+    ]
+  },
+  "P009228": {
+    "last_checked": "2026-04-02T12:45:56.271830+00:00",
+    "trade_name": "Champ ION++",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.271810+00:00",
+        "filename": "Champ ION++ - P009228 - Approved Label - Jul 2023.pdf",
+        "hash": "f03728fa68f2fe5f5e644adc2d44172611a2b8e5931af1ac2d931cc339423917",
+        "is_current": true,
+        "label_date": "Jul 2023"
+      }
+    ]
+  },
+  "P009230": {
+    "last_checked": "2026-04-02T12:45:56.181065+00:00",
+    "trade_name": "Capella WG",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.181047+00:00",
+        "filename": "Capella WG - P009230 - Approved Label - May 2024.pdf",
+        "hash": "e41a6a29a708acf9bded3e858493a050232475d59d28416570c09e00b0d5ceeb",
+        "is_current": true,
+        "label_date": "May 2024"
+      }
+    ]
+  },
+  "P009264": {
+    "last_checked": "2026-04-02T12:45:58.154649+00:00",
+    "trade_name": "Patriot",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.154632+00:00",
+        "filename": "Patriot - P009264 - Approved Label - Apr 2024.pdf",
+        "hash": "af908d55180132448a7ab78fa47526582c1ca65934f230c2b0794ce970e6fe47",
+        "is_current": true,
+        "label_date": "Apr 2024"
+      }
+    ]
+  },
+  "P009268": {
+    "last_checked": "2026-04-02T12:45:56.033143+00:00",
+    "trade_name": "Biffo",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.033120+00:00",
+        "filename": "Biffo - P009268 - Approved Label - Jul 2023.pdf",
+        "hash": "d0ecd1000a53974227b3053276251663a942fdd93d18b2db3afab5fbe8d99c73",
+        "is_current": true,
+        "label_date": "Jul 2023"
+      }
+    ]
+  },
+  "P009274": {
+    "last_checked": "2026-04-02T12:45:55.867003+00:00",
+    "trade_name": "Arrow 360",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:55.866979+00:00",
+        "filename": "Arrow 360 - P009274 - Approved Label - Feb 2025.pdf",
+        "hash": "17d2d080feaa629bfd8d1813243dba3afa310666eb22c7d1a23a23fe79066bda",
+        "is_current": true,
+        "label_date": "Feb 2025"
+      }
+    ]
+  },
+  "P009312": {
+    "last_checked": "2026-04-02T12:45:59.421634+00:00",
+    "trade_name": "Weedenz Rapid",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.421612+00:00",
+        "filename": "Weedenz Rapid - P009312 - Approved Label - Nov 2025.pdf",
+        "hash": "420d356c71930a5a38d21a9e2aa3e87e9f6a8d9b4b8499f7c7245d9f4e3086a4",
+        "is_current": true,
+        "label_date": "Nov 2025"
+      }
+    ]
+  },
+  "P009323": {
+    "last_checked": "2026-04-02T12:45:58.624352+00:00",
+    "trade_name": "Savvy 500SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.624332+00:00",
+        "filename": "Savvy 500SC - P009323 - Approved Label - Mar 2025.pdf",
+        "hash": "b4c0b28298e7b93028ad235742d43ad9d194b55326c6965326957b6cef9f0196",
+        "is_current": true,
+        "label_date": "Mar 2025"
+      }
+    ]
+  },
+  "P009329": {
+    "last_checked": "2026-04-02T12:45:56.972531+00:00",
+    "trade_name": "Folpan 800 WG",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.972502+00:00",
+        "filename": "Folpan 800 WG - P009329 - Approved Label - Mar 2022.pdf",
+        "hash": "5c3fd4b34c0d53aa3984084bfc0be5ac9955c6ae49a0fd88fa310e143772510e",
+        "is_current": true,
+        "label_date": "Mar 2022"
+      }
+    ]
+  },
+  "P009333": {
+    "last_checked": "2026-04-02T12:45:56.883337+00:00",
+    "trade_name": "Fenox 480SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.883321+00:00",
+        "filename": "Fenox 480SC - P009333 - Approved Label - Aug 2023.pdf",
+        "hash": "51aed613aa4e929a2886cdd3fdc7cee9b4585783020be032c2252ab611e8f1cd",
+        "is_current": true,
+        "label_date": "Aug 2023"
+      }
+    ]
+  },
+  "P009367": {
+    "last_checked": "2026-04-02T12:45:57.059623+00:00",
+    "trade_name": "Galigan 500 SC Herbicide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.059605+00:00",
+        "filename": "Galigan 500 SC Herbicide - P009367 - Approved Label - P9367-04-Approved Label-March 2023.pdf",
+        "hash": "31a144863c095fa7424a54b75a078ceb3d5617d8c04d4555c98160e56cfbde7f",
+        "is_current": true,
+        "label_date": "P9367-04-Approved Label-March 2023"
+      }
+    ]
+  },
+  "P009371": {
+    "last_checked": "2026-04-02T12:45:57.453355+00:00",
+    "trade_name": "K-POW",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.453325+00:00",
+        "filename": "K-POW - P009371 - Approved Label - Mar 2021.pdf",
+        "hash": "315bef1b214a1da11e099be818033d81311b4c17526c4c604460bdea87b6d50f",
+        "is_current": true,
+        "label_date": "Mar 2021"
+      }
+    ]
+  },
+  "P009402": {
+    "last_checked": "2026-04-02T12:45:56.112106+00:00",
+    "trade_name": "Botry-Zen WP",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.112081+00:00",
+        "filename": "Botry-Zen WP - P009402 - Approved Label - Sept 2023.pdf",
+        "hash": "53aebdad430477ef2e6abaa85709cb068b449979fc3420f4bf8b15cda23dec68",
+        "is_current": true,
+        "label_date": "Sept 2023"
+      }
+    ]
+  },
+  "P009409": {
+    "last_checked": "2026-04-02T12:45:58.704407+00:00",
+    "trade_name": "Serenade Optimum",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.704377+00:00",
+        "filename": "Serenade Optimum - P009409 - Approved Label - Aug 2025.pdf",
+        "hash": "64c804c3979148d9d3a820530aad7a8f76a43b953cd3d1fe307b177e5e8205ec",
+        "is_current": true,
+        "label_date": "Aug 2025"
+      }
+    ]
+  },
+  "P009421": {
+    "last_checked": "2026-04-02T12:45:55.751469+00:00",
+    "trade_name": "Alion",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:55.751441+00:00",
+        "filename": "Alion - P009421 - Approved Label - Jun 2022.pdf",
+        "hash": "4facbef730f2090c83f304dbad623c2556c6653f7218e05686b25eff6dc834c8",
+        "is_current": true,
+        "label_date": "Jun 2022"
+      }
+    ]
+  },
+  "P009422": {
+    "last_checked": "2026-04-02T12:45:57.042147+00:00",
+    "trade_name": "GA200",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.042120+00:00",
+        "filename": "GA200 - P009422 - Approved Label - Jan 2025.pdf",
+        "hash": "174dfb455c42d81d57438401ea65da3603eb1dc4c3dc58b77cdb39e2d412764e",
+        "is_current": true,
+        "label_date": "Jan 2025"
+      }
+    ]
+  },
+  "P009466": {
+    "last_checked": "2026-04-02T15:01:17.100175+00:00",
+    "trade_name": "Stinger 510 [Wrightson]",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T15:01:17.100175+00:00",
+        "filename": "Stinger 510 [Wrightson] - P009466 - Approved Label - Jul 2024.pdf",
+        "hash": "e0045c24efe9c373ce9411c92a511e28cd7f716257b27933b9c7c354c0f97f28",
+        "is_current": true,
+        "label_date": "Jul 2024"
+      }
+    ]
+  },
+  "P009488": {
+    "last_checked": "2026-04-02T12:45:57.649811+00:00",
+    "trade_name": "Kusabi",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.649793+00:00",
+        "filename": "Kusabi - P009488 - Approved Label - Oct 2025.pdf",
+        "hash": "c8012c95a464b1f1c9e6a7c647d60870b148022f0d6eb74760269b353a1017fd",
+        "is_current": true,
+        "label_date": "Oct 2025"
+      }
+    ]
+  },
+  "P009491": {
+    "last_checked": "2026-04-02T12:45:57.507118+00:00",
+    "trade_name": "Karmex 900",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.507094+00:00",
+        "filename": "Karmex 900 - P009491 - Approved Label - Dec 2024.pdf",
+        "hash": "0dd8ce47123e6b4e415e9da3181b52488e3079e2accbaad04c66ac4c8ec073e7",
+        "is_current": true,
+        "label_date": "Dec 2024"
+      }
+    ]
+  },
+  "P009502": {
+    "last_checked": "2026-04-02T12:45:56.337077+00:00",
+    "trade_name": "Colt 360",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.337055+00:00",
+        "filename": "Colt 360 - P009502 - Approved Label - Jan 2026.pdf",
+        "hash": "d1b4dfb70470258c2b19a3c4cdc6ec5ccb215bffea91c768ed9f6608c4a41650",
+        "is_current": true,
+        "label_date": "Jan 2026"
+      }
+    ]
+  },
+  "P009507": {
+    "last_checked": "2026-04-02T12:45:56.284125+00:00",
+    "trade_name": "Chateau",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.284101+00:00",
+        "filename": "Chateau - P009507 - Approved Label - Nov 2022.pdf",
+        "hash": "a16718750aa5bc8d5761e061d0f7ddb3ccbbb90803b0200e7bfe29e7a8bf0396",
+        "is_current": true,
+        "label_date": "Nov 2022"
+      }
+    ]
+  },
+  "P009524": {
+    "last_checked": "2026-04-02T12:45:57.294447+00:00",
+    "trade_name": "GroVentive",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.294422+00:00",
+        "filename": "GroVentive - P009524 - Approved Label - June 2023.pdf",
+        "hash": "59df6870249fc5a8b546f9852f9c33db9eb67a46a7498e877d7c906ab3237d89",
+        "is_current": true,
+        "label_date": "June 2023"
+      }
+    ]
+  },
+  "P009526": {
+    "last_checked": "2026-04-02T12:45:58.343943+00:00",
+    "trade_name": "Proclaim Opti",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.343920+00:00",
+        "filename": "Proclaim Opti - P009526 - Approved Label - Feb 2026.pdf",
+        "hash": "2be3f274468a9ba4317216d10c9e7daa538915ce2c2bab082168f3c347216b58",
+        "is_current": true,
+        "label_date": "Feb 2026"
+      }
+    ]
+  },
+  "P009543": {
+    "last_checked": "2026-04-02T12:45:58.467221+00:00",
+    "trade_name": "Pylon",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.467197+00:00",
+        "filename": "Pylon - P009543 - Approved Label - Dec 2024.pdf",
+        "hash": "f5208ac68706c2d025d4f62282512e25e771c9da6e5671d58b847f0cb6689b62",
+        "is_current": true,
+        "label_date": "Dec 2024"
+      }
+    ]
+  },
+  "P009564": {
+    "last_checked": "2026-04-02T12:45:57.733671+00:00",
+    "trade_name": "Magneto",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.733640+00:00",
+        "filename": "Magneto - P009564 - Approved Label - Dec 2024.pdf",
+        "hash": "efc7ac6ec0a702519113b171c660b7692059f79db6d312f751c928da9ad300dd",
+        "is_current": true,
+        "label_date": "Dec 2024"
+      }
+    ]
+  },
+  "P009567": {
+    "last_checked": "2026-04-02T12:45:57.719880+00:00",
+    "trade_name": "Machette 540",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.719862+00:00",
+        "filename": "Machette 540 - P009567 - Approved Label - Apr 2025.pdf",
+        "hash": "fa88d971f8918303786dda21f0539762356254972451ca85d9dc5176efee2430",
+        "is_current": true,
+        "label_date": "Apr 2025"
+      }
+    ]
+  },
+  "P009576": {
+    "last_checked": "2026-04-02T12:45:59.047791+00:00",
+    "trade_name": "Telgate",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.047773+00:00",
+        "filename": "Telgate - P009576 - Approved Label - July 2025.pdf",
+        "hash": "f5c9e5c262e25570cc0ebf8578ca285ae1041754f219c26970978a30d33af139",
+        "is_current": true,
+        "label_date": "July 2025"
+      }
+    ]
+  },
+  "P009577": {
+    "last_checked": "2026-04-02T12:45:58.649982+00:00",
+    "trade_name": "Scylla",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.649962+00:00",
+        "filename": "Scylla - P009577 - Approved Label - July 2025.pdf",
+        "hash": "eedb98c0028be1f93f815bf8899e7b75b20b77eb9a6d1b01739f976638004148",
+        "is_current": true,
+        "label_date": "July 2025"
+      }
+    ]
+  },
+  "P009580": {
+    "last_checked": "2026-04-02T12:45:58.853226+00:00",
+    "trade_name": "Stinger 510",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.853208+00:00",
+        "filename": "Stinger 510 - P009580 - Approved Label - Nov 2025.pdf",
+        "hash": "7e25bed4f5e8433f1f4bbc3c7fc826ab9c5344a53e1ff6aa31769992c6128118",
+        "is_current": true,
+        "label_date": "Nov 2025"
+      }
+    ]
+  },
+  "P009595": {
+    "last_checked": "2026-04-02T12:45:56.429731+00:00",
+    "trade_name": "Crucial",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.429712+00:00",
+        "filename": "Crucial - P009595 - Approved Label - June 2025.pdf",
+        "hash": "18bdcabb621f5d5323ccc2092cacf905ec3f0f82037c090afce7138dcfec0970",
+        "is_current": true,
+        "label_date": "June 2025"
+      }
+    ]
+  },
+  "P009599": {
+    "last_checked": "2026-04-02T12:45:59.409862+00:00",
+    "trade_name": "Weed Weapon Natural Power",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.409839+00:00",
+        "filename": "Weed Weapon Natural Power - P009599 - Approved Label - Feb 2026.pdf",
+        "hash": "76b8d5ad41eccce52120663d03883ed5fde9ae91a2cb6a1aa9c56db9b2ac4a10",
+        "is_current": true,
+        "label_date": "Feb 2026"
+      }
+    ]
+  },
+  "P009627": {
+    "last_checked": "2026-04-02T12:45:56.783989+00:00",
+    "trade_name": "Eurozeb 75WG",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.783964+00:00",
+        "filename": "Eurozeb 75WG - P009627 - Approved Label - Mar 2025.pdf",
+        "hash": "eb9b6b8e3246a65ad3c1f870dd3e512cb9899102938419fd67a0e966baed42db",
+        "is_current": true,
+        "label_date": "Mar 2025"
+      }
+    ]
+  },
+  "P009638": {
+    "last_checked": "2026-04-02T12:45:56.868363+00:00",
+    "trade_name": "Excel Plus",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.868338+00:00",
+        "filename": "Excel Plus - P009638 - Approved Label - Jan 2026.pdf",
+        "hash": "dbd594aac7dcbf9f74501293c0dac58befdc08e5fab8962fc2e132de1af6e320",
+        "is_current": true,
+        "label_date": "Jan 2026"
+      }
+    ]
+  },
+  "P009644": {
+    "last_checked": "2026-04-02T12:45:56.556055+00:00",
+    "trade_name": "Digger EW",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.556032+00:00",
+        "filename": "Digger EW - P009644 - Approved Label - Jul 2025.pdf",
+        "hash": "778cc3e9e9106076f446b6d143a2e2ca808010b180673a8f3d910c91edfcb0cb",
+        "is_current": true,
+        "label_date": "Jul 2025"
+      }
+    ]
+  },
+  "P009645": {
+    "last_checked": "2026-04-02T12:45:57.915301+00:00",
+    "trade_name": "Millennium",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.915274+00:00",
+        "filename": "Millennium - P009645 - Approved Label - July 2022.pdf",
+        "hash": "dc67c22f7a6472ac55e3f37ecaa5798d8979a5eb0e0ef6945be65a58b9951d02",
+        "is_current": true,
+        "label_date": "July 2022"
+      }
+    ]
+  },
+  "P009652": {
+    "last_checked": "2026-04-02T12:45:59.342297+00:00",
+    "trade_name": "Vistaseal",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.342277+00:00",
+        "filename": "Vistaseal - P009652 - Approved Label - May 2025.pdf",
+        "hash": "bca6d2fa53ed9cb1a0e0671f72fedb591de0917dfeffb0c67a41fc116a9ff90d",
+        "is_current": true,
+        "label_date": "May 2025"
+      }
+    ]
+  },
+  "P009679": {
+    "last_checked": "2026-04-02T12:45:59.499004+00:00",
+    "trade_name": "Weedoff",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.498980+00:00",
+        "filename": "Weedoff - P009679 - Approved Label - Oct 2025.pdf",
+        "hash": "97fa099f74dcd2e5f1c56e71d09816892e84d62bbec4c9046bb8992027a5fda4",
+        "is_current": true,
+        "label_date": "Oct 2025"
+      }
+    ]
+  },
+  "P009681": {
+    "last_checked": "2026-04-02T12:45:57.268056+00:00",
+    "trade_name": "GROGARD",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.268031+00:00",
+        "filename": "GROGARD - P009681 - Approved Label - Aug 2025.pdf",
+        "hash": "362406b63131cfb698c561b23ce9bc98d27a2685d55b894139c9ea55ccd27a28",
+        "is_current": true,
+        "label_date": "Aug 2025"
+      }
+    ]
+  },
+  "P009687": {
+    "last_checked": "2026-04-02T12:45:58.921631+00:00",
+    "trade_name": "Supremis 100SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.921613+00:00",
+        "filename": "Supremis 100SC - P009687 - Approved Label - Mar 2024.pdf",
+        "hash": "ea13f45df342c84aacd69f8991fab7cb60af74ede97acb8d57b9c5131d6ea7f5",
+        "is_current": true,
+        "label_date": "Mar 2024"
+      }
+    ]
+  },
+  "P009700": {
+    "last_checked": "2026-04-02T15:01:17.100175+00:00",
+    "trade_name": "Botector",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T15:01:17.100175+00:00",
+        "filename": "Botector - P009700 - Approved Label - Oct 2025.pdf",
+        "hash": "0d9f2c43f64168f805faae048a675da8bb71885e4059e6447fe8ed16ab4e0739",
+        "is_current": true,
+        "label_date": "Oct 2025"
+      }
+    ]
+  },
+  "P009705": {
+    "last_checked": "2026-04-02T12:45:58.040261+00:00",
+    "trade_name": "Novellus Fungicide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.040242+00:00",
+        "filename": "Novellus Fungicide - P009705 - Approved Label - Nov 2025.pdf",
+        "hash": "b2450e6f8e03c1611e6fd22a62ef600c83f20701c2927c16a36e6dd8818465af",
+        "is_current": true,
+        "label_date": "Nov 2025"
+      }
+    ]
+  },
+  "P009722": {
+    "last_checked": "2026-04-02T12:45:55.965505+00:00",
+    "trade_name": "Bammer",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:55.965481+00:00",
+        "filename": "Bammer - P009722 - Approved Label - Sep 2025.pdf",
+        "hash": "6d1c8e96f5366371fea55246a38ec2e2f3aba3732acbe51339f61e8e43de4861",
+        "is_current": true,
+        "label_date": "Sep 2025"
+      }
+    ]
+  },
+  "P009724": {
+    "last_checked": "2026-04-02T12:45:57.931929+00:00",
+    "trade_name": "Miravis Prime",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.931905+00:00",
+        "filename": "Miravis Prime - P009724 - Approved Label - Dec 2024.pdf",
+        "hash": "80de6412acbc7da03b2fdf2c388bed2b8cf922346c2fcc811b9b2fc93084e0bc",
+        "is_current": true,
+        "label_date": "Dec 2024"
+      }
+    ]
+  },
+  "P009734": {
+    "last_checked": "2026-04-02T12:45:58.028503+00:00",
+    "trade_name": "Norshield 45WG",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.028486+00:00",
+        "filename": "Norshield 45WG - P009734 - Approved Label - Jan 2025.pdf",
+        "hash": "c9b9f51eb3bf6072ff7d05e5b8605adbbdf0cebc26c8a919f50bc927fed8fa3c",
+        "is_current": true,
+        "label_date": "Jan 2025"
+      }
+    ]
+  },
+  "P009736": {
+    "last_checked": "2026-04-02T12:45:57.255091+00:00",
+    "trade_name": "GroCap",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.255062+00:00",
+        "filename": "GroCap - P009736 - Approved Label - Mar 2024.pdf",
+        "hash": "41f864e948518ef162219dcf164b52e1f24c1b656cc6f7b410824418f052dd55",
+        "is_current": true,
+        "label_date": "Mar 2024"
+      }
+    ]
+  },
+  "P009737": {
+    "last_checked": "2026-04-02T12:45:57.873189+00:00",
+    "trade_name": "MetiGro",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.873154+00:00",
+        "filename": "MetiGro - P009737 - Approved Label - Aug 2022.pdf",
+        "hash": "29438b14c3c4f8ae325c3a2170a93667e8561c53123ce5bc1b8791608a26b63a",
+        "is_current": true,
+        "label_date": "Aug 2022"
+      }
+    ]
+  },
+  "P009740": {
+    "last_checked": "2026-04-02T12:45:57.595602+00:00",
+    "trade_name": "Kenja 400 SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.595582+00:00",
+        "filename": "Kenja 400 SC - P009740 - Approved Label - May 2022 v2.pdf",
+        "hash": "67afed9e627e632aca532cabffbb6eb5ffe5027d9d00a142767bde4a5c8d477e",
+        "is_current": true,
+        "label_date": "May 2022 v2"
+      }
+    ]
+  },
+  "P009745": {
+    "last_checked": "2026-04-02T12:45:59.516163+00:00",
+    "trade_name": "Wynca Sunphosate 540K Herbicide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.516145+00:00",
+        "filename": "Wynca Sunphosate 540K Herbicide - P009745 - Approved Label - Jul 2024.pdf",
+        "hash": "dff3a7c4b14a33a7a0db31a320a1c520dd861d16eb3da63ed52b439e3807ee02",
+        "is_current": true,
+        "label_date": "Jul 2024"
+      }
+    ]
+  },
+  "P009764": {
+    "last_checked": "2026-04-02T12:45:57.440502+00:00",
+    "trade_name": "Integralis",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.440480+00:00",
+        "filename": "Integralis - P009764 - Approved Label - Sept 2023.pdf",
+        "hash": "40710cd4b68159bb0cd6a4492a78d9a1f4cc742859f2db3b4c82e85ceb7985fe",
+        "is_current": true,
+        "label_date": "Sept 2023"
+      }
+    ]
+  },
+  "P009765": {
+    "last_checked": "2026-04-02T12:45:57.196150+00:00",
+    "trade_name": "Grandevo WDG",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.196126+00:00",
+        "filename": "Grandevo WDG - P009765 - Approved Label - November 2020.pdf",
+        "hash": "a6fab45474a360c31b103a875ef4bce349b964893c161c7ef16a432ab8685755",
+        "is_current": true,
+        "label_date": "November 2020"
+      }
+    ]
+  },
+  "P009770": {
+    "last_checked": "2026-04-02T12:45:58.512577+00:00",
+    "trade_name": "Rainbow & Brown Glyphosate 540",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.512559+00:00",
+        "filename": "Rainbow & Brown Glyphosate 540 - P009770 - Approved Label - Aug 2024.pdf",
+        "hash": "77320f8c22b984c3aea9d1031009496a2bd6469651eb324b3fa64b5a8b98ea2e",
+        "is_current": true,
+        "label_date": "Aug 2024"
+      }
+    ]
+  },
+  "P009798": {
+    "last_checked": "2026-04-02T12:45:56.020359+00:00",
+    "trade_name": "Belanty",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.020342+00:00",
+        "filename": "Belanty - P009798 - Approved Label - July 2025.pdf",
+        "hash": "f2ddd2d7341924c7ee91081f7ab5d437bf0e13fbf1152fadd0d5be2f288735ba",
+        "is_current": true,
+        "label_date": "July 2025"
+      }
+    ]
+  },
+  "P009810": {
+    "last_checked": "2026-04-02T12:45:58.968277+00:00",
+    "trade_name": "Taekwando 250CS",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.968254+00:00",
+        "filename": "Taekwando 250CS - P009810 - Approved Label - Jul 2022.pdf",
+        "hash": "2389c1c730d12015c199dcc3f0bc2112b95bbbe835a2c95791eed38faef71251",
+        "is_current": true,
+        "label_date": "Jul 2022"
+      }
+    ]
+  },
+  "P009824": {
+    "last_checked": "2026-04-02T12:45:56.501652+00:00",
+    "trade_name": "Deal 360",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.501629+00:00",
+        "filename": "Deal 360 - P009824 - Approved Label - May 2025.pdf",
+        "hash": "e1f64bb0ea5029f076ba82164817092c74a3244f4e2295a098f714ec296b6231",
+        "is_current": true,
+        "label_date": "May 2025"
+      }
+    ]
+  },
+  "P009828": {
+    "last_checked": "2026-04-02T12:45:58.259921+00:00",
+    "trade_name": "Polaris 360",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.259897+00:00",
+        "filename": "Polaris 360 - P009828 - Approved Label - Dec 2024.pdf",
+        "hash": "5cb6c466426f02a4365dcea53fc4a37faa36363190b33d36c97cf2f2f731eb9e",
+        "is_current": true,
+        "label_date": "Dec 2024"
+      }
+    ]
+  },
+  "P009841": {
+    "last_checked": "2026-04-02T12:45:58.731111+00:00",
+    "trade_name": "Slasher Organic Weedkiller",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.731088+00:00",
+        "filename": "Slasher Organic Weedkiller - P009841 - Approved Label - May 2023.pdf",
+        "hash": "064ab10b557bec0387288facb07e378d7d36f596c96e79d4d0b735d3bcd84ba3",
+        "is_current": true,
+        "label_date": "May 2023"
+      }
+    ]
+  },
+  "P009876": {
+    "last_checked": "2026-04-02T12:45:56.602226+00:00",
+    "trade_name": "Disruptor 540 Kalium",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.602202+00:00",
+        "filename": "Disruptor 540 Kalium - P009876 - Approved Label - Sep 2024.pdf",
+        "hash": "0151f90d28e98e1f79c201826b6a69f24beb3ea43ff4c87e22a95d03a6ceb648",
+        "is_current": true,
+        "label_date": "Sep 2024"
+      }
+    ]
+  },
+  "P009895": {
+    "last_checked": "2026-04-02T12:45:59.355088+00:00",
+    "trade_name": "Vitae 250SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.355064+00:00",
+        "filename": "Vitae 250SC - P009895 - Approved Label - Dec 2024.pdf",
+        "hash": "06af0994c21a92cd5073a390014e4c35e05dc829d78866802b242449d0855e7b",
+        "is_current": true,
+        "label_date": "Dec 2024"
+      }
+    ]
+  },
+  "P009909": {
+    "last_checked": "2026-04-02T12:45:58.052993+00:00",
+    "trade_name": "NSA",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.052969+00:00",
+        "filename": "NSA - P009909 - Approved Label - Oct 2025.pdf",
+        "hash": "466adecae0e85e8842534e000d0fabcf0d7e6ff85686857a4f87cfcf0a48b63f",
+        "is_current": true,
+        "label_date": "Oct 2025"
+      }
+    ]
+  },
+  "P009911": {
+    "last_checked": "2026-04-02T12:45:57.398358+00:00",
+    "trade_name": "Hortiseal",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.398333+00:00",
+        "filename": "Hortiseal - P009911 - Approved Label - June 2025.pdf",
+        "hash": "96d68e881c68373b906609408a448b21924caf813d7cc27d763ee2256776aaa7",
+        "is_current": true,
+        "label_date": "June 2025"
+      }
+    ]
+  },
+  "P009913": {
+    "last_checked": "2026-04-02T12:45:58.302006+00:00",
+    "trade_name": "Polaris 540",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.301983+00:00",
+        "filename": "Polaris 540 - P009913 - Approved Label - Sept 2024.pdf",
+        "hash": "65ce67864b4db8b951946eecd4b375861fb6203fece28c4da5122241402530d7",
+        "is_current": true,
+        "label_date": "Sept 2024"
+      }
+    ]
+  },
+  "P009924": {
+    "last_checked": "2026-04-02T12:45:58.169461+00:00",
+    "trade_name": "Patriot 1",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.169442+00:00",
+        "filename": "Patriot 1 - P009924 - Approved Label - Oct 2025.pdf",
+        "hash": "c7437f9a7e32ef1699142c8d61ca66fea53b4cdc09756397c2aa732b6dfb2999",
+        "is_current": true,
+        "label_date": "Oct 2025"
+      }
+    ]
+  },
+  "P009931": {
+    "last_checked": "2026-04-02T12:45:58.200224+00:00",
+    "trade_name": "Pendi 455CS Herbicide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.200201+00:00",
+        "filename": "Pendi 455CS Herbicide - P009931 - Approved Label - Feb 2024.pdf",
+        "hash": "b4f6c8ef8c9d6d6b8bbbc3b69939aad969e32ea623902c2d8023b83ba858973b",
+        "is_current": true,
+        "label_date": "Feb 2024"
+      }
+    ]
+  },
+  "P009936": {
+    "last_checked": "2026-04-02T12:45:55.765782+00:00",
+    "trade_name": "Altivo 500SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:55.765756+00:00",
+        "filename": "Altivo 500SC - P009936 - Approved Label - Feb 2025.pdf",
+        "hash": "2b6d08de5a0094a62d991f71e5c56c048168a88e74ef7c55b061808c3619ec1b",
+        "is_current": true,
+        "label_date": "Feb 2025"
+      }
+    ]
+  },
+  "P009969": {
+    "last_checked": "2026-04-02T12:45:56.587827+00:00",
+    "trade_name": "Disruptor 360 Aqua",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.587809+00:00",
+        "filename": "Disruptor 360 Aqua - P009969 - Approved Label - Sept 2024.pdf",
+        "hash": "3fb1fbb25457afe04456612eaf786c4bc8509b27f7a4d71545e3bca703728291",
+        "is_current": true,
+        "label_date": "Sept 2024"
+      }
+    ]
+  },
+  "P010000": {
+    "last_checked": "2026-04-02T12:45:56.630781+00:00",
+    "trade_name": "Diyak 150 SC Insecticide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.630757+00:00",
+        "filename": "Diyak 150 SC Insecticide - P010000 - Approved Label - Feb 2023.pdf",
+        "hash": "5eea97f68dd8e69989da7a8d0a4e4bb9100572d9e69a9752d842e776db5eee21",
+        "is_current": true,
+        "label_date": "Feb 2023"
+      }
+    ]
+  },
+  "P010008": {
+    "last_checked": "2026-04-02T12:45:58.936899+00:00",
+    "trade_name": "Swap 375 + 250WG",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.936875+00:00",
+        "filename": "Swap 375 + 250WG - P010008 - Approved Label - Apr 2024.pdf",
+        "hash": "67206116a3392654f81073678fed8c4f78903fc19b9db88c0ce4203ae50503cc",
+        "is_current": true,
+        "label_date": "Apr 2024"
+      }
+    ]
+  },
+  "P010018": {
+    "last_checked": "2026-04-02T12:45:58.806719+00:00",
+    "trade_name": "SpinOut",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.806699+00:00",
+        "filename": "SpinOut - P010018 - Approved Label - Oct 2024.pdf",
+        "hash": "81da1fd6ee36c88c6b88e1bc507b71c8a68ae9e9624699353bd7e15190ac7888",
+        "is_current": true,
+        "label_date": "Oct 2024"
+      }
+    ]
+  },
+  "P010020": {
+    "last_checked": "2026-04-02T12:45:58.835450+00:00",
+    "trade_name": "Spirosec 100SC",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.835426+00:00",
+        "filename": "Spirosec 100SC - P010020 - Approved Label - Mar 2025.pdf",
+        "hash": "9c47f2e3ed791092fd55e424ca336b2efb16ef6e86e1cedb5385c38c5e0a2af1",
+        "is_current": true,
+        "label_date": "Mar 2025"
+      }
+    ]
+  },
+  "P010093": {
+    "last_checked": "2026-04-02T12:45:57.425360+00:00",
+    "trade_name": "Instinct",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.425342+00:00",
+        "filename": "Instinct - P010093 - Approved Label - Dec 2024.pdf",
+        "hash": "d6762d33738b52af455d4fa81ff372cc14d60be941e46fead401f88ba52b701e",
+        "is_current": true,
+        "label_date": "Dec 2024"
+      }
+    ]
+  },
+  "P010146": {
+    "last_checked": "2026-04-02T12:45:57.092410+00:00",
+    "trade_name": "Gem",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.092391+00:00",
+        "filename": "Gem - P010146 - Approved Label - May 2024.pdf",
+        "hash": "419b2642b79f7abb99b9ab3fda90de20161a1a02a91cb3eafe9d96ad73fbec7a",
+        "is_current": true,
+        "label_date": "May 2024"
+      }
+    ]
+  },
+  "P010179": {
+    "last_checked": "2026-04-02T12:45:55.979764+00:00",
+    "trade_name": "Barrier",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:55.979741+00:00",
+        "filename": "Barrier - P010179 - Approved Label - Mar 2025.pdf",
+        "hash": "9e7442dd8f407c3f22add471627557c304b12abdd6377514b490499121e10d5d",
+        "is_current": true,
+        "label_date": "Mar 2025"
+      }
+    ]
+  },
+  "P010203": {
+    "last_checked": "2026-04-02T12:45:57.610026+00:00",
+    "trade_name": "Knock Out Extra",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.610008+00:00",
+        "filename": "Knock Out Extra - P010203 - Approved Label - Aug 2024.pdf",
+        "hash": "0420db1106f3ae34c8e8ccf9b401d8eaaf281c37bb4387218ef2a870001e4b32",
+        "is_current": true,
+        "label_date": "Aug 2024"
+      }
+    ]
+  },
+  "P010209": {
+    "last_checked": "2026-04-02T12:45:57.280907+00:00",
+    "trade_name": "Grolan",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.280876+00:00",
+        "filename": "Grolan - P010209 - Approved Label - Sept 2024.pdf",
+        "hash": "e4d605de3a8614fc521c250812789d0651ea92067bfe6295493f3b3c9b2a2c0b",
+        "is_current": true,
+        "label_date": "Sept 2024"
+      }
+    ]
+  },
+  "P010222": {
+    "last_checked": "2026-04-02T12:45:59.295729+00:00",
+    "trade_name": "Venturi 240",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.295712+00:00",
+        "filename": "Venturi 240 - P010222 - Approved Label - May 2024.pdf",
+        "hash": "ba11678a7d373e5c8c818507e3b9ec5bfb7b01cb08fd0f33ac88e56f2a819170",
+        "is_current": true,
+        "label_date": "May 2024"
+      }
+    ]
+  },
+  "P010234": {
+    "last_checked": "2026-04-02T12:45:56.987825+00:00",
+    "trade_name": "Fortuna",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.987799+00:00",
+        "filename": "Fortuna - P010234 - Approved Label - Mar 2025.pdf",
+        "hash": "07c51feb70e75731f8610a4b0466c3b44b5f5e909ee01e6f8ffd0824220a9d94",
+        "is_current": true,
+        "label_date": "Mar 2025"
+      }
+    ]
+  },
+  "P010279": {
+    "last_checked": "2026-04-02T12:45:58.909858+00:00",
+    "trade_name": "Supershot 800 Fungicide",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.909827+00:00",
+        "filename": "Supershot 800 Fungicide - P010279 - Approved Label - Mar 2025.pdf",
+        "hash": "bc516064791e59f6243525bf7b2fec13c75435eb02ad423003b545dea8f2f621",
+        "is_current": true,
+        "label_date": "Mar 2025"
+      }
+    ]
+  },
+  "P010301": {
+    "last_checked": "2026-04-02T12:45:59.157855+00:00",
+    "trade_name": "Torque",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:59.157830+00:00",
+        "filename": "Torque - P010301 - Approved Label - May 2025.pdf",
+        "hash": "defc97d2471061825ea3f0e8f31185fb5bf248515b86630f3102c7f60f59b6d3",
+        "is_current": true,
+        "label_date": "May 2025"
+      }
+    ]
+  },
+  "P010302": {
+    "last_checked": "2026-04-02T12:45:58.138258+00:00",
+    "trade_name": "Paragon",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:58.138233+00:00",
+        "filename": "Paragon - P010302 - Approved Label - May 2025.pdf",
+        "hash": "7d02d9fc2af02ee8e8a2b51b079e491a3c4fa1a22c6198fc2906b6626c54e8ef",
+        "is_current": true,
+        "label_date": "May 2025"
+      }
+    ]
+  },
+  "P010323": {
+    "last_checked": "2026-04-02T12:45:57.768776+00:00",
+    "trade_name": "Mancostar 750",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:57.768753+00:00",
+        "filename": "Mancostar 750 - P010323 - Approved Label - Dec 2025.pdf",
+        "hash": "2b27b671d779ec8f592df969ffa65b14b678f5dae09377c1dcc5b40e1ee774c5",
+        "is_current": true,
+        "label_date": "Dec 2025"
+      }
+    ]
+  },
+  "P010336": {
+    "last_checked": "2026-04-02T12:45:56.230666+00:00",
+    "trade_name": "Captrex",
+    "versions": [
+      {
+        "downloaded_at": "2026-04-02T12:45:56.230642+00:00",
+        "filename": "Captrex - P010336 - Approved Label - Nov 2025.pdf",
+        "hash": "dc3c1efd43c32fdcad4d27cc0f5ecae69be1b8ed4d0270ef4bccd9d847ccde14",
+        "is_current": true,
+        "label_date": "Nov 2025"
+      }
+    ]
+  }
+}
