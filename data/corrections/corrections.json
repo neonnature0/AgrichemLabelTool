@@ -1,1 +1,10 @@
-{}
+{
+  "nordox-75wg": [
+    {
+      "field": "active_ingredients",
+      "correct_value": "Contains: 750g/kg copper as cuprous oxide in the form of a water dispersible granule.",
+      "raw_text": null,
+      "corrected_at": "2026-04-14T07:56:14.802472+00:00"
+    }
+  ]
+}

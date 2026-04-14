@@ -22,5 +22,19 @@
       "status": "correct",
       "at": "2026-04-02T16:38:56.574182+00:00"
     }
+  },
+  "nordox-75wg": {
+    "hsr_number": {
+      "status": "correct",
+      "at": "2026-04-14T07:55:42.659276+00:00"
+    },
+    "signal_word": {
+      "status": "correct",
+      "at": "2026-04-14T07:55:47.500503+00:00"
+    },
+    "active_ingredients": {
+      "status": "wrong",
+      "at": "2026-04-14T07:56:14.809521+00:00"
+    }
   }
 }

@@ -1227,22 +1227,8 @@ async function renderDashboard(container) {
   const wrapper = el('div', {});
   wrapper.appendChild(el('h2', { style: { marginBottom: '12px' } }, 'Dashboard'));
 
-  const grid = el('div', { className: 'stat-grid' });
-  const cards = [
-    { label: 'Products', value: stats.products_total, sub: `${stats.products_unmatched_acvm} unmatched` },
-    { label: 'Labels', value: stats.labels_total, sub: `${stats.labels_with_text} extracted` },
-    { label: 'Extraction coverage', value: stats.extraction_coverage_pct + '%', sub: `${stats.reviewed} products reviewed` },
-    { label: 'Outdated labels', value: stats.labels_outdated, sub: '>180 days' },
-    { label: 'Learned patterns', value: stats.learned_patterns, sub: 'approved regexes' },
-    { label: 'Last pipeline', value: stats.last_pipeline_status || 'never', sub: stats.last_pipeline_run ? stats.last_pipeline_run.substring(0, 16).replace('T', ' ') : '—' },
-  ];
-  for (const c of cards) {
-    const card = el('div', { className: 'stat-card' });
-    card.appendChild(el('div', { className: 'stat-label' }, c.label));
-    card.appendChild(el('div', { className: 'stat-value' }, String(c.value)));
-    card.appendChild(el('div', { className: 'stat-sub' }, c.sub));
-    grid.appendChild(card);
-  }
+  const grid = el('div', { className: 'stat-grid', id: 'stat-grid' });
+  renderStatCardsInto(grid, stats);
   wrapper.appendChild(grid);
 
   wrapper.appendChild(renderPipelineRunner());
@@ -1253,6 +1239,34 @@ async function renderDashboard(container) {
   wrapper.appendChild(bottomRow);
 
   setContent(container, wrapper);
+}
+
+function renderStatCardsInto(grid, stats) {
+  const cards = [
+    { label: 'Products', value: stats.products_total, sub: `${stats.products_unmatched_acvm} unmatched` },
+    { label: 'Labels', value: stats.labels_total, sub: `${stats.labels_with_text} extracted` },
+    { label: 'Extraction coverage', value: stats.extraction_coverage_pct + '%', sub: `${stats.reviewed} products reviewed` },
+    { label: 'Outdated labels', value: stats.labels_outdated, sub: '>180 days' },
+    { label: 'Learned patterns', value: stats.learned_patterns, sub: 'approved regexes' },
+    { label: 'Last pipeline', value: stats.last_pipeline_status || 'never', sub: stats.last_pipeline_run ? stats.last_pipeline_run.substring(0, 16).replace('T', ' ') : '—' },
+  ];
+  grid.replaceChildren();
+  for (const c of cards) {
+    const card = el('div', { className: 'stat-card' });
+    card.appendChild(el('div', { className: 'stat-label' }, c.label));
+    card.appendChild(el('div', { className: 'stat-value' }, String(c.value)));
+    card.appendChild(el('div', { className: 'stat-sub' }, c.sub));
+    grid.appendChild(card);
+  }
+}
+
+async function refreshStatCards() {
+  const grid = document.getElementById('stat-grid');
+  if (!grid) return;
+  try {
+    const stats = await api('/dashboard');
+    renderStatCardsInto(grid, stats);
+  } catch (e) { /* ignore */ }
 }
 
 function renderPipelineRunner() {
@@ -1329,8 +1343,23 @@ function subscribePipelineStream() {
     pipelineSse.close();
     pipelineSse = null;
     const st = await api('/pipeline/status').catch(() => null);
-    if (st) updatePipelineStatusUi(st);
-    setTimeout(() => renderDashboard(document.getElementById('app')), 400);
+    if (st) {
+      updatePipelineStatusUi(st);
+      // Append a clear terminator into the log so the user can see the
+      // error text. Without this the final error line can be outside view.
+      const log = document.getElementById('pipeline-log');
+      if (log) {
+        const final = st.phase === 'error'
+          ? `\n✗ FAILED: ${st.error || 'see error above'}\n`
+          : `\n✓ Finished: ${st.message || 'ok'}\n`;
+        log.textContent += final;
+        log.scrollTop = log.scrollHeight;
+      }
+    }
+    // Refresh just the stat cards — do NOT re-render the whole dashboard,
+    // that would wipe the log pane. Users need the log intact after a run
+    // to diagnose errors.
+    refreshStatCards();
   });
   pipelineSse.onerror = () => {
     pipelineSse?.close();
